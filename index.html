@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Victor &amp; Partner · Wedding plans</title>
+  <meta name="description" content="Planning tracker for a Vietnamese–American wedding: a tea ceremony (lễ gia tiên) and a reception near Orange and Beaumont, Texas.">
+  <meta name="theme-color" content="#7C1C2E">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#tasks">Skip to tasks</a>
+  <header class="site-header">
+    <div class="wrap">
+      <p class="eyebrow">Vietnamese–American wedding</p>
+      <div class="ornament" aria-hidden="true">
+        <svg viewBox="0 0 120 16" width="120" height="16">
+          <path d="M8 8h40M72 8h40" stroke="currentColor" stroke-width="1"/>
+          <path d="M60 1.5 66.5 8 60 14.5 53.5 8Z" fill="none" stroke="currentColor" stroke-width="1"/>
+        </svg>
+      </div>
+      <p class="plan-year"><span class="plan-kicker">Planning</span> <span id="plan-year">2028</span></p>
+      <h1 id="couple-name">Victor &amp; Partner</h1>
+      <p class="vi-line" id="vi-line" lang="vi">Lễ gia tiên và tiệc cưới</p>
+      <p class="celebration" id="celebration">A Vietnamese–American wedding with a traditional tea ceremony (lễ gia tiên) and a reception.</p>
+      <p class="place" id="place">Near Orange and Beaumont, Texas</p>
+      <nav class="toc" aria-label="On this page">
+        <a href="#overview">Countdown</a>
+        <a href="#progress">Progress</a>
+        <a href="#tasks">Timeline</a>
+        <a href="#vendors">Vendors</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <noscript>
+      <p class="banner">JavaScript is off, so this page cannot read <code>data/wedding.json</code>. Turn it on, or edit that file directly. The names above are the copy baked into this HTML; the checklist itself lives in the JSON file.</p>
+    </noscript>
+    <p id="app-status" class="banner" role="status">Loading the plan from <code>data/wedding.json</code>…</p>
+    <div id="warnings"></div>
+    <div id="mount-overview"></div>
+    <div id="mount-progress"></div>
+    <div id="mount-tasks"></div>
+    <div id="mount-vendors"></div>
+
+    <section class="section panel how-to" aria-labelledby="how-heading">
+      <h2 id="how-heading">How status is saved</h2>
+      <p>The saved plan is <code>data/wedding.json</code> on the <code>main</code> branch. Edit that file on GitHub, commit, and reload this page.</p>
+      <p>A “Preview as done” checkbox changes this browser only. It is kept on this device and is not written back to the file. Reset preview clears it.</p>
+      <p>Field-by-field instructions, including how to turn on GitHub Pages, are in the <a href="https://github.com/victorv83/Wedding-Planner/blob/main/README.md">README on GitHub</a>.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p id="footer-line">Victor &amp; Partner · wedding planning tracker</p>
+      <p>Official task status is the <code>status</code> field in <code>data/wedding.json</code>.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

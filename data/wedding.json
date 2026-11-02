@@ -1,0 +1,331 @@
+{
+  "settings": {
+    "coupleDisplayName": "Victor & Partner",
+    "vietnameseSubtitle": "Lễ gia tiên và tiệc cưới",
+    "celebration": "A Vietnamese–American wedding with a traditional tea ceremony (lễ gia tiên) and a reception.",
+    "place": "Near Orange and Beaumont, Texas",
+    "candidateDates": ["2028-02-05", "2028-02-19", "2028-03-18"],
+    "selectedDate": null,
+    "guestCount": null,
+    "budget": null,
+    "currency": "USD",
+    "tetDate": "2028-01-26",
+    "tetLabel": "Tết Nguyên Đán"
+  },
+  "phases": [
+    {
+      "id": "now",
+      "title": "Now – January 2027",
+      "summary": "Get a rough headcount, choose the Saturday, and book the venue and caterer."
+    },
+    {
+      "id": "early-2027",
+      "title": "Early 2027",
+      "summary": "Book the planner, local photo and video, officiant, DJ, and confirm Tuấn as MC."
+    },
+    {
+      "id": "spring-summer-2027",
+      "title": "Spring – summer 2027",
+      "summary": "Taste the menu, then book hair and makeup and the flowers."
+    },
+    {
+      "id": "vietnam-2027",
+      "title": "September 2027 · Vietnam",
+      "summary": "Fittings, the pre-wedding shoot, and printed invitations during the trip."
+    },
+    {
+      "id": "autumn-2027",
+      "title": "October – November 2027",
+      "summary": "Alterations at home, cake, transportation, and mailing invitations by early December."
+    },
+    {
+      "id": "final",
+      "title": "December 2027 – January 2028",
+      "summary": "Ceremony details, family roles, and the final headcount."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "guest-count",
+      "title": "Get a rough guest count",
+      "category": "Guests",
+      "phase": "now",
+      "due": "2027-01-15",
+      "status": "todo",
+      "notes": "Agree on a rough headcount before venue and catering contracts. A precise number comes later, with RSVPs. When you trust a figure, set settings.guestCount."
+    },
+    {
+      "id": "pick-date",
+      "title": "Choose the wedding date",
+      "category": "Planning",
+      "phase": "now",
+      "dueMonth": "2027-01",
+      "status": "todo",
+      "notes": "Candidate Saturdays: February 5, February 19, or March 18, 2028. Tết Nguyên Đán is January 26, 2028, so each candidate falls after the holiday. When you decide, set settings.selectedDate to that Saturday."
+    },
+    {
+      "id": "venue-reception",
+      "title": "Book a reception venue",
+      "category": "Venue",
+      "phase": "now",
+      "dueMonth": "2027-01",
+      "status": "todo",
+      "notes": "Look near Orange and Beaumont, Texas. The venue needs to allow outside catering from a local Vietnamese caterer. Ask about timing for lễ gia tiên if you might hold the tea ceremony in the same place.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "venue-tea",
+      "title": "Decide the tea ceremony location",
+      "category": "Venue",
+      "phase": "now",
+      "dueMonth": "2027-01",
+      "status": "todo",
+      "notes": "Decide where lễ gia tiên will happen: a family home or the reception venue. The choice sets the altar, the guest flow, and whether you need cars between the two parts of the day."
+    },
+    {
+      "id": "catering",
+      "title": "Book a Vietnamese caterer",
+      "category": "Catering",
+      "phase": "now",
+      "dueMonth": "2027-01",
+      "status": "todo",
+      "notes": "Book a local Vietnamese caterer for a multi-course menu. Confirm they can work at the reception venue, and plan a tasting once the contract is in place.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "planner",
+      "title": "Find a planner or day-of coordinator",
+      "category": "Planner",
+      "phase": "early-2027",
+      "dueMonth": "2027-03",
+      "status": "todo",
+      "notes": "No planner is hired yet. Look for someone who has run Vietnamese or Vietnamese–American weddings, including a tea ceremony and a reception.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "photo-dayof",
+      "title": "Book a day-of photographer and videographer",
+      "category": "Photo & video",
+      "phase": "early-2027",
+      "dueMonth": "2027-03",
+      "status": "todo",
+      "notes": "Local coverage for the wedding day, both the tea ceremony and the reception. The September 2027 pre-wedding shoot in Vietnam is a separate booking.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "officiant",
+      "title": "Book an officiant",
+      "category": "Ceremony",
+      "phase": "early-2027",
+      "dueMonth": "2027-03",
+      "status": "todo",
+      "notes": "Book an officiant if you want Western vows along with the tea ceremony. If the tea ceremony is the only rite, mark this done and leave the vendor blank.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "mc",
+      "title": "Confirm Tuấn as MC",
+      "category": "Music & MC",
+      "phase": "early-2027",
+      "due": "2027-02-28",
+      "status": "todo",
+      "notes": "Confirm that Tuấn can MC. Talk through a bilingual flow so both families can follow the tea ceremony and the reception.",
+      "vendorName": "Tuấn",
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "music",
+      "title": "Book a DJ or band",
+      "category": "Music & MC",
+      "phase": "early-2027",
+      "dueMonth": "2027-03",
+      "status": "todo",
+      "notes": "Book a DJ or band comfortable with Vietnamese and American music, and with handoffs if Tuấn is hosting.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "tasting",
+      "title": "Schedule a catering tasting",
+      "category": "Catering",
+      "phase": "spring-summer-2027",
+      "dueMonth": "2027-06",
+      "status": "todo",
+      "notes": "Taste the multi-course menu after the caterer is booked. Note dishes to keep, drop, or resize once the guest count is clearer."
+    },
+    {
+      "id": "hmu",
+      "title": "Book hair and makeup",
+      "category": "Beauty",
+      "phase": "spring-summer-2027",
+      "dueMonth": "2027-07",
+      "status": "todo",
+      "notes": "Two looks: áo dài for the tea ceremony, then the reception gown. Ask how long the changeover takes and who is included.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "florist",
+      "title": "Book florist and decor",
+      "category": "Flowers & decor",
+      "phase": "spring-summer-2027",
+      "dueMonth": "2027-08",
+      "status": "todo",
+      "notes": "Include the tea ceremony altar, reception flowers, and anything the families will wear or carry.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "attire-vietnam",
+      "title": "Dress, áo dài, and suit fittings in Vietnam",
+      "category": "Attire",
+      "phase": "vietnam-2027",
+      "dueMonth": "2027-09",
+      "status": "todo",
+      "notes": "On the September 2027 Vietnam trip, shop and fit the wedding dress, áo dài, and suit. Note what must be finished before the flight home and what can wait for alterations.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "photo-vietnam",
+      "title": "Pre-wedding photo shoot in Vietnam",
+      "category": "Photo & video",
+      "phase": "vietnam-2027",
+      "dueMonth": "2027-09",
+      "status": "todo",
+      "notes": "Schedule the pre-wedding photo shoot during the September 2027 trip. Line it up with fittings so the outfits are ready.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "invitations-print",
+      "title": "Print bilingual invitations in Vietnam",
+      "category": "Invitations",
+      "phase": "vietnam-2027",
+      "dueMonth": "2027-09",
+      "status": "todo",
+      "notes": "Design invitations in English and Vietnamese and print them in Vietnam during the September 2027 trip, in time to mail in early December.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "alterations",
+      "title": "Final alterations at home",
+      "category": "Attire",
+      "phase": "autumn-2027",
+      "dueMonth": "2027-11",
+      "status": "todo",
+      "notes": "After the Vietnam fittings, book final alterations at home for the dress, áo dài, and suit.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "cake",
+      "title": "Order the cake",
+      "category": "Cake",
+      "phase": "autumn-2027",
+      "dueMonth": "2027-11",
+      "status": "todo",
+      "notes": "Choose flavor and a size that matches the guest count. Confirm delivery to the reception venue.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "transport",
+      "title": "Arrange transportation",
+      "category": "Transportation",
+      "phase": "autumn-2027",
+      "dueMonth": "2027-11",
+      "status": "todo",
+      "notes": "Arrange rides for the couple and for elders, especially if the tea ceremony and the reception are in different places.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "invitations-mail",
+      "title": "Mail the invitations",
+      "category": "Invitations",
+      "phase": "autumn-2027",
+      "due": "2027-12-05",
+      "status": "todo",
+      "notes": "Mail invitations around the beginning of December 2027. Target the first week, with December 5 as the due date."
+    },
+    {
+      "id": "elders",
+      "title": "Confirm family elder spokespeople",
+      "category": "Ceremony",
+      "phase": "final",
+      "due": "2027-12-20",
+      "status": "todo",
+      "notes": "Decide who will speak for each family during the tea ceremony."
+    },
+    {
+      "id": "lion",
+      "title": "Decide on a lion dance",
+      "category": "Ceremony",
+      "phase": "final",
+      "due": "2027-12-31",
+      "status": "todo",
+      "notes": "Optional. If you want a lion dance, book the troupe and confirm the venue allows it. If you skip it, clear the vendor fields and mark the task done.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "id": "mam-qua",
+      "title": "Prepare the mâm quả",
+      "category": "Ceremony",
+      "phase": "final",
+      "due": "2028-01-10",
+      "status": "todo",
+      "notes": "Plan the mâm quả betrothal trays: how many, what goes in them, and who will present them."
+    },
+    {
+      "id": "tea-set",
+      "title": "Choose the tea set",
+      "category": "Ceremony",
+      "phase": "final",
+      "due": "2028-01-10",
+      "status": "todo",
+      "notes": "Choose the tea set used to serve elders at lễ gia tiên."
+    },
+    {
+      "id": "jewelry",
+      "title": "Gather ceremony jewelry",
+      "category": "Attire",
+      "phase": "final",
+      "due": "2028-01-15",
+      "status": "todo",
+      "notes": "Gather jewelry for the áo dài looks, including anything borrowed from family."
+    },
+    {
+      "id": "rsvps",
+      "title": "Collect RSVPs and finalize the guest count",
+      "category": "Guests",
+      "phase": "final",
+      "due": "2028-01-20",
+      "status": "todo",
+      "notes": "Track replies and set settings.guestCount when the number is firm. Share that count with the venue and the caterer."
+    }
+  ]
+}
