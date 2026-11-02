@@ -9,6 +9,30 @@ export const STATUS_LABELS = {
   done: "Done",
 };
 
+/** Sections the nav can open. "all" stacks every section, including the save note. */
+export const SECTION_IDS = ["overview", "progress", "timeline", "vendors"];
+
+const HASH_TO_SECTION = {
+  overview: "overview",
+  progress: "progress",
+  timeline: "timeline",
+  tasks: "timeline",
+  vendors: "vendors",
+};
+
+/**
+ * Pick the view for a URL hash. Empty and unknown hashes open the first section.
+ * #tasks is the older timeline anchor and opens the same section as #timeline.
+ */
+export function viewFromHash(hash) {
+  const id = String(hash ?? "")
+    .replace(/^#/, "")
+    .trim()
+    .toLowerCase();
+  if (id === "all") return "all";
+  return HASH_TO_SECTION[id] || "overview";
+}
+
 export function startOfToday(now = new Date()) {
   return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 }
@@ -312,7 +336,7 @@ export function formatNumber(value) {
 
 export function displayCouple(settings) {
   const name = typeof settings?.coupleDisplayName === "string" ? settings.coupleDisplayName.trim() : "";
-  return name || "Victor & Partner";
+  return name || "Victor & Mít";
 }
 
 export function settingText(settings, key) {

@@ -172,24 +172,82 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.25rem 1.1rem;
+  gap: 0.35rem 0.4rem;
   margin: 1rem 0 0;
 }
 
 .toc a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
   color: var(--lacquer-deep);
   text-decoration: none;
-  border-bottom: 1px solid var(--gold-line);
-  padding: 0.45rem 0.1rem;
 }
 
 .toc a:hover {
   color: var(--lacquer);
-  border-bottom-color: var(--lacquer);
+  background: rgba(124, 28, 46, 0.06);
+}
+
+.toc a[aria-current="page"] {
+  background: var(--lacquer);
+  color: var(--paper);
+  border-color: var(--lacquer);
+  font-weight: 600;
+}
+
+.toc a[aria-current="page"]:hover {
+  background: var(--lacquer-deep);
+  color: var(--paper);
+}
+
+.view-all-row {
+  margin: 0.15rem 0 0.35rem;
+}
+
+.view-all {
+  min-height: 44px;
+  padding: 0.15rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: transparent;
+  border-color: var(--gold-line);
+}
+
+.view-all:hover {
+  color: var(--lacquer);
+  background: transparent;
+  border-color: var(--lacquer);
+}
+
+.view-all[aria-current="page"],
+.view-all[aria-current="page"]:hover {
+  color: var(--paper);
+  background: var(--lacquer);
+  border-color: var(--lacquer);
+}
+
+#content {
+  scroll-margin-top: 0.75rem;
+}
+
+#content:focus {
+  outline: none;
+}
+
+#content:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
 }
 
 .section {
   margin: 1.75rem 0;
+  scroll-margin-top: 0.75rem;
 }
 
 h2 {
@@ -783,10 +841,21 @@ tfoot th {
   .toc {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    justify-items: center;
-    max-width: 18rem;
+    justify-items: stretch;
+    max-width: 22rem;
     margin-inline: auto;
-    gap: 0.1rem 0.5rem;
+    gap: 0.4rem;
+  }
+
+  .toc a {
+    border-color: var(--gold-line);
+    background: var(--paper);
+  }
+
+  .toc a[aria-current="page"] {
+    background: var(--lacquer);
+    color: var(--paper);
+    border-color: var(--lacquer);
   }
 
   .overview-grid,
@@ -909,6 +978,13 @@ tfoot th {
   .badge {
     border: 1px solid CanvasText;
   }
+
+  .toc a[aria-current="page"],
+  .view-all[aria-current="page"] {
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
 }
 
 @media print {
@@ -919,10 +995,16 @@ tfoot th {
   body::before,
   .skip-link,
   .toc,
+  .view-all-row,
   .filters,
   .preview-label,
   .preview-callout {
     display: none !important;
+  }
+
+  .section-mount[hidden],
+  #how[hidden] {
+    display: block !important;
   }
 
   .panel,

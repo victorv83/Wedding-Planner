@@ -1,8 +1,8 @@
 # Wedding plans
 
-A static planning tracker for **Victor & Partner**, a Vietnamese–American wedding with a traditional tea ceremony (lễ gia tiên) and a reception near Orange and Beaumont, Texas. The page is plain HTML, CSS, and JavaScript. GitHub Pages can serve it from the `main` branch with no build step and no backend.
+A static planning tracker for **Victor & Mít**, a Vietnamese–American wedding with a traditional tea ceremony (lễ gia tiên) and a reception near Orange and Beaumont, Texas. The page is plain HTML, CSS, and JavaScript. GitHub Pages can serve it from the `main` branch with no build step and no backend.
 
-The couple’s display name, dates, guest count, budget, and every task live in one file: [`data/wedding.json`](data/wedding.json). The partner’s name is still a placeholder. Change `settings.coupleDisplayName` when you want the heading to say something else.
+The couple’s display name, dates, guest count, budget, and every task live in one file: [`data/wedding.json`](data/wedding.json). The heading is **Victor & Mít**, from `settings.coupleDisplayName`.
 
 Nothing on this site asks for an address, phone number, or email. The repository is public. Keep it that way: do not add contact details, street addresses, or other private information to the JSON file or the page.
 
@@ -15,6 +15,21 @@ python3 -m http.server 8080
 ```
 
 Then open <http://localhost:8080/>.
+
+## Moving around the page
+
+The HTML, CSS, scripts, and `data/wedding.json` load once. After that, the section nav swaps only the area under it. Nothing is fetched again, and the page does not reload.
+
+| Nav | Hash | What you see |
+| --- | --- | --- |
+| Countdown | `#overview` | Date countdown and the guest, budget, and Tết facts |
+| Progress | `#progress` | Overall, phase, and category bars |
+| Timeline | `#timeline` | Phases, filters, and the preview checkboxes |
+| Vendors | `#vendors` | Vendor and cost table |
+
+**View all sections**, the control directly under the nav, stacks every section the way the long page used to, and sets `#all`. In that mode that control is the one marked current. Otherwise the open section’s nav link is marked current (`aria-current="page"`).
+
+Back, forward, and a copied link open the same view. `#tasks` still opens the timeline. With no hash, the page opens on Countdown. Preview checkboxes stay in this browser while you move between sections.
 
 ## Publish with GitHub Pages
 
@@ -40,13 +55,13 @@ Official status is the `status` field in `data/wedding.json`. The checkboxes lab
 4. Commit to `main` (or open a pull request if you want a review first).
 5. Reload the site after Pages finishes deploying.
 
-UTF-8 is required so Vietnamese diacritics stay intact (`lễ gia tiên`, `áo dài`, `mâm quả`, `Tết Nguyên Đán`, `Tuấn`).
+UTF-8 is required so Vietnamese diacritics stay intact (`lễ gia tiên`, `áo dài`, `mâm quả`, `Tết Nguyên Đán`, `Tuấn`, `Mít`).
 
 ### Settings
 
 | Field | Meaning |
 | --- | --- |
-| `coupleDisplayName` | Heading and browser title. The seed value is `Victor & Partner`. |
+| `coupleDisplayName` | Heading and browser title. The seed value is `Victor & Mít`. |
 | `vietnameseSubtitle` | Line under the names, shown with `lang="vi"`. |
 | `celebration` | Short description under the subtitle. |
 | `place` | Region line. Keep it general. |
