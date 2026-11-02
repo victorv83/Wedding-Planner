@@ -16,6 +16,7 @@ import {
   previewOverrideForToggle,
   progressStats,
   safeHttpUrl,
+  viewFromHash,
 } from "../logic.js";
 
 const raw = readFileSync(new URL("../data/wedding.json", import.meta.url), "utf8");
@@ -23,14 +24,29 @@ const data = JSON.parse(raw);
 const model = buildModel(data);
 const today = new Date(2026, 10, 2);
 
-test("seed file is public-safe JSON with the placeholder couple", () => {
-  assert.equal(data.settings.coupleDisplayName, "Victor & Partner");
+test("seed file is public-safe JSON for Victor & Mít", () => {
+  assert.equal(data.settings.coupleDisplayName, "Victor & Mít");
+  assert.equal(raw.includes("Mít"), true);
+  assert.equal(raw.includes("\\u00ed"), false);
   assert.equal(data.settings.selectedDate, null);
   assert.equal(data.settings.guestCount, null);
   assert.equal(data.settings.budget, null);
   assert.equal(raw.includes("@"), false);
   assert.doesNotMatch(raw, /\b\d{3}[-.\s)]\d{3}[-.\s]\d{4}\b/);
   assert.equal(model.warnings.length, 0);
+});
+
+test("the hash opens one section, all sections, or overview by default", () => {
+  assert.equal(viewFromHash(""), "overview");
+  assert.equal(viewFromHash("#"), "overview");
+  assert.equal(viewFromHash("#overview"), "overview");
+  assert.equal(viewFromHash("#progress"), "progress");
+  assert.equal(viewFromHash("#timeline"), "timeline");
+  assert.equal(viewFromHash("#tasks"), "timeline");
+  assert.equal(viewFromHash("#vendors"), "vendors");
+  assert.equal(viewFromHash("#all"), "all");
+  assert.equal(viewFromHash("#ALL"), "all");
+  assert.equal(viewFromHash("#somewhere-else"), "overview");
 });
 
 test("candidate Saturdays and Tết are real dates", () => {

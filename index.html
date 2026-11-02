@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Victor &amp; Partner · Wedding plans</title>
+  <title>Victor &amp; Mít · Wedding plans</title>
   <meta name="description" content="Planning tracker for a Vietnamese–American wedding: a tea ceremony (lễ gia tiên) and a reception near Orange and Beaumont, Texas.">
   <meta name="theme-color" content="#7C1C2E">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <a class="skip-link" href="#tasks">Skip to tasks</a>
+  <a class="skip-link" href="#content">Skip to content</a>
   <header class="site-header">
     <div class="wrap">
       <p class="eyebrow">Vietnamese–American wedding</p>
@@ -24,31 +24,35 @@
         </svg>
       </div>
       <p class="plan-year"><span class="plan-kicker">Planning</span> <span id="plan-year">2028</span></p>
-      <h1 id="couple-name">Victor &amp; Partner</h1>
+      <h1 id="couple-name">Victor &amp; Mít</h1>
       <p class="vi-line" id="vi-line" lang="vi">Lễ gia tiên và tiệc cưới</p>
       <p class="celebration" id="celebration">A Vietnamese–American wedding with a traditional tea ceremony (lễ gia tiên) and a reception.</p>
       <p class="place" id="place">Near Orange and Beaumont, Texas</p>
-      <nav class="toc" aria-label="On this page">
+      <nav class="toc" aria-label="Sections">
         <a href="#overview">Countdown</a>
         <a href="#progress">Progress</a>
-        <a href="#tasks">Timeline</a>
+        <a href="#timeline">Timeline</a>
         <a href="#vendors">Vendors</a>
       </nav>
+      <p class="view-all-row">
+        <button type="button" id="view-all" class="view-all">View all sections</button>
+      </p>
     </div>
   </header>
 
-  <main class="wrap">
+  <main class="wrap" id="content" tabindex="-1">
     <noscript>
+      <style>#how[hidden] { display: block !important; }</style>
       <p class="banner">JavaScript is off, so this page cannot read <code>data/wedding.json</code>. Turn it on, or edit that file directly. The names above are the copy baked into this HTML; the checklist itself lives in the JSON file.</p>
     </noscript>
     <p id="app-status" class="banner" role="status">Loading the plan from <code>data/wedding.json</code>…</p>
     <div id="warnings"></div>
-    <div id="mount-overview"></div>
-    <div id="mount-progress"></div>
-    <div id="mount-tasks"></div>
-    <div id="mount-vendors"></div>
+    <div id="mount-overview" class="section-mount"></div>
+    <div id="mount-progress" class="section-mount"></div>
+    <div id="mount-timeline" class="section-mount"></div>
+    <div id="mount-vendors" class="section-mount"></div>
 
-    <section class="section panel how-to" aria-labelledby="how-heading">
+    <section class="section panel how-to" id="how" hidden aria-labelledby="how-heading">
       <h2 id="how-heading">How status is saved</h2>
       <p>The saved plan is <code>data/wedding.json</code> on the <code>main</code> branch. Edit that file on GitHub, commit, and reload this page.</p>
       <p>A “Preview as done” checkbox changes this browser only. It is kept on this device and is not written back to the file. Reset preview clears it.</p>
@@ -58,7 +62,7 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      <p id="footer-line">Victor &amp; Partner · wedding planning tracker</p>
+      <p id="footer-line">Victor &amp; Mít · wedding planning tracker</p>
       <p>Official task status is the <code>status</code> field in <code>data/wedding.json</code>.</p>
     </div>
   </footer>

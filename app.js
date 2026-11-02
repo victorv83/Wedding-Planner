@@ -26,6 +26,8 @@ import {
   safeHttpUrl,
   settingText,
   startOfToday,
+  SECTION_IDS,
+  viewFromHash,
 } from "./logic.js";
 
 const STORAGE_KEY = "weddingPlanner.previewStatus.v1";
@@ -457,8 +459,8 @@ function renderTasks() {
     ]);
   });
 
-  const section = el("section", { class: "section", id: "tasks", "aria-labelledby": "tasks-heading" }, [
-    el("h2", { id: "tasks-heading", text: "Timeline" }),
+  const section = el("section", { class: "section", id: "timeline", "aria-labelledby": "timeline-heading" }, [
+    el("h2", { id: "timeline-heading", text: "Timeline" }),
     el("div", { class: "filters" }, [
       el("label", { class: "filter", for: "filter-status" }, ["Status", statusSelect]),
       el("label", { class: "filter", for: "filter-category" }, ["Category", categorySelect]),
@@ -471,7 +473,7 @@ function renderTasks() {
       : el("p", { class: "empty", text: "No tasks match this filter." }),
   ]);
 
-  $("mount-tasks").replaceChildren(section);
+  $("mount-timeline").replaceChildren(section);
   $("clear-filters")?.addEventListener("click", () => {
     state.statusFilter = "all";
     state.categoryFilter = "all";
@@ -533,6 +535,39 @@ function renderVendors() {
   $("mount-vendors").replaceChildren(section);
 }
 
+function scrollToContent() {
+  const content = $("content");
+  if (!content) return;
+  requestAnimationFrame(() => {
+    content.scrollIntoView({ block: "start" });
+  });
+}
+
+function applyView(options = {}) {
+  const view = viewFromHash(location.hash);
+  const showAll = view === "all";
+  for (const id of SECTION_IDS) {
+    const mount = $(`mount-${id}`);
+    if (mount) mount.hidden = !(showAll || view === id);
+  }
+  const how = $("how");
+  if (how) how.hidden = !showAll;
+
+  for (const link of document.querySelectorAll(".toc a[href]")) {
+    const active = !showAll && viewFromHash(link.getAttribute("href")) === view;
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  }
+
+  const viewAll = $("view-all");
+  if (viewAll) {
+    if (showAll) viewAll.setAttribute("aria-current", "page");
+    else viewAll.removeAttribute("aria-current");
+  }
+
+  if (options.scroll) scrollToContent();
+}
+
 function render(options = {}) {
   renderShellText();
   renderWarnings();
@@ -540,6 +575,7 @@ function render(options = {}) {
   renderProgress();
   renderTasks();
   renderVendors();
+  applyView({ scroll: Boolean(options.scroll) });
   if (options.focusId) {
     document.getElementById(options.focusId)?.focus({ preventScroll: true });
   }
@@ -553,6 +589,8 @@ function renderFatal(error) {
     "Open this site through a web server so it can read data/wedding.json, and make sure that file is valid JSON. ",
     error?.message ? el("span", { text: error.message }) : "",
   );
+  const how = $("how");
+  if (how) how.hidden = false;
 }
 
 async function init() {
@@ -563,7 +601,50 @@ async function init() {
   state.overrides = pruneOverrides(state.model.tasks, loadOverrides());
   saveOverrides(state.overrides);
   $("app-status").hidden = true;
-  render();
+  const hash = location.hash.replace(/^#/, "").trim();
+  render({ scroll: hash !== "" });
 }
 
+function navigateTo(hash, { scroll = true } = {}) {
+  const next = hash.startsWith("#") ? hash : `#${hash}`;
+  if (location.hash !== next) history.pushState(null, "", next);
+  applyView({ scroll });
+}
+
+function bindChrome() {
+  document.querySelector(".skip-link")?.addEventListener("click", (event) => {
+    const content = $("content");
+    if (!content) return;
+    event.preventDefault();
+    content.focus();
+  });
+
+  $("view-all")?.addEventListener("click", () => navigateTo("#all"));
+
+  document.querySelector(".toc")?.addEventListener("click", (event) => {
+    const link = event.target.closest("a[href]");
+    if (!link) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+    const href = link.getAttribute("href") || "";
+    if (!href.startsWith("#")) return;
+    event.preventDefault();
+    navigateTo(href);
+  });
+
+  // Back, forward, and a pasted hash. pushState itself does not fire these.
+  let queued = false;
+  const onHistory = () => {
+    if (queued) return;
+    queued = true;
+    queueMicrotask(() => {
+      queued = false;
+      applyView({ scroll: true });
+    });
+  };
+  window.addEventListener("hashchange", onHistory);
+  window.addEventListener("popstate", onHistory);
+  applyView();
+}
+
+bindChrome();
 init().catch(renderFatal);
