@@ -9,6 +9,7 @@ import {
   candidateDates,
   countdownLabel,
   countdownTarget,
+  dateListMarker,
   daysUntil,
   diffTask,
   formatDue,
@@ -35,7 +36,9 @@ test("seed file is public-safe JSON for Victor & Mít", () => {
   assert.equal(data.settings.coupleDisplayName, "Victor & Mít");
   assert.equal(raw.includes("Mít"), true);
   assert.equal(raw.includes("\\u00ed"), false);
+  assert.equal(data.settings.idealDate, "2028-03-18");
   assert.equal(data.settings.selectedDate, null);
+  assert.equal(raw.includes("2028-03-04"), false);
   assert.equal(data.settings.guestCount, null);
   assert.equal(data.settings.budget, null);
   assert.equal(raw.includes("@"), false);
@@ -70,20 +73,32 @@ test("candidate Saturdays and Tết are real dates", () => {
   assert.ok(parseISODate("2028-02-29"));
 });
 
-test("countdown uses the earliest remaining candidate until a date is selected", () => {
+test("countdown uses the ideal date until a Saturday is selected", () => {
   const tentative = countdownTarget(data.settings, today);
-  assert.equal(tentative.iso, "2028-02-05");
+  assert.equal(tentative.iso, "2028-03-18");
   assert.equal(tentative.tentative, true);
+  assert.equal(tentative.ideal, true);
   assert.equal(tentative.allPast, false);
-  assert.equal(countdownLabel(tentative), "Tentative · earliest remaining candidate date");
-  assert.equal(daysUntil(tentative.date, today), 460);
+  assert.equal(countdownLabel(tentative), "Tentative · ideal date");
+  assert.equal(daysUntil(tentative.date, today), 502);
+  assert.equal(dateListMarker({ iso: "2028-03-18", idealIso: "2028-03-18" }), "Ideal");
+  assert.equal(dateListMarker({ iso: "2028-02-05", idealIso: "2028-03-18" }), "Alternative");
+  assert.equal(dateListMarker({ iso: "2028-02-19", idealIso: "2028-03-18" }), "Alternative");
 
-  const later = countdownTarget(data.settings, new Date(2028, 1, 10));
-  assert.equal(later.iso, "2028-02-19");
+  const passed = countdownTarget(data.settings, new Date(2028, 2, 19));
+  assert.equal(passed.iso, "2028-03-18");
+  assert.equal(passed.allPast, true);
+  assert.equal(countdownLabel(passed), "Tentative · ideal date has passed");
 
-  const selected = countdownTarget({ ...data.settings, selectedDate: "2028-03-18" }, today);
+  const noIdeal = countdownTarget({ ...data.settings, idealDate: null }, new Date(2028, 1, 10));
+  assert.equal(noIdeal.iso, "2028-02-19");
+  assert.equal(noIdeal.ideal, false);
+  assert.equal(countdownLabel(noIdeal), "Tentative · earliest remaining candidate date");
+
+  const selected = countdownTarget({ ...data.settings, selectedDate: "2028-02-05" }, today);
   assert.equal(selected.tentative, false);
-  assert.equal(selected.iso, "2028-03-18");
+  assert.equal(selected.ideal, false);
+  assert.equal(selected.iso, "2028-02-05");
   assert.equal(countdownLabel(selected), "Selected date");
 });
 
@@ -126,9 +141,11 @@ test("tasks cover the booking sequence and phases", () => {
   assert.equal(model.tasks.find((task) => task.id === "mc").vendorName, "Tuấn");
   assert.ok(model.tasks.every((task) => task.status === "todo"));
   const groups = groupByPhase(model.tasks, model.phases);
-  assert.deepEqual(groups.map((group) => group.tasks.length), [5, 5, 3, 3, 4, 6]);
+  assert.deepEqual(groups.map((group) => group.tasks.length), [5, 5, 3, 3, 3, 7]);
+  assert.equal(model.tasks.find((task) => task.id === "invitations-mail").phase, "final");
   assert.equal(formatDue(model.tasks.find((task) => task.id === "florist")), "By August 2027");
-  assert.equal(formatDue(model.tasks.find((task) => task.id === "invitations-mail")), "Sunday, December 5, 2027");
+  assert.equal(formatDue(model.tasks.find((task) => task.id === "invitations-mail")), "Sunday, January 16, 2028");
+  assert.equal(formatDue(model.tasks.find((task) => task.id === "rsvps")), "Thursday, March 2, 2028");
 });
 
 test("overdue highlighting follows the due date and ignores done work", () => {

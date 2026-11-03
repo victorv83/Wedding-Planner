@@ -77,22 +77,26 @@ UTF-8 is required so Vietnamese diacritics stay intact (`lễ gia tiên`, `áo d
 | `vietnameseSubtitle` | Line under the names, shown with `lang="vi"`. |
 | `celebration` | Short description under the subtitle. |
 | `place` | Region line. Keep it general. |
-| `candidateDates` | Array of `YYYY-MM-DD` Saturdays still in the running. |
-| `selectedDate` | The chosen Saturday, or `null` if you have not decided. |
+| `idealDate` | The preferred Saturday while you are still deciding, or `null`. The countdown uses it and labels it **Tentative · ideal date**. |
+| `candidateDates` | Array of `YYYY-MM-DD` Saturdays still in the running, including the ideal date. The others are shown as alternatives. |
+| `selectedDate` | The chosen Saturday, or `null` if you have not decided. This overrides `idealDate` and the label becomes **Selected date**. |
 | `guestCount` | A number, or `null`. |
 | `budget` | A number in `currency`, or `null`. No `$` in the JSON. |
 | `currency` | ISO code, default `USD`. |
 | `tetDate` / `tetLabel` | Shown as a fact next to guests and budget. |
 
-When `selectedDate` is `null`, the countdown uses the earliest candidate date that is still today or in the future, and the page labels it **Tentative · earliest remaining candidate date**. The full candidate list stays on the page. Set `selectedDate` to one of those Saturdays (or any other `YYYY-MM-DD`) once you decide. The label then changes to **Selected date**.
+When `selectedDate` is `null` and `idealDate` is set, the countdown uses that ideal Saturday and labels it **Tentative · ideal date**. The other dates in `candidateDates` are listed as alternatives. If `idealDate` is also null, the countdown falls back to the earliest candidate that is still today or in the future and labels it **Tentative · earliest remaining candidate date**. Set `selectedDate` to one of those Saturdays (or any other `YYYY-MM-DD`) once you decide. The label then changes to **Selected date**.
 
 ```json
-"selectedDate": "2028-02-05",
+"idealDate": "2028-03-18",
+"selectedDate": null,
 "guestCount": 160,
 "budget": 40000
 ```
 
-The seed candidates are Saturday, February 5, 2028; Saturday, February 19, 2028; and Saturday, March 18, 2028. Tết Nguyên Đán 2028 is January 26, so each candidate falls after the holiday.
+The ideal date is Saturday, March 18, 2028. The alternatives are Saturday, February 5, 2028 and Saturday, February 19, 2028. Saturday, March 4, 2028 is not in the running. Tết Nguyên Đán 2028 is January 26, so each listed date falls after the holiday.
+
+Invitation mailing and the final-detail deadlines keep the same lead time they had before a February 5 wedding. Mailing is January 16, 2028 (it was December 5, 2027). The last ceremony tasks run through March 2, 2028.
 
 ### Tasks
 
@@ -142,8 +146,8 @@ Within a phase, tasks stay in the order they appear in the file. To reorder, mov
 | `early-2027` | Early 2027 | Planner, local photo and video, officiant, confirm Tuấn, DJ or band |
 | `spring-summer-2027` | Spring – summer 2027 | Catering tasting, hair and makeup, florist and altar decor |
 | `vietnam-2027` | September 2027 | Dress, áo dài, and suit fittings; pre-wedding photos; print bilingual invitations |
-| `autumn-2027` | October – November 2027 | Alterations at home, cake, transportation, mail invitations by early December |
-| `final` | December 2027 – January 2028 | Elder spokespeople, optional lion dance, mâm quả, tea set, ceremony jewelry, RSVPs |
+| `autumn-2027` | October – November 2027 | Alterations at home, cake, and transportation |
+| `final` | January – early March 2028 | Mail invitations in mid-January, elder spokespeople, optional lion dance, mâm quả, tea set, ceremony jewelry, RSVPs |
 
 The seed list follows a common vendor booking order (venue, planner, attire, photo and video, catering, officiant, MC and music, hair and makeup, flowers, cake, invitations, transportation, then ceremony details), placed into those windows. The Vietnam trip in September 2027 is for the pre-wedding photo shoot, fittings, and printing invitations.
 

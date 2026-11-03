@@ -178,7 +178,18 @@ export function countdownTarget(settings, today = startOfToday()) {
       date: selected,
       iso: formatISO(selected),
       tentative: false,
+      ideal: false,
       allPast: selected.getTime() < today.getTime(),
+    };
+  }
+  const ideal = parseISODate(settings?.idealDate);
+  if (ideal) {
+    return {
+      date: ideal,
+      iso: formatISO(ideal),
+      tentative: true,
+      ideal: true,
+      allPast: ideal.getTime() < today.getTime(),
     };
   }
   const candidates = candidateDates(settings);
@@ -189,6 +200,7 @@ export function countdownTarget(settings, today = startOfToday()) {
     date: pick.date,
     iso: pick.iso,
     tentative: true,
+    ideal: false,
     allPast: upcoming.length === 0,
   };
 }
@@ -196,8 +208,18 @@ export function countdownTarget(settings, today = startOfToday()) {
 export function countdownLabel(target) {
   if (!target) return "";
   if (!target.tentative) return "Selected date";
+  if (target.ideal) return target.allPast ? "Tentative · ideal date has passed" : "Tentative · ideal date";
   if (target.allPast) return "Tentative · every candidate date has passed";
   return "Tentative · earliest remaining candidate date";
+}
+
+/** Badge for one row in the date list. An ideal date stays tentative until selectedDate is set. */
+export function dateListMarker({ iso, idealIso = "", selectedIso = "", fallbackIso = "", allPast = false }) {
+  if (selectedIso && iso === selectedIso) return "Selected";
+  if (idealIso && iso === idealIso) return allPast ? "Ideal · passed" : "Ideal";
+  if (idealIso) return "Alternative";
+  if (fallbackIso && iso === fallbackIso) return allPast ? "Earliest · passed" : "Earliest remaining";
+  return "Candidate";
 }
 
 export function daysUntil(target, today = startOfToday()) {
@@ -473,8 +495,11 @@ export function buildModel(data) {
     };
   });
 
+  if (settings.idealDate != null && settings.idealDate !== "" && !parseISODate(settings.idealDate)) {
+    warnings.push("settings.idealDate needs to be null or a YYYY-MM-DD date. The countdown is using a candidate date instead.");
+  }
   if (settings.selectedDate != null && settings.selectedDate !== "" && !parseISODate(settings.selectedDate)) {
-    warnings.push("settings.selectedDate needs to be null or a YYYY-MM-DD date. The countdown is using a candidate date instead.");
+    warnings.push("settings.selectedDate needs to be null or a YYYY-MM-DD date. The countdown is using the ideal date, or a candidate date if that is missing.");
   }
   if (settings.guestCount != null && !(typeof settings.guestCount === "number" && Number.isFinite(settings.guestCount))) {
     warnings.push("settings.guestCount needs to be null or a number.");

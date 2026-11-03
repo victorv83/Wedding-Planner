@@ -11,6 +11,7 @@ import {
   countdownLabel,
   countdownTarget,
   countdownWords,
+  dateListMarker,
   daysUntil,
   diffTask,
   displayCouple,
@@ -275,6 +276,8 @@ function renderOverview() {
   const target = countdownTarget(settings, today);
   const candidates = candidateDates(settings);
   const selectedIso = target && !target.tentative ? target.iso : "";
+  const idealIso = target?.ideal ? target.iso : "";
+  const fallbackIso = target?.tentative && !target.ideal ? target.iso : "";
   const next = nextOpenTarget(tasks, today);
 
   let countdownBlock;
@@ -304,13 +307,14 @@ function renderOverview() {
   }
 
   const dateItems = candidates.map((candidate) => {
-    const isSelected = candidate.iso === selectedIso;
-    const isEarliest = Boolean(target?.tentative && candidate.iso === target.iso);
-    let marker = "Candidate";
-    if (isSelected) marker = "Selected";
-    else if (isEarliest && target.allPast) marker = "Earliest · passed";
-    else if (isEarliest) marker = "Earliest remaining";
-    const current = isSelected || isEarliest;
+    const marker = dateListMarker({
+      iso: candidate.iso,
+      idealIso,
+      selectedIso,
+      fallbackIso,
+      allPast: Boolean(target?.allPast),
+    });
+    const current = candidate.iso === selectedIso || candidate.iso === idealIso || candidate.iso === fallbackIso;
     return el("li", current ? { "aria-current": "date" } : {}, [
       el("time", { datetime: candidate.iso, text: formatLongDate(candidate.date) }),
       el("span", { class: "badge", text: marker }),
@@ -341,7 +345,7 @@ function renderOverview() {
     el("div", { class: "panel" }, [
       countdownBlock,
       nextLine,
-      el("h3", { class: "subhead", text: "Candidate dates" }),
+      el("h3", { class: "subhead", text: idealIso ? "Ideal date and alternatives" : "Candidate dates" }),
       dateItems.length
         ? el("ul", { class: "date-list" }, dateItems)
         : el("p", { text: "No candidate dates are listed yet." }),
