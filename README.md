@@ -24,12 +24,12 @@ The HTML, CSS, scripts, and `data/wedding.json` load once. After that, the secti
 | --- | --- | --- |
 | Countdown | `#overview` | Date countdown and the guest, budget, and Tết facts |
 | Progress | `#progress` | Overall, phase, and category bars |
-| Timeline | `#timeline` | Phases, filters, and the preview checkboxes |
+| Timeline | `#timeline` | Phases, filters, and editable items |
 | Vendors | `#vendors` | Vendor and cost table |
 
 **View all sections**, the control directly under the nav, stacks every section the way the long page used to, and sets `#all`. In that mode that control is the one marked current. Otherwise the open section’s nav link is marked current (`aria-current="page"`).
 
-Back, forward, and a copied link open the same view. `#tasks` still opens the timeline. With no hash, the page opens on Countdown. Preview checkboxes stay in this browser while you move between sections.
+Back, forward, and a copied link open the same view. `#tasks` still opens the timeline. With no hash, the page opens on Countdown. Local edits stay in this browser while you move between sections.
 
 ## Publish with GitHub Pages
 
@@ -45,7 +45,19 @@ After you edit `data/wedding.json` on `main`, wait for the Pages deployment to f
 
 ## How to update
 
-Official status is the `status` field in `data/wedding.json`. The checkboxes labeled **Preview as done** are a local rehearsal: they live in this browser’s `localStorage` and are not written back to the file. **Reset preview** clears them. Progress bars, the vendor table’s status column, and the phase totals follow the file. The timeline badges follow the preview when a checkbox is set, and they label that state **Preview** plus the saved status.
+Official status is the `status` field in `data/wedding.json`. The page can also keep edits in this browser, layered on top of that file, until you send them.
+
+### Edits on the page
+
+On the timeline, **Edit** opens the item: title, category, phase, status, target date, and notes. Vendor bookings also have a contact name, phone or website, quoted cost, deposit, and balance due date. **Save** writes this browser only. **Cancel** discards the form. **Add item** and **Delete** (after a confirm) work the same way. **Mark done** is a shortcut that sets status to `done`, or restores the file status if you clear it.
+
+Statuses are `todo` (shown as Not started), `researching`, `contacted`, `booked`, and `done`. `booked` and `done` both count as complete. `researching`, `contacted`, and the older `in-progress` value count as underway. Progress bars, the next open target, filters, overdue flags, and the vendor and cost table all follow these edits. An item with unsent edits shows an **Unsent** or **New** badge.
+
+**Send updates** (in the header and on the timeline) opens a GitHub issue titled `Tracker updates YYYY-MM-DD`. The body is a short summary plus a fenced JSON block of the changes, keyed by task id. **Copy updates** and **Download JSON** are there if the link is awkward. Very long updates are copied to the clipboard instead of being stuffed into the URL; paste that JSON into the issue. After you open the draft, keep the edits on this device until `data/wedding.json` is updated, then use **Reset local edits**.
+
+The JSON shape and the merge steps are in [`docs/UPDATES.md`](docs/UPDATES.md). The page never writes the file itself, and it does not use a token.
+
+Nothing typed here should be a personal phone number or a home address. The repository is public. A vendor’s business line or website is the only contact detail the form is for, and it will be in the GitHub issue if you send it.
 
 ### Edit on GitHub
 
@@ -88,17 +100,20 @@ Each object in `tasks` has:
 
 | Field | Meaning |
 | --- | --- |
-| `id` | Stable id, unique in the file. Used by the browser preview. |
+| `id` | Stable id, unique in the file. Local edits and update issues use it as the key. |
 | `title` | Short task name. |
 | `category` | Free text. New categories show up in the filter and the category bars. |
 | `phase` | Must match an `id` in `phases` to land in that timeline group. |
 | `due` | Optional exact date, `YYYY-MM-DD`. |
 | `dueMonth` | Optional due-by month, `YYYY-MM`. The task is due at the end of that month. If both are set, `due` wins. |
-| `status` | `todo`, `in-progress`, or `done`. |
+| `status` | `todo` (not started), `researching`, `contacted`, `booked`, `done`, or the older `in-progress`. Booked and done are complete. |
 | `notes` | Plain text. Line breaks are kept. |
 | `vendorName` | Optional. `null` means not chosen yet. |
 | `vendorUrl` | Optional `https://` link, or `null`. |
-| `cost` | Optional number, or `null`. |
+| `vendorPhone` | Optional business phone, or `null`. Do not put a personal number in this public repo. |
+| `cost` | Optional quoted cost as a number, or `null`. |
+| `deposit` | Optional deposit already paid, as a number, or `null`. |
+| `balanceDue` | Optional `YYYY-MM-DD` date the remaining balance is due, or `null`. |
 
 A task appears in the vendor table when it includes `vendorName`, `vendorUrl`, or `cost` (use `null` while the vendor is unknown). Omit all three for tasks that are decisions rather than bookings. The **Known costs** total adds only numeric `cost` values and skips blanks.
 
@@ -132,7 +147,7 @@ Within a phase, tasks stay in the order they appear in the file. To reorder, mov
 
 The seed list follows a common vendor booking order (venue, planner, attire, photo and video, catering, officiant, MC and music, hair and makeup, flowers, cake, invitations, transportation, then ceremony details), placed into those windows. The Vietnam trip in September 2027 is for the pre-wedding photo shoot, fittings, and printing invitations.
 
-A task is **overdue** when its due date, or the last day of its due month, is before today and the status on screen is not `done`. Overdue cards say **Overdue**; color is not the only signal.
+A task is **overdue** when its due date, or the last day of its due month, is before today and the status on screen is not `booked` or `done`. Overdue cards say **Overdue**; color is not the only signal.
 
 ## Files
 
@@ -141,8 +156,9 @@ A task is **overdue** when its due date, or the last day of its due month, is be
 | `index.html` | Page shell |
 | `styles.css` | Layout and the lacquer, gold, and ivory styling |
 | `app.js` | Loads the JSON and draws the page |
-| `logic.js` | Date, progress, and vendor rules |
+| `logic.js` | Date, progress, vendor, and local-edit rules |
 | `data/wedding.json` | The plan |
+| `docs/UPDATES.md` | How an assistant applies a tracker-update issue |
 | `favicon.svg` | Tab icon |
 | `.nojekyll` | Disables Jekyll on GitHub Pages |
 
