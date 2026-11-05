@@ -5,13 +5,21 @@
     "celebration": "A Vietnamese–American wedding with a traditional tea ceremony (lễ gia tiên) and a reception.",
     "place": "Near Orange and Beaumont, Texas",
     "idealDate": "2028-03-18",
-    "candidateDates": ["2028-02-05", "2028-02-19", "2028-03-18"],
+    "candidateDates": [
+      "2028-02-05",
+      "2028-02-19",
+      "2028-03-18"
+    ],
     "selectedDate": null,
     "guestCount": null,
-    "budget": null,
+    "budget": 50000,
     "currency": "USD",
     "tetDate": "2028-01-26",
-    "tetLabel": "Tết Nguyên Đán"
+    "tetLabel": "Tết Nguyên Đán",
+    "planningGuestRange": [
+      175,
+      250
+    ]
   },
   "phases": [
     {
@@ -71,19 +79,23 @@
       "phase": "now",
       "dueMonth": "2027-01",
       "status": "todo",
-      "notes": "Look near Orange and Beaumont, Texas. The venue needs to allow outside catering from a local Vietnamese caterer. Ask about timing for lễ gia tiên if you might hold the tea ceremony in the same place.",
+      "notes": "Look near Orange and Beaumont, Texas. The venue needs to allow a Vietnamese caterer, or say so if catering is in-house only. Do not assume bring-your-own alcohol: many halls do not allow it, and some allow it only with a licensed bartender. The tea ceremony is at home, so the hall is for the reception.",
       "vendorName": null,
       "vendorUrl": null,
-      "cost": null
+      "cost": null,
+      "byoAlcohol": "unknown",
+      "outsideCatering": "unknown"
     },
     {
       "id": "venue-tea",
-      "title": "Decide the tea ceremony location",
+      "title": "Host the tea ceremony at home",
       "category": "Venue",
       "phase": "now",
       "dueMonth": "2027-01",
       "status": "todo",
-      "notes": "Decide where lễ gia tiên will happen: a family home or the reception venue. The choice sets the altar, the guest flow, and whether you need cars between the two parts of the day."
+      "notes": "Lễ gia tiên will be at one of the couple's homes, not at the reception venue. There is no venue rental. Plan the backdrop, the ancestor altar, flowers, extra chairs and tables for family, the tea set, and the mâm quả trays. The photographer covers the home, and cars are needed between the home and the reception.",
+      "byoAlcohol": "yes",
+      "outsideCatering": "yes"
     },
     {
       "id": "catering",
@@ -116,7 +128,7 @@
       "phase": "early-2027",
       "dueMonth": "2027-03",
       "status": "todo",
-      "notes": "Local coverage for the wedding day, both the tea ceremony and the reception. The September 2027 pre-wedding shoot in Vietnam is a separate booking.",
+      "notes": "Coverage starts at the home tea ceremony and continues through the reception. The September 2027 pre-wedding shoot in Vietnam is a separate booking.",
       "vendorName": null,
       "vendorUrl": null,
       "cost": null
@@ -158,6 +170,18 @@
       "cost": null
     },
     {
+      "status": "researching",
+      "notes": "Look for a student or amateur saxophonist for the ceremony entrance and cocktail hour. A short set can complement the DJ or let you book fewer DJ hours. Budget about $200–$500 for an hour, as an estimate, plus travel to Orange or Beaumont.",
+      "id": "sax",
+      "title": "Music: student sax player (e.g. cocktail hour / ceremony entrance)",
+      "category": "Music & MC",
+      "phase": "early-2027",
+      "dueMonth": "2027-03",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
       "id": "tasting",
       "title": "Schedule a catering tasting",
       "category": "Catering",
@@ -185,10 +209,43 @@
       "phase": "spring-summer-2027",
       "dueMonth": "2027-08",
       "status": "todo",
-      "notes": "Include the tea ceremony altar, reception flowers, and anything the families will wear or carry.",
+      "notes": "The tea ceremony is at a family home, so include that backdrop, the ancestor altar, and flowers there, plus reception flowers and anything the families will wear or carry.",
       "vendorName": null,
       "vendorUrl": null,
       "cost": null
+    },
+    {
+      "status": "todo",
+      "notes": "The reception venue may include tables and chairs. Still price linens, china, and the chairs and tables for family at the home tea ceremony, for 175–250 reception guests.",
+      "id": "rentals",
+      "title": "Book tables, chairs, linens, and china",
+      "category": "Rentals",
+      "phase": "spring-summer-2027",
+      "dueMonth": "2027-08",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "status": "todo",
+      "notes": "Do not assume the reception allows bring-your-own alcohol. Price both a BYO bar with a licensed bartender, where the venue allows it, and a venue bar package. Confirm the rule and the insurance in writing.",
+      "id": "bar",
+      "title": "Book bartenders and plan the bar",
+      "category": "Bar",
+      "phase": "spring-summer-2027",
+      "dueMonth": "2027-08",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "status": "todo",
+      "notes": "Decide on 5 or 7 mâm quả trays for the home tea ceremony. Each side needs that many carriers or receivers, traditionally unmarried young relatives or friends. With 4 groomsmen and 4 bridesmaids, 5 trays means one extra person per side and 7 trays means three. Get their measurements before the Vietnam trip so their áo dài can be made or rented.",
+      "id": "tray-carriers",
+      "title": "Choose tray carriers for lễ gia tiên",
+      "category": "Ceremony",
+      "phase": "spring-summer-2027",
+      "dueMonth": "2027-07"
     },
     {
       "id": "attire-vietnam",
@@ -257,7 +314,19 @@
       "phase": "autumn-2027",
       "dueMonth": "2027-11",
       "status": "todo",
-      "notes": "Arrange rides for the couple and for elders, especially if the tea ceremony and the reception are in different places.",
+      "notes": "The tea ceremony and the reception are in different places. Arrange rides for the couple and for elders between the home and the reception.",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "status": "todo",
+      "notes": "Hold a courtesy block near the reception for out-of-town family, in time for a March 18, 2028 wedding. Ask for no-penalty attrition. Guest rooms are paid by the guests.",
+      "id": "hotel-block",
+      "title": "Set up a hotel room block",
+      "category": "Guests",
+      "phase": "autumn-2027",
+      "dueMonth": "2027-11",
       "vendorName": null,
       "vendorUrl": null,
       "cost": null
@@ -270,6 +339,39 @@
       "due": "2028-01-16",
       "status": "todo",
       "notes": "Mail invitations in mid-January 2028, about nine weeks before the ideal date of March 18. January 16 is the due date."
+    },
+    {
+      "status": "todo",
+      "notes": "The trip is the weekend of January 15, 2028, early to mid January and before Tết on January 26. Options run from a Big Thicket day hike to a 3-day Ouachita backpacking trip. Book any cabins or permits in fall 2027. The group pays its own way; this is not part of the wedding total.",
+      "id": "bachelor",
+      "title": "Plan the bachelor hiking trip",
+      "category": "Parties",
+      "phase": "final",
+      "due": "2028-01-15",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "status": "todo",
+      "notes": "A separate weekend from the hiking trip, on January 8, 2028, still before Tết on January 26. New Orleans is the easy drive. Book lodging in fall 2027. The group pays its own way; this is not part of the wedding total.",
+      "id": "bachelorette",
+      "title": "Plan the bachelorette weekend",
+      "category": "Parties",
+      "phase": "final",
+      "due": "2028-01-08",
+      "vendorName": null,
+      "vendorUrl": null,
+      "cost": null
+    },
+    {
+      "status": "todo",
+      "notes": "Texas licenses are valid for 90 days, with a 72-hour wait after issue unless a Twogether in Texas course certificate waives the wait and cuts the fee. March 2 keeps the same lead time before March 18 that January 20 had before a February 5 date.",
+      "id": "license",
+      "title": "Get the marriage license",
+      "category": "Planning",
+      "phase": "final",
+      "due": "2028-03-02"
     },
     {
       "id": "elders",
@@ -299,7 +401,7 @@
       "phase": "final",
       "due": "2028-02-21",
       "status": "todo",
-      "notes": "Plan the mâm quả betrothal trays: how many, what goes in them, and who will present them."
+      "notes": "Plan the mâm quả trays for the home tea ceremony: 5 or 7 is traditional, what goes in them, and who carries them. The wedding party is 4 and 4, so 5 trays needs one extra person per side and 7 trays needs three."
     },
     {
       "id": "tea-set",
@@ -327,6 +429,1348 @@
       "due": "2028-03-02",
       "status": "todo",
       "notes": "Track replies and set settings.guestCount when the number is firm. Share that count with the venue and the caterer."
+    }
+  ],
+  "weddingParty": {
+    "bridesmaids": 4,
+    "groomsmen": 4,
+    "teaCeremonyTrays": [
+      5,
+      7
+    ],
+    "summary": "Plan on 4 bridesmaids and 4 groomsmen. For lễ gia tiên, the number of mâm quả trays is odd (5 or 7 is common), and each tray has a carrier on the groom's side and a matching receiver on the bride's side, traditionally unmarried young relatives or friends. With 5 trays, each side needs 5 people, so the 4 + 4 party plus one cousin per side covers it. With 7 trays, add 3 per side. Carriers usually wear matching áo dài and receive lì xì.",
+    "sources": [
+      {
+        "label": "Nicole Bridal: trays are 3, 5, 7, 9 or 11, carried by unmarried young people",
+        "url": "https://nicolebridal.vn/en/?p=30009"
+      },
+      {
+        "label": "USC Folklore Archives: the same number of women receive the baskets",
+        "url": "https://folklore.usc.edu/?p=10336"
+      }
+    ]
+  },
+  "budgetEstimate": {
+    "asOf": "2026-11-05",
+    "guestCounts": [
+      175,
+      250
+    ],
+    "contingencyPercent": {
+      "low": 10,
+      "high": 15
+    },
+    "summary": "Planning ranges for a reception near Orange and Beaumont, with the tea ceremony at home. Wedding-day lines include a 10–15% allowance for tax, tips, and fees. Bachelor and bachelorette costs are shown apart and are not in the wedding total. Figures are estimates unless marked Listed.",
+    "lines": [
+      {
+        "id": "venue",
+        "item": "Reception venue rental",
+        "category": "Venue",
+        "taskId": "venue-reception",
+        "group": "wedding",
+        "flat": {
+          "low": 3000,
+          "high": 8000
+        },
+        "basis": "Flat rental for the reception only. The tea ceremony is at a family home, so that place costs nothing. The low end is the Brown Estate's published $3,000 reception fee. The high end leaves room for a larger hall, extra hours, and security.",
+        "priceType": "listed",
+        "sources": [
+          {
+            "label": "Brown Estate fees (Lamar State College Orange)",
+            "url": "https://lsco.edu/brown-estate/weddings.html"
+          }
+        ]
+      },
+      {
+        "id": "tea-place",
+        "item": "Tea ceremony place",
+        "category": "Venue",
+        "taskId": "venue-tea",
+        "group": "wedding",
+        "flat": {
+          "low": 0,
+          "high": 0
+        },
+        "basis": "The tea ceremony is at one of the couple's homes. There is no venue rental. Decor, rentals, flowers, and the photographer are on their own lines.",
+        "priceType": "estimate"
+      },
+      {
+        "id": "catering",
+        "item": "Vietnamese multi-course dinner",
+        "category": "Catering",
+        "taskId": "catering",
+        "group": "wedding",
+        "perGuest": {
+          "low": 40,
+          "high": 85
+        },
+        "basis": "Per guest, food plus staff, service, and travel if the kitchen is in Houston. A Houston Vietnamese restaurant prices a 10-person family dinner around $30–$37 a head before off-site staffing. The Knot's national wedding-dinner average sits higher, so the high end is $85. The $50k plan uses a family-style banquet near the low end. Estimate.",
+        "priceType": "estimate",
+        "sources": [
+          {
+            "label": "Vinh Hoa (Houston) family dinner menu",
+            "url": "https://www.vinhhoahouston.com/"
+          },
+          {
+            "label": "The Knot 2026 Real Weddings Study, via Walnut",
+            "url": "https://walnutinvest.com/stats/wedding-cost-statistics"
+          }
+        ]
+      },
+      {
+        "id": "rentals",
+        "item": "Tables, chairs, linens, china",
+        "category": "Rentals",
+        "taskId": "rentals",
+        "group": "wedding",
+        "perGuest": {
+          "low": 8,
+          "high": 25
+        },
+        "basis": "Per guest. Some halls include reception tables and chairs, so you may only rent linens and china there. The home tea ceremony still needs chairs and tables for family. Texas rental listings start around $7–$8 a table and $3–$4 a chair. Estimate.",
+        "priceType": "estimate",
+        "sources": [
+          {
+            "label": "Bella Wedding Rentals price list (WeddingWire)",
+            "url": "https://weddingwire.com/biz/bella-weddings-hurst/42ca9bb668dfbfae.html"
+          }
+        ]
+      },
+      {
+        "id": "bar",
+        "item": "Bar option A: BYO alcohol plus licensed bartenders",
+        "category": "Bar",
+        "taskId": "bar",
+        "group": "wedding",
+        "perGuest": {
+          "low": 18,
+          "high": 40
+        },
+        "basis": "Per guest, only where the venue allows bring-your-own alcohol and requires a licensed bartender. You buy the alcohol. This is not the default: many venues do not allow BYO. Estimate.",
+        "priceType": "estimate",
+        "sources": [
+          {
+            "label": "The Knot 2026 Real Weddings Study, via Walnut",
+            "url": "https://walnutinvest.com/stats/wedding-cost-statistics"
+          }
+        ],
+        "notes": "See the venue bar package on the $50k plan. The cautious total uses the higher of the two."
+      },
+      {
+        "id": "venue-bar",
+        "item": "Bar option B: venue bar package",
+        "category": "Bar",
+        "taskId": "bar",
+        "group": "wedding",
+        "perGuest": {
+          "low": 25,
+          "high": 45
+        },
+        "basis": "Per guest estimate for a venue or in-house open bar when BYO is not allowed. No package was copied from a local contract. This is an estimate, often higher than buying alcohol yourselves.",
+        "priceType": "estimate",
+        "notes": "The $50k plan shows this beside the BYO option and uses the higher one in the cautious total."
+      },
+      {
+        "id": "cake",
+        "item": "Cake and desserts",
+        "category": "Cake",
+        "taskId": "cake",
+        "group": "wedding",
+        "perGuest": {
+          "low": 3,
+          "high": 6
+        },
+        "basis": "Per guest. Texas buttercream cakes are commonly about $3–$5 a slice; fondant and custom work cost more.",
+        "priceType": "estimate",
+        "sources": [
+          {
+            "label": "WeddingWire Texas cake pricing",
+            "url": "https://www.weddingwire.com/c/tx-texas/amarillo/wedding-cakes/2-vendors.html"
+          }
+        ]
+      },
+      {
+        "id": "photo-video",
+        "item": "Photographer and videographer, tea ceremony through reception",
+        "category": "Photo & video",
+        "taskId": "photo-dayof",
+        "group": "wedding",
+        "flat": {
+          "low": 4000,
+          "high": 9000
+        },
+        "basis": "Flat. Coverage starts at the home tea ceremony and runs through the reception, often 10 hours. Houston photo packages run about $2,000–$5,500; video adds about $1,500–$3,500.",
+        "priceType": "listed",
+        "sources": [
+          {
+            "label": "Photos by Sydney Tx packages (Zola)",
+            "url": "https://www.zola.com/wedding-vendors/wedding-photographers/photos-by-sydney-tx"
+          },
+          {
+            "label": "Nghia Tran Photography packages (Zola)",
+            "url": "https://zola.com/wedding-vendors/wedding-photographers/nghia-tran-photography"
+          }
+        ]
+      },
+      {
+        "id": "dj",
+        "item": "Bilingual DJ",
+        "category": "Music & MC",
+        "taskId": "music",
+        "group": "wedding",
+        "flat": {
+          "low": 1200,
+          "high": 3000
+        },
+        "basis": "Flat for a bilingual DJ. A Houston Vietnamese–English DJ lists about $900–$2,500 before travel. A student sax set for cocktail hour can shorten this booking. The $50k plan allocates less than a full-night low for that reason.",
+        "priceType": "listed",
+        "sources": [
+          {
+            "label": "DJ Houston TX Pros on GigSalad",
+            "url": "https://gigsalad.com/djhoustontxpros_houston"
+          }
+        ]
+      },
+      {
+        "id": "sax",
+        "item": "Student saxophone, cocktail hour or ceremony entrance",
+        "category": "Music & MC",
+        "taskId": "sax",
+        "group": "wedding",
+        "flat": {
+          "low": 200,
+          "high": 500
+        },
+        "basis": "Estimate for a student or amateur, about an hour, plus local travel. GigSalad's national one-hour saxophone range, updated November 2026, runs about $200–$600. A 2026 guide puts a student ceremony quote around $400–$700, well under professional cocktail-hour rates of about $950–$1,600. A short set can cover the entrance and cocktail hour so the DJ books fewer hours.",
+        "priceType": "estimate",
+        "sources": [
+          {
+            "label": "GigSalad national saxophone pricing, updated November 2026",
+            "url": "https://www.gigsalad.com/pricing/Solo-Musicians/Saxophone-Player"
+          },
+          {
+            "label": "Sax Player USA 2026 guide: student quotes sit below professional wedding rates",
+            "url": "https://saxplayerusa.com/blog/wedding-saxophonist-cost"
+          }
+        ]
+      },
+      {
+        "id": "mc",
+        "item": "Thank-you gift for Tuấn (MC)",
+        "category": "Music & MC",
+        "taskId": "mc",
+        "group": "wedding",
+        "flat": {
+          "low": 200,
+          "high": 500
+        },
+        "basis": "Flat placeholder for a gift. No fee assumed.",
+        "priceType": "estimate",
+        "sources": []
+      },
+      {
+        "id": "officiant",
+        "item": "Officiant",
+        "category": "Ceremony",
+        "taskId": "officiant",
+        "group": "wedding",
+        "flat": {
+          "low": 300,
+          "high": 800
+        },
+        "basis": "Flat estimate. Drop it if the tea ceremony is the only rite.",
+        "priceType": "estimate",
+        "sources": []
+      },
+      {
+        "id": "planner",
+        "item": "Planner or day-of coordinator",
+        "category": "Planner",
+        "taskId": "planner",
+        "group": "wedding",
+        "flat": {
+          "low": 1000,
+          "high": 4000
+        },
+        "basis": "Flat. Day-of coordination commonly runs $800–$1,700. Partial planning for a two-part day costs more.",
+        "priceType": "estimate",
+        "sources": [
+          {
+            "label": "Thumbtack wedding planner cost guide",
+            "url": "https://www.thumbtack.com/tx/conroe/wedding-planners"
+          }
+        ]
+      },
+      {
+        "id": "flowers",
+        "item": "Flowers and decor, home tea ceremony and reception",
+        "category": "Flowers & decor",
+        "taskId": "florist",
+        "group": "wedding",
+        "flat": {
+          "low": 1500,
+          "high": 3000
+        },
+        "perGuest": {
+          "low": 10,
+          "high": 25
+        },
+        "basis": "Flat for the home backdrop, ancestor altar, and bouquets, plus per guest for reception centerpieces. The tea ceremony is not at the reception hall. The Knot's national floral average is about $2,700. Estimate.",
+        "priceType": "estimate",
+        "sources": [
+          {
+            "label": "The Knot 2026 Real Weddings Study, via Walnut",
+            "url": "https://walnutinvest.com/stats/wedding-cost-statistics"
+          }
+        ]
+      },
+      {
+        "id": "hmu",
+        "item": "Hair and makeup",
+        "category": "Beauty",
+        "taskId": "hmu",
+        "group": "wedding",
+        "flat": {
+          "low": 1400,
+          "high": 3200
+        },
+        "basis": "Flat. The bride's two looks (áo dài, then gown) plus 4 bridesmaids and 2 mothers at about $150–$250 each. Houston packages start around $425 for the bride.",
+        "priceType": "estimate",
+        "sources": [
+          {
+            "label": "Makeup by Vicki packages (WeddingWire)",
+            "url": "https://m.weddingwire.com/biz/makeup-by-vicki-spring/43cfa2e903dcbef6"
+          }
+        ]
+      },
+      {
+        "id": "attire",
+        "item": "Gown, áo dài, suit, and tray-carrier áo dài (Vietnam)",
+        "category": "Attire",
+        "taskId": "attire-vietnam",
+        "group": "wedding",
+        "flat": {
+          "low": 900,
+          "high": 2500
+        },
+        "basis": "Flat. A custom bridal áo dài in Ho Chi Minh City runs about VND 7.5–15 million (roughly $300–$600); a groom's áo dài about VND 0.6–1.1 million; carrier áo dài rent for about VND 200–250 thousand each. A custom gown runs about $200–$600 and a groom's suit about $200–$400 from Hội An tailors.",
+        "priceType": "listed",
+        "sources": [
+          {
+            "label": "Nicole Bridal áo dài price table",
+            "url": "https://nicolebridal.vn/nicolebridal-wedding-aodai-customade-tphcm"
+          },
+          {
+            "label": "Áo Dài Thím Ba price table (Mytour)",
+            "url": "https://mytour.vn/en/blog/bai-viet/top-11-tailor-shops-for-wedding-ao-dai-in-ho-chi-minh-city-mytour.html"
+          },
+          {
+            "label": "Nathan Tailors wedding party pricing",
+            "url": "https://www.nathantailors.com/vi/blog/dress-entire-wedding-party-under-2000"
+          }
+        ],
+        "notes": "VND converted at roughly 25,000–26,000 per US dollar. Check the rate before you pay."
+      },
+      {
+        "id": "alterations",
+        "item": "Final alterations at home",
+        "category": "Attire",
+        "taskId": "alterations",
+        "group": "wedding",
+        "flat": {
+          "low": 200,
+          "high": 600
+        },
+        "basis": "Flat estimate.",
+        "priceType": "estimate",
+        "sources": []
+      },
+      {
+        "id": "prewedding",
+        "item": "Pre-wedding shoot in Vietnam",
+        "category": "Photo & video",
+        "taskId": "photo-vietnam",
+        "group": "wedding",
+        "flat": {
+          "low": 300,
+          "high": 900
+        },
+        "basis": "Flat. Saigon studios list studio packages from about VND 6.5–8.9 million and outdoor albums from about VND 8.5–18.9 million. Trip costs are not included.",
+        "priceType": "listed",
+        "sources": [
+          {
+            "label": "TheSmartLocal: Saigon wedding photo studios",
+            "url": "https://thesmartlocal.com/vietnam/saigon-wedding-photography-studios/"
+          }
+        ],
+        "notes": "The article's prices may be a few years old."
+      },
+      {
+        "id": "invitations",
+        "item": "Bilingual invitations: printing and postage",
+        "category": "Invitations",
+        "taskId": "invitations-print",
+        "group": "wedding",
+        "flat": {
+          "low": 100,
+          "high": 200
+        },
+        "perGuest": {
+          "low": 1,
+          "high": 2.5
+        },
+        "basis": "Flat plus per guest, assuming about one invitation for every two to three guests. Estimate.",
+        "priceType": "estimate",
+        "sources": []
+      },
+      {
+        "id": "transport",
+        "item": "Transportation for the couple and elders",
+        "category": "Transportation",
+        "taskId": "transport",
+        "group": "wedding",
+        "flat": {
+          "low": 600,
+          "high": 1800
+        },
+        "basis": "Flat. A few hours of a shuttle or sprinter van between the home tea ceremony and the reception, plus elders. Estimate.",
+        "priceType": "estimate",
+        "sources": []
+      },
+      {
+        "id": "lion",
+        "item": "Lion dance (optional)",
+        "category": "Ceremony",
+        "taskId": "lion",
+        "group": "wedding",
+        "flat": {
+          "low": 800,
+          "high": 2000
+        },
+        "basis": "Flat estimate including travel from Houston. None of the Houston troupes found publish rates, so ask for quotes.",
+        "priceType": "estimate",
+        "sources": []
+      },
+      {
+        "id": "tea",
+        "item": "Tea ceremony: trays, contents, tea set, lì xì for carriers",
+        "category": "Ceremony",
+        "taskId": "mam-qua",
+        "group": "wedding",
+        "flat": {
+          "low": 800,
+          "high": 2400
+        },
+        "basis": "Flat estimate for 5–7 mâm quả trays (fruit, cakes, tea, wine, betel), a tea set, and lì xì for the carriers. The ceremony is at home, so this is goods and gifts, not a venue fee.",
+        "priceType": "estimate",
+        "sources": []
+      },
+      {
+        "id": "gifts",
+        "item": "Wedding party and carrier gifts",
+        "category": "Guests",
+        "taskId": "tray-carriers",
+        "group": "wedding",
+        "flat": {
+          "low": 400,
+          "high": 1200
+        },
+        "basis": "Flat estimate.",
+        "priceType": "estimate",
+        "sources": []
+      },
+      {
+        "id": "favors",
+        "item": "Guest favors",
+        "category": "Guests",
+        "taskId": "rsvps",
+        "group": "wedding",
+        "perGuest": {
+          "low": 1,
+          "high": 3
+        },
+        "basis": "Per guest. Estimate.",
+        "priceType": "estimate",
+        "sources": []
+      },
+      {
+        "id": "license",
+        "item": "Marriage license",
+        "category": "Planning",
+        "taskId": "license",
+        "group": "wedding",
+        "flat": {
+          "low": 21,
+          "high": 82
+        },
+        "basis": "Texas counties charge about $71–$82. A Twogether in Texas course certificate takes $60 off and waives the 72-hour wait.",
+        "priceType": "listed",
+        "sources": [
+          {
+            "label": "Parker County fee schedule",
+            "url": "https://www.parkercountytx.gov/DocumentCenter/View/4175"
+          },
+          {
+            "label": "Bexar County marriage licenses",
+            "url": "https://www.bexar.org/2957/Marriage-Licenses"
+          }
+        ]
+      },
+      {
+        "id": "suite",
+        "item": "Wedding night room",
+        "category": "Planning",
+        "taskId": "hotel-block",
+        "group": "wedding",
+        "flat": {
+          "low": 150,
+          "high": 350
+        },
+        "basis": "Flat estimate. Guest room blocks are usually paid by guests.",
+        "priceType": "estimate",
+        "sources": []
+      },
+      {
+        "id": "rehearsal",
+        "item": "Rehearsal or family dinner",
+        "category": "Planning",
+        "taskId": null,
+        "group": "optional",
+        "flat": {
+          "low": 1000,
+          "high": 3000
+        },
+        "basis": "Flat. The Knot's national average is about $2,800.",
+        "priceType": "estimate",
+        "sources": [
+          {
+            "label": "MoneyLion summary of The Knot 2026 study",
+            "url": "https://moneylion.com/trending/money/wedding-costs-from-knot-study-will-make-you-just-elope"
+          }
+        ]
+      },
+      {
+        "id": "rings",
+        "item": "Wedding bands",
+        "category": "Attire",
+        "taskId": null,
+        "group": "optional",
+        "flat": {
+          "low": 600,
+          "high": 3000
+        },
+        "basis": "Flat estimate. Skip if already bought.",
+        "priceType": "estimate",
+        "sources": []
+      },
+      {
+        "id": "bachelor",
+        "item": "Bachelor hiking trip (groom + 4)",
+        "category": "Parties",
+        "taskId": "bachelor",
+        "group": "parties",
+        "flat": {
+          "low": 500,
+          "high": 4500
+        },
+        "basis": "Five people at $100–$900 each: a Big Thicket day hike and dinner at the low end, a 3-day Ouachita backpacking trip with lodging and gas at the high end. Estimate.",
+        "priceType": "estimate",
+        "sources": []
+      },
+      {
+        "id": "bachelorette",
+        "item": "Bachelorette weekend (bride + 4)",
+        "category": "Parties",
+        "taskId": "bachelorette",
+        "group": "parties",
+        "flat": {
+          "low": 2000,
+          "high": 5000
+        },
+        "basis": "Five people at $400–$1,000 each, the common range for a drive-to weekend such as New Orleans.",
+        "priceType": "estimate",
+        "sources": [
+          {
+            "label": "Fash: bachelorette party costs (cites The Knot)",
+            "url": "https://fash.com/costs/average-bachelorette-party-cost"
+          }
+        ]
+      }
+    ],
+    "target": 50000,
+    "ceilings": [
+      175,
+      200,
+      250
+    ],
+    "plan": {
+      "id": "hit-50k",
+      "label": "Plan to hit $50k",
+      "guests": 200,
+      "summary": "One way to aim at $50,000 for about 200 guests: family-style Vietnamese catering, Vietnam-sourced attire and photos, a student sax set, no lion dance, and no rental for the home tea ceremony. The bar is not assumed to be bring-your-own. Both bar options are priced, and the cautious total uses the higher one. Every dollar here is an estimate unless the matching line is marked Listed.",
+      "lines": [
+        {
+          "lineId": "venue",
+          "amount": 3000,
+          "choice": "Low published reception fee. Tea ceremony rental is $0."
+        },
+        {
+          "lineId": "tea-place",
+          "amount": 0,
+          "choice": "Home. No rental."
+        },
+        {
+          "lineId": "catering",
+          "amount": 8000,
+          "choice": "Vietnamese family-style banquet near $40 a guest. Estimate."
+        },
+        {
+          "lineId": "rentals",
+          "amount": 1600,
+          "choice": "Linens and china, plus home ceremony chairs. Low end. Estimate."
+        },
+        {
+          "lineId": "cake",
+          "amount": 600,
+          "choice": "Buttercream, low end. Estimate."
+        },
+        {
+          "lineId": "photo-video",
+          "amount": 4000,
+          "choice": "One team from the home ceremony through the reception. Low end."
+        },
+        {
+          "lineId": "dj",
+          "amount": 900,
+          "choice": "Shorter booking because the sax covers cocktail hour. Below the full-night low on purpose."
+        },
+        {
+          "lineId": "sax",
+          "amount": 200,
+          "choice": "Student or amateur, about an hour. Estimate."
+        },
+        {
+          "lineId": "mc",
+          "amount": 200,
+          "choice": "A gift, not a fee. Estimate."
+        },
+        {
+          "lineId": "officiant",
+          "amount": 300,
+          "choice": "Keep a modest fee in case you want vows beside the tea ceremony. Estimate."
+        },
+        {
+          "lineId": "planner",
+          "amount": 1000,
+          "choice": "Day-of coordinator at the low end. Estimate."
+        },
+        {
+          "lineId": "flowers",
+          "amount": 3500,
+          "choice": "Home altar, backdrop, and a lean reception. This is the researched low, not a guess below it."
+        },
+        {
+          "lineId": "hmu",
+          "amount": 1400,
+          "choice": "Bride's two looks plus a small party. Low end. Estimate."
+        },
+        {
+          "lineId": "attire",
+          "amount": 900,
+          "choice": "Vietnam-sourced gown, áo dài, and suit. Low end of the listed range."
+        },
+        {
+          "lineId": "alterations",
+          "amount": 200,
+          "choice": "At home after the Vietnam fittings. Estimate."
+        },
+        {
+          "lineId": "prewedding",
+          "amount": 300,
+          "choice": "Vietnam studio package. Trip costs are not in this line."
+        },
+        {
+          "lineId": "invitations",
+          "amount": 300,
+          "choice": "Printed in Vietnam, mailed from home. Estimate."
+        },
+        {
+          "lineId": "transport",
+          "amount": 600,
+          "choice": "Home to reception for the couple and elders. Estimate."
+        },
+        {
+          "lineId": "lion",
+          "amount": 0,
+          "choice": "Left out of the $50k plan. Add it only if the total still fits."
+        },
+        {
+          "lineId": "tea",
+          "amount": 800,
+          "choice": "Trays, tea set, and lì xì. Not a venue fee. Estimate."
+        },
+        {
+          "lineId": "gifts",
+          "amount": 400,
+          "choice": "Party and extra carriers. Estimate."
+        },
+        {
+          "lineId": "favors",
+          "amount": 200,
+          "choice": "About $1 a guest. Estimate."
+        },
+        {
+          "lineId": "license",
+          "amount": 21,
+          "choice": "County fee. Lower with a Twogether certificate."
+        },
+        {
+          "lineId": "suite",
+          "amount": 150,
+          "choice": "One wedding-night room. Guest blocks are paid by guests. Estimate."
+        }
+      ],
+      "barOptions": [
+        {
+          "id": "byo",
+          "lineId": "bar",
+          "label": "BYOA + licensed bartender",
+          "amount": 3600,
+          "priceType": "estimate",
+          "basis": "Low end of the BYO estimate at 200 guests. Use only if that venue allows it."
+        },
+        {
+          "id": "venue-package",
+          "lineId": "venue-bar",
+          "label": "Venue bar package",
+          "amount": 5000,
+          "priceType": "estimate",
+          "basis": "Low end of a $25–$45 a guest venue-bar estimate at 200 guests. Not a published local package."
+        }
+      ]
+    }
+  },
+  "vendorOptions": [
+    {
+      "id": "v-event-centre",
+      "category": "Venue",
+      "taskId": "venue-reception",
+      "name": "Downtown Event Centre",
+      "url": "https://discoverbeaumont.com/downtown-event-centre-info/",
+      "base": "Beaumont",
+      "pricing": "Wedding-Spot's starter estimate is about $3,900 for 50 guests, food included. Ask the city for the rental-only rate. Rental covers ceremony and reception; security is extra.",
+      "priceType": "quote",
+      "fit": "The city's venue comparison lists about 350 banquet seats, so 250 fits. Wedding Spot says approved outside caterers are allowed, alcohol is BYO only with a licensed bartender, and tables and chairs are included.",
+      "caveat": "No open flames. That restriction applies only if a rite with candles or incense is held at this venue. The tea ceremony is planned at a family home, so the altar there is not under this rule. Music ends by 11 pm. Wedding Spot's roughly $3,900 figure for 50 guests includes food in their starter estimate; ask the city for the rental-only rate.",
+      "source": {
+        "label": "City of Beaumont venue comparison (350 banquet seats)",
+        "url": "https://beaumonteventstx.com/venue-comparison/"
+      },
+      "byoAlcohol": "bartender",
+      "outsideCatering": "approved",
+      "policySource": {
+        "label": "Wedding Spot restrictions for Downtown Event Centre",
+        "url": "https://www.wedding-spot.com/venue/12980/downtown-event-centre/"
+      }
+    },
+    {
+      "id": "v-belle-oaks",
+      "category": "Venue",
+      "taskId": "venue-reception",
+      "name": "The Venue at Belle Oaks",
+      "url": "https://www.thevenueatbelleoaks.com/",
+      "base": "Beaumont (Taylor Bayou)",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "About 6,500 sq ft ballroom, plus an open-air pavilion. The Knot describes a prep kitchen for your own caterer and a full-service bar, with tables and chairs included for a large guest count.",
+      "caveat": "A 2022 sale listing is no longer advertised (off market on Land and Farm; LoopNet says it is no longer advertised). The venue's own site was still taking wedding inquiries when checked in November 2026. Confirm it will host events in 2028. BYO alcohol is not stated; do not assume it.",
+      "source": {
+        "label": "Venue site, still booking weddings",
+        "url": "https://www.thevenueatbelleoaks.com/"
+      },
+      "byoAlcohol": "unknown",
+      "outsideCatering": "yes",
+      "policySource": {
+        "label": "The Knot: prep kitchen for your caterer and a full-service bar",
+        "url": "https://www.theknot.com/marketplace/the-venue-at-belle-oaks-beaumont-tx-2077445"
+      }
+    },
+    {
+      "id": "v-botanical",
+      "category": "Venue",
+      "taskId": "venue-reception",
+      "name": "Beaumont Botanical Garden Center (Tyrrell Park)",
+      "url": "https://www.beaumontcvb.com/listing/beaumont-botanical-garden-center/827/",
+      "base": "Beaumont",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Indoor center with gardens and a commercial kitchen for caterers.",
+      "caveat": "Holds up to 250, which is tight at the top of your range.",
+      "byoAlcohol": "unknown",
+      "outsideCatering": "yes",
+      "policySource": {
+        "label": "Beaumont CVB listing",
+        "url": "https://www.beaumontcvb.com/listing/beaumont-botanical-garden-center/827/"
+      }
+    },
+    {
+      "id": "v-brown-estate",
+      "category": "Venue",
+      "taskId": "venue-reception",
+      "name": "The Brown Estate of Lamar State College Orange",
+      "url": "https://lsco.edu/brown-estate/weddings.html",
+      "base": "Orange",
+      "pricing": "$3,000 for a reception, or $3,500 for ceremony and reception, with 4 hours of event time. Extra hours are about $750 each.",
+      "priceType": "listed",
+      "fit": "Closest to Orange. Up to 300 guests, a mansion on 88 acres with a lake, and the fee includes tables, chairs, china and linens.",
+      "caveat": "Catering and bartending are billed on top. Ask whether an outside Vietnamese caterer is allowed. The page was under construction when checked.",
+      "source": {
+        "label": "Wedding-Spot listing",
+        "url": "https://www.wedding-spot.com/venue/5579/the-brown-estate-of-lamar-state-college/"
+      },
+      "byoAlcohol": "unknown",
+      "outsideCatering": "unknown",
+      "policySource": {
+        "label": "Lamar State College Orange wedding page",
+        "url": "https://lsco.edu/brown-estate/weddings.html"
+      }
+    },
+    {
+      "id": "v-reign-hills",
+      "category": "Venue",
+      "taskId": "venue-reception",
+      "name": "Reign Hills",
+      "url": "https://www.beaumontcvb.com/listing/reign-hills/2911/",
+      "base": "Beaumont outskirts",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Up to 400 guests, with chandeliers, bride and groom suites, and indoor and outdoor space.",
+      "caveat": "Catering policy not published.",
+      "byoAlcohol": "unknown",
+      "outsideCatering": "unknown",
+      "policySource": {
+        "label": "Beaumont CVB listing",
+        "url": "https://www.beaumontcvb.com/listing/reign-hills/2911/"
+      }
+    },
+    {
+      "id": "v-holiday-inn",
+      "category": "Venue",
+      "taskId": "venue-reception",
+      "name": "Holiday Inn & Suites Beaumont Plaza",
+      "url": "https://zola.com/wedding-vendors/wedding-venues/holiday-inn-suites-beaumont-plaza",
+      "base": "Beaumont",
+      "pricing": "From $1,000; in-house catering from $20 a person on off-peak dates.",
+      "priceType": "listed",
+      "fit": "Up to 600 seated, with rooms on site. Also a candidate for the guest hotel block.",
+      "caveat": "Catering is in-house, so a Vietnamese menu would have to come from their kitchen.",
+      "byoAlcohol": "unknown",
+      "outsideCatering": "no",
+      "policySource": {
+        "label": "Zola listing: in-house catering",
+        "url": "https://zola.com/wedding-vendors/wedding-venues/holiday-inn-suites-beaumont-plaza"
+      }
+    },
+    {
+      "id": "v-kim-son-ballroom",
+      "category": "Venue",
+      "taskId": "venue-reception",
+      "name": "Kim Sơn Bellaire Ballroom",
+      "url": "https://www.wedding-spot.com/venue/4298/kim-son-bellaire/",
+      "base": "Houston (Chinatown)",
+      "pricing": "$5,250–$14,000 rental for 6 hours of event time.",
+      "priceType": "listed",
+      "fit": "A Houston benchmark for a Vietnamese banquet hall with in-house Vietnamese food, up to 800 guests.",
+      "caveat": "Houston, not Orange or Beaumont. Listed only for comparison or if you move the reception.",
+      "byoAlcohol": "unknown",
+      "outsideCatering": "no",
+      "policySource": {
+        "label": "Wedding Spot: Kim Sơn Bellaire ballroom",
+        "url": "https://www.wedding-spot.com/venue/4298/kim-son-bellaire/"
+      }
+    },
+    {
+      "id": "c-kim-son",
+      "category": "Catering",
+      "taskId": "catering",
+      "name": "Kim Sơn Catering",
+      "url": "https://kimson.com/catering",
+      "base": "Houston (Alief)",
+      "pricing": "Ask for a quote on the wedding menu.",
+      "priceType": "quote",
+      "fit": "Kim Sơn's catering page advertises wedding catering and a build-your-own wedding menu. The restaurant is a Houston benchmark, not a Beaumont kitchen.",
+      "caveat": "About 90–110 miles from Beaumont and Orange. The page does not promise delivery or staffing that far. Ask for the travel fee before treating this as a local option."
+    },
+    {
+      "id": "c-vinh-hoa",
+      "category": "Catering",
+      "taskId": "catering",
+      "name": "Vinh Hoa Restaurant",
+      "url": "https://www.vinhhoahouston.com/",
+      "base": "Houston",
+      "pricing": "Menu prices a 10-person family dinner at $298–$368.",
+      "priceType": "listed",
+      "fit": "Vietnamese and Chinese banquet-style menu. Useful as a per-head benchmark.",
+      "caveat": "Off-site wedding catering not confirmed."
+    },
+    {
+      "id": "c-rise-bloom",
+      "category": "Catering",
+      "taskId": "catering",
+      "name": "Rise & Bloom Catering",
+      "url": "https://fash.com/tx/conroe/catering/",
+      "base": "Houston area",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Specializes in Vietnamese food for weddings around Houston.",
+      "caveat": "Newer listing with few reviews. Ask for a tasting and references."
+    },
+    {
+      "id": "c-vina-deli",
+      "category": "Catering",
+      "taskId": "catering",
+      "name": "Vina Deli",
+      "url": "https://www.weddingwire.com/biz/vina-deli/3b614c7a161d9d09.html",
+      "base": "Spring, TX",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Vietnamese and Chinese wedding and event catering, hot and cold menus.",
+      "caveat": "North Houston, so the drive to Orange is long."
+    },
+    {
+      "id": "c-cafe-natalie",
+      "category": "Catering",
+      "taskId": "catering",
+      "name": "Café Natalie Catering",
+      "url": "https://theweddingdossier.com/wedding-caterers/houston-tx",
+      "base": "Houston",
+      "pricing": "Pricing on request.",
+      "priceType": "quote",
+      "fit": "Full-service caterer that lists Vietnamese among its cuisines, with plated, buffet and family-style service and a bar.",
+      "caveat": "Confirm how authentic the Vietnamese menu is at a tasting."
+    },
+    {
+      "id": "c-uyens",
+      "category": "Catering",
+      "taskId": "catering",
+      "name": "Uyen's Restaurant",
+      "url": "https://visitportarthurtx.com/dine/restaurant/uyens-restaurant",
+      "base": "Port Arthur",
+      "pricing": "Ask.",
+      "priceType": "quote",
+      "fit": "Local Vietnamese restaurant in Port Arthur's Vietnamese community. Worth asking about large-party trays for the tea ceremony or a backup.",
+      "caveat": "Wedding-scale catering not confirmed."
+    },
+    {
+      "id": "c-wow",
+      "category": "Catering",
+      "taskId": "catering",
+      "name": "WOW Food Concepts",
+      "url": "https://m.weddingwire.com/biz/wow-food-concepts-catering-beaumont/bafdb604ec47cdc7",
+      "base": "Beaumont",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Caters weddings for hundreds out of the Beaumont Country Club kitchen, and is the Event Centre's in-house option.",
+      "caveat": "Not a Vietnamese caterer. Useful for staffing, American dishes or a dessert table."
+    },
+    {
+      "id": "b-naborly",
+      "category": "Catering",
+      "taskId": "catering",
+      "name": "Naborly Provisions",
+      "url": "https://zola.com/wedding-vendors/search/beaumont-tx--wedding-catering--cuisine-types-mexican",
+      "base": "Serves Beaumont",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Boutique caterer that Zola lists among the most popular in Beaumont. A local option for American dishes, appetizers or a late-night bite next to the Vietnamese dinner.",
+      "caveat": "Not a Vietnamese caterer."
+    },
+    {
+      "id": "p-mcmorris",
+      "category": "Planner",
+      "taskId": "planner",
+      "name": "McMorris Events",
+      "url": "https://zola.com/wedding-vendors/wedding-catering/mcmorris-events",
+      "base": "Beaumont",
+      "pricing": "Food from $15 a person, $2,000 minimum. Coordination quoted separately.",
+      "priceType": "listed",
+      "fit": "Full-service production company: catering, bartending, coordination and DJ/MC.",
+      "caveat": "No reviews yet. No Vietnamese wedding experience listed."
+    },
+    {
+      "id": "p-access",
+      "category": "Planner",
+      "taskId": "planner",
+      "name": "Access DJ's",
+      "url": "https://m.weddingwire.com/biz/access-djs-houston/ac00f072d1333667.html",
+      "base": "Houston",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Pairs DJ service with day-of coordination across greater Houston and adjacent counties.",
+      "caveat": "Confirm travel to Orange or Beaumont."
+    },
+    {
+      "id": "ph-min",
+      "category": "Photo & video",
+      "taskId": "photo-dayof",
+      "name": "Min Photography Studio",
+      "url": "https://www.weddingwire.com/biz/min-photography-studio/a3472b56107358f7.html",
+      "base": "Houston",
+      "pricing": "From $1,200.",
+      "priceType": "listed",
+      "fit": "Fluent in English and Vietnamese, and covers tea ceremonies and Vietnamese–American receptions.",
+      "caveat": "Ask the travel fee to Orange or Beaumont, and whether video is included."
+    },
+    {
+      "id": "ph-tnt",
+      "category": "Photo & video",
+      "taskId": "photo-dayof",
+      "name": "TnT Photography",
+      "url": "https://weddingwire.com/biz/tnt-photography-houston/6156aea02f048574.html",
+      "base": "Houston",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Thai Nguyen has photographed Houston weddings for more than 25 years."
+    },
+    {
+      "id": "ph-nghia",
+      "category": "Photo & video",
+      "taskId": "photo-dayof",
+      "name": "Nghia Tran Photography",
+      "url": "https://zola.com/wedding-vendors/wedding-photographers/nghia-tran-photography",
+      "base": "Houston",
+      "pricing": "From $2,000; a larger package is $3,600.",
+      "priceType": "listed",
+      "fit": "Houston photographer with published packages."
+    },
+    {
+      "id": "ph-sydney",
+      "category": "Photo & video",
+      "taskId": "photo-dayof",
+      "name": "Photos by Sydney Tx",
+      "url": "https://www.zola.com/wedding-vendors/wedding-photographers/photos-by-sydney-tx",
+      "base": "Houston",
+      "pricing": "Off-peak: 6 h $2,700–$3,000; 8 h $3,500–$4,000; 10 h $5,000–$5,500.",
+      "priceType": "listed",
+      "fit": "Clear hourly packages. The prices shown are off-peak; ask whether a February or March date counts.",
+      "caveat": "Travel is free only within 2 hours of Houston. Orange is right at that edge."
+    },
+    {
+      "id": "dj-pros",
+      "category": "Music & MC",
+      "taskId": "music",
+      "name": "DJ Houston TX Pros",
+      "url": "https://www.weddingwire.com/biz/djhoustontxpros/10a0eef84e661cac.html",
+      "base": "Houston",
+      "pricing": "$900–$2,500 on GigSalad.",
+      "priceType": "listed",
+      "fit": "Vietnamese wedding DJs with English, Vietnamese and Spanish MCs. They know tea ceremony flow and Vietnamese bolero, and can bundle photo and video.",
+      "caveat": "Work out handoffs with Tuấn as MC.",
+      "source": {
+        "label": "GigSalad profile",
+        "url": "https://gigsalad.com/djhoustontxpros_houston"
+      }
+    },
+    {
+      "id": "hmu-glowee",
+      "category": "Beauty",
+      "taskId": "hmu",
+      "name": "Glowee by Huong",
+      "url": "https://www.weddingwire.com/biz/glowee-by-huong/6c28d6cd9bb267b8.html",
+      "base": "Houston",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Reviews single out her Asian bridal looks. She has a team for the bridal party and mothers, and lists no travel restrictions."
+    },
+    {
+      "id": "hmu-beautymark",
+      "category": "Beauty",
+      "taskId": "hmu",
+      "name": "Beauty Mark US",
+      "url": "https://www.weddingwire.com/biz/beautymarkus/16e4eabcef230400.html",
+      "base": "Northwest Houston",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Asian-owned bridal hair and makeup team, on-site or in-studio."
+    },
+    {
+      "id": "hmu-vicki",
+      "category": "Beauty",
+      "taskId": "hmu",
+      "name": "Makeup by Vicki",
+      "url": "https://m.weddingwire.com/biz/makeup-by-vicki-spring/43cfa2e903dcbef6",
+      "base": "Spring, TX",
+      "pricing": "Packages from $425.",
+      "priceType": "listed",
+      "fit": "Any party size, and the Dream Bridal package includes a trial.",
+      "caveat": "Ask the travel fee to Orange."
+    },
+    {
+      "id": "f-azalea",
+      "category": "Flowers & decor",
+      "taskId": "florist",
+      "name": "Azalea Flower Co.",
+      "url": "https://m.weddingwire.com/biz/azalea-flower-co/882f56d5819fa18e.html",
+      "base": "Beaumont",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Local wedding florist with clean, elegant designs."
+    },
+    {
+      "id": "f-kyrissia",
+      "category": "Flowers & decor",
+      "taskId": "florist",
+      "name": "Designs by Kyrissia",
+      "url": "https://zola.com/wedding-vendors/search/beaumont-tx--wedding-florists--garden",
+      "base": "Serves Beaumont",
+      "pricing": "From $150.",
+      "priceType": "listed",
+      "fit": "Ten years of wedding florals and strong local reviews."
+    },
+    {
+      "id": "f-belladia",
+      "category": "Flowers & decor",
+      "taskId": "florist",
+      "name": "Bella Dia Floral",
+      "url": "https://weddingwire.com/biz/bella-dia-floral-katy/cc9dd7846619eabc.html",
+      "base": "Katy (serves Beaumont)",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Wedding florist that covers both Houston and Beaumont."
+    },
+    {
+      "id": "f-danna",
+      "category": "Flowers & decor",
+      "taskId": "florist",
+      "name": "WeddingsbyDanna",
+      "url": "https://www.weddingwire.com/biz/weddingsbydanna/e5d776cd5196ab39.html",
+      "base": "Houston",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Wedding decor and rentals. Ask about a gia tiên altar backdrop and tray rentals."
+    },
+    {
+      "id": "cake-sweetjoy",
+      "category": "Cake",
+      "taskId": "cake",
+      "name": "Sweet Joy Bites",
+      "url": "https://zola.com/wedding-vendors/search/beaumont-tx--wedding-cakes-desserts--bakers-dietary-nut-free",
+      "base": "Serves Beaumont",
+      "pricing": "From $450.",
+      "priceType": "listed",
+      "fit": "Wedding desserts, including brigadeiros, with strong reviews."
+    },
+    {
+      "id": "cake-alchemy",
+      "category": "Cake",
+      "taskId": "cake",
+      "name": "Alchemy Bake Lab",
+      "url": "https://zola.com/wedding-vendors/search/beaumont-tx--wedding-cakes-desserts?page=33",
+      "base": "Beaumont",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Zola lists it among the most popular cake vendors in Beaumont."
+    },
+    {
+      "id": "r-a1",
+      "category": "Rentals",
+      "taskId": "rentals",
+      "name": "A-1 Rentals of Beaumont",
+      "url": "https://threebestrated.com/rental-companies-in-beaumont-tx",
+      "base": "Beaumont",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "In business since 1962: tents, dance floors, china, flatware, linens, tables and chairs."
+    },
+    {
+      "id": "r-aaa",
+      "category": "Rentals",
+      "taskId": "rentals",
+      "name": "AAA Rentals",
+      "url": "https://threebestrated.com/rental-companies-in-beaumont-tx",
+      "base": "Beaumont",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Since 1985: tables, tents, chairs, china, linens. Also offers day-of coordination."
+    },
+    {
+      "id": "r-ags",
+      "category": "Rentals",
+      "taskId": "rentals",
+      "name": "AGS Party and Tent Rentals",
+      "url": "https://threebestrated.com/rental-companies-in-beaumont-tx",
+      "base": "Beaumont",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Tents, tables and chairs, and wedding setups."
+    },
+    {
+      "id": "b-blt",
+      "category": "Bar",
+      "taskId": "bar",
+      "name": "BLT & Co mobile bar",
+      "url": "https://www.theknot.com/marketplace/bltand-co-fort-worth-tx-2058636",
+      "base": "Fort Worth (serves Beaumont)",
+      "pricing": "From $1,200, plus travel.",
+      "priceType": "listed",
+      "fit": "Vintage trailer bar with signature cocktails, and help building an alcohol buy list.",
+      "caveat": "Based in Fort Worth, so travel fees will be significant."
+    },
+    {
+      "id": "t-partybus",
+      "category": "Transportation",
+      "taskId": "transport",
+      "name": "Beaumont Party Bus Company",
+      "url": "https://uk.trustpilot.com/review/beaumontpartybuscompany.com/location/houston",
+      "base": "Beaumont",
+      "pricing": "Online quotes.",
+      "priceType": "quote",
+      "fit": "Shuttles, sprinter vans, minibuses and limos for moving elders between the tea ceremony and the reception.",
+      "caveat": "No reviews yet, and it advertises hundreds of vehicles statewide, which suggests a booking network rather than one fleet. Ask which operator drives, and get insurance details in writing."
+    },
+    {
+      "id": "ld-lionkings",
+      "category": "Ceremony",
+      "taskId": "lion",
+      "name": "Houston Lion Kings",
+      "url": "https://www.houstoniamag.com/articles/houston-art-of-lion-dancing",
+      "base": "Houston (Alief)",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Nationally competing troupe that also does the high-pole jong routines."
+    },
+    {
+      "id": "ld-lees",
+      "category": "Ceremony",
+      "taskId": "lion",
+      "name": "Lee's Golden Dragon",
+      "url": "https://lessons.com/tx/houston/dance-classes/lee-s-golden-dragon-lion---dragon-dance-association-8Q3H4v-Xl",
+      "base": "Houston",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Houston's oldest lion dance troupe, founded in 1974."
+    },
+    {
+      "id": "ld-unity",
+      "category": "Ceremony",
+      "taskId": "lion",
+      "name": "Unity Dragon and Lion Dance Troupe",
+      "url": "https://www.houstoniamag.com/articles/houston-art-of-lion-dancing",
+      "base": "Houston",
+      "pricing": "Ask for a quote.",
+      "priceType": "quote",
+      "fit": "Performs at events across the city."
+    },
+    {
+      "id": "vn-nicole",
+      "category": "Attire",
+      "taskId": "attire-vietnam",
+      "name": "Nicole Bridal",
+      "url": "https://nicolebridal.vn/nicolebridal-wedding-aodai-customade-tphcm",
+      "base": "Ho Chi Minh City and Hanoi",
+      "pricing": "Bridal áo dài rental VND 1.5–3 million; custom VND 7.5–15 million.",
+      "priceType": "listed",
+      "fit": "Tailors and rents wedding áo dài, including remote orders for brides abroad.",
+      "caveat": "Custom work takes 6–10 weeks. Order before the September trip, or have it shipped."
+    },
+    {
+      "id": "vn-thimba",
+      "category": "Attire",
+      "taskId": "attire-vietnam",
+      "name": "Áo Dài Thím Ba",
+      "url": "https://mytour.vn/en/blog/bai-viet/top-11-tailor-shops-for-wedding-ao-dai-in-ho-chi-minh-city-mytour.html",
+      "base": "Ho Chi Minh City",
+      "pricing": "Groom áo dài VND 0.6–1.1 million to buy; tray-carrier áo dài VND 200–250 thousand to rent.",
+      "priceType": "listed",
+      "fit": "Mid-priced shop that covers bride, groom, mothers and tray carriers in one place."
+    },
+    {
+      "id": "vn-nathan",
+      "category": "Attire",
+      "taskId": "attire-vietnam",
+      "name": "Nathan Tailors",
+      "url": "https://www.nathantailors.com/vi/blog/dress-entire-wedding-party-under-2000",
+      "base": "Hội An",
+      "pricing": "Groom suit, shirt and tie $203–$383; custom gown $199–$599.",
+      "priceType": "listed",
+      "fit": "Custom suits and gowns, delivered in about three weeks.",
+      "caveat": "Hội An, not Saigon. Only useful if the trip goes there or they ship."
+    },
+    {
+      "id": "vn-luxury",
+      "category": "Photo & video",
+      "taskId": "photo-vietnam",
+      "name": "Luxury Wedding studio",
+      "url": "https://thesmartlocal.com/vietnam/saigon-wedding-photography-studios/",
+      "base": "Ho Chi Minh City",
+      "pricing": "Studio from VND 6.9 million; outdoor from VND 11.9 million.",
+      "priceType": "listed",
+      "fit": "Playful, rom-com style pre-wedding albums.",
+      "caveat": "Prices come from an older article. Confirm the current rate."
+    },
+    {
+      "id": "vn-alibaba",
+      "category": "Photo & video",
+      "taskId": "photo-vietnam",
+      "name": "Alibaba Studio",
+      "url": "https://thesmartlocal.com/vietnam/saigon-wedding-photography-studios/",
+      "base": "Ho Chi Minh City",
+      "pricing": "Studio from VND 6.5 million; outdoor from VND 8.5 million.",
+      "priceType": "listed",
+      "fit": "Lower-cost pre-wedding packages.",
+      "caveat": "Prices come from an older article. Confirm the current rate."
+    },
+    {
+      "id": "bp-bigthicket",
+      "category": "Parties",
+      "taskId": "bachelor",
+      "name": "Big Thicket National Preserve: Turkey Creek Trail",
+      "url": "https://home.nps.gov/bith/planyourvisit/turkey-creek-unit.htm",
+      "base": "Near Kountze",
+      "pricing": "Day trip. Gas and dinner only.",
+      "priceType": "estimate",
+      "fit": "The nearest long trail. Turkey Creek runs about 14 miles one-way, with several trailheads for shorter sections or a car shuttle. Pair it with the 2.5-mile Kirby loop.",
+      "caveat": "Flat, piney woods, not mountains."
+    },
+    {
+      "id": "bp-lsht",
+      "category": "Parties",
+      "taskId": "bachelor",
+      "name": "Lone Star Hiking Trail (Sam Houston National Forest)",
+      "url": "https://www.cleverhiker.com/backpacking/lone-star-hiking-trail-guide/",
+      "base": "North of Houston",
+      "pricing": "Overnight trip. Camping gear and food.",
+      "priceType": "estimate",
+      "fit": "Texas's longest footpath, 96 miles plus loops. Winter is the best season, with more water and cooler temperatures.",
+      "caveat": "Sam Houston National Forest allows hunting. Check season dates and wear blaze orange."
+    },
+    {
+      "id": "bp-eaglerock",
+      "category": "Parties",
+      "taskId": "bachelor",
+      "name": "Eagle Rock Loop (Ouachita National Forest, Arkansas)",
+      "url": "https://www.sierraclub.org/texas/dallas/hike-eagle-rock-loop",
+      "base": "Southwest Arkansas",
+      "pricing": "3-day backpacking weekend. Gas, gear, food, maybe a cabin the night before.",
+      "priceType": "estimate",
+      "fit": "Real hills: a 26.8-mile loop over ridges, past a big waterfall and up to the Eagle Rock vista. The best fit if the groom wants a challenge.",
+      "caveat": "Strenuous, with many cold river crossings in winter. Everyone needs to be fit and have done some backpacking."
+    },
+    {
+      "id": "bt-nola",
+      "category": "Parties",
+      "taskId": "bachelorette",
+      "name": "New Orleans weekend",
+      "url": "https://www.neworleans.com/weddings/pre-post-wedding-events/bachelorette-parties/budget-new-orleans-bachelorette-weekend/",
+      "base": "New Orleans",
+      "pricing": "Commonly $400–$1,000 a person for a drive-to weekend.",
+      "priceType": "listed",
+      "fit": "The easy drive-to choice from Orange, about four hours away, with food tours, swamp tours and the French Quarter.",
+      "caveat": "Carnival season starts January 6 and Mardi Gras is February 29, 2028. Parade weekends push hotel prices up, so check the parade calendar.",
+      "source": {
+        "label": "Fash: bachelorette party costs",
+        "url": "https://fash.com/costs/average-bachelorette-party-cost"
+      }
     }
   ]
 }

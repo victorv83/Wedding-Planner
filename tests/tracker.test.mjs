@@ -4,6 +4,7 @@ import test from "node:test";
 
 import {
   applyEdits,
+  budgetTotals,
   buildModel,
   buildUpdatePayload,
   candidateDates,
@@ -12,12 +13,17 @@ import {
   dateListMarker,
   daysUntil,
   diffTask,
+  estimateLine,
+  extraTrayCarriers,
   formatDue,
   githubIssueUrl,
   groupByPhase,
+  groupVendorOptions,
   isOverdue,
   knownCostTotal,
   nextOpenTarget,
+  perGuestCeiling,
+  planTotals,
   parseISODate,
   progressStats,
   pruneEdits,
@@ -40,7 +46,7 @@ test("seed file is public-safe JSON for Victor & Mít", () => {
   assert.equal(data.settings.selectedDate, null);
   assert.equal(raw.includes("2028-03-04"), false);
   assert.equal(data.settings.guestCount, null);
-  assert.equal(data.settings.budget, null);
+  assert.equal(data.settings.budget, 50000);
   assert.equal(raw.includes("@"), false);
   assert.doesNotMatch(raw, /\b\d{3}[-.\s)]\d{3}[-.\s]\d{4}\b/);
   assert.equal(model.warnings.length, 0);
@@ -103,7 +109,7 @@ test("countdown uses the ideal date until a Saturday is selected", () => {
 });
 
 test("tasks cover the booking sequence and phases", () => {
-  assert.equal(model.tasks.length, 26);
+  assert.equal(model.tasks.length, 34);
   assert.deepEqual(model.phases.map((phase) => phase.id), [
     "now",
     "early-2027",
@@ -139,9 +145,10 @@ test("tasks cover the booking sequence and phases", () => {
     assert.ok(ids.includes(id), id);
   }
   assert.equal(model.tasks.find((task) => task.id === "mc").vendorName, "Tuấn");
-  assert.ok(model.tasks.every((task) => task.status === "todo"));
+  assert.equal(model.tasks.find((task) => task.id === "sax").status, "researching");
+  assert.ok(model.tasks.filter((task) => task.id !== "sax").every((task) => task.status === "todo"));
   const groups = groupByPhase(model.tasks, model.phases);
-  assert.deepEqual(groups.map((group) => group.tasks.length), [5, 5, 3, 3, 3, 7]);
+  assert.deepEqual(groups.map((group) => group.tasks.length), [5, 6, 6, 3, 4, 10]);
   assert.equal(model.tasks.find((task) => task.id === "invitations-mail").phase, "final");
   assert.equal(formatDue(model.tasks.find((task) => task.id === "florist")), "By August 2027");
   assert.equal(formatDue(model.tasks.find((task) => task.id === "invitations-mail")), "Sunday, January 16, 2028");
@@ -165,7 +172,7 @@ test("booked and done count as complete, and mark done can restore the file", ()
   assert.equal(statusAfterMarkDone("done", "researching"), "researching");
   assert.equal(statusAfterMarkDone("done", "done"), "todo");
   const stats = progressStats(model.tasks, () => "todo");
-  assert.deepEqual(stats, { total: 26, done: 0, inProgress: 0, todo: 26, percent: 0 });
+  assert.deepEqual(stats, { total: 34, done: 0, inProgress: 0, todo: 34, percent: 0 });
   const mixed = progressStats(
     [
       { status: "booked" },
@@ -276,7 +283,7 @@ test("local edits layer over the file and feed progress, costs, and the issue", 
   assert.equal(view.find((task) => task.id === "guest-count").status, "done");
   const stats = progressStats(view, (task) => task.status);
   assert.equal(stats.done, 2);
-  assert.equal(stats.inProgress, 1);
+  assert.equal(stats.inProgress, 2);
   assert.equal(knownCostTotal(view).total, 12800);
   assert.equal(nextOpenTarget(view, today).task.id, "pick-date");
 
@@ -312,11 +319,109 @@ test("local edits layer over the file and feed progress, costs, and the issue", 
 
 test("vendor total sums only known numbers", () => {
   const rows = model.tasks.filter((task) => task.vendorTracked);
-  assert.equal(rows.length, 16);
-  assert.deepEqual(knownCostTotal(model.tasks), { total: 0, known: 0, tracked: 16 });
+  assert.equal(rows.length, 22);
+  assert.deepEqual(knownCostTotal(model.tasks), { total: 0, known: 0, tracked: 22 });
   const withCosts = rows.map((task, index) => ({ ...task, cost: index === 0 ? 1200 : index === 1 ? 45.5 : null }));
   assert.equal(knownCostTotal(withCosts).total, 1245.5);
   assert.equal(knownCostTotal(withCosts).known, 2);
   assert.equal(safeHttpUrl("javascript:alert(1)"), "");
   assert.equal(safeHttpUrl("https://example.com/menu"), "https://example.com/menu");
+});
+
+test("budget prices 175 and 250 guests and keeps parties out of the wedding total", () => {
+  const { budget } = model;
+  assert.equal(data.settings.budget, 50000);
+  assert.deepEqual(budget.guestCounts, [175, 250]);
+  const catering = budget.lines.find((line) => line.id === "catering");
+  assert.deepEqual(estimateLine(catering, 175), { low: 7000, high: 14875 });
+  assert.deepEqual(estimateLine(catering, 250), { low: 10000, high: 21250 });
+  const teaPlace = budget.lines.find((line) => line.id === "tea-place");
+  assert.deepEqual(estimateLine(teaPlace, 200), { low: 0, high: 0 });
+  for (const guests of [175, 250]) {
+    const totals = budgetTotals(budget, guests);
+    const weddingLines = budget.lines.filter((line) => line.group === "wedding");
+    const lowSum = weddingLines.reduce((sum, line) => sum + estimateLine(line, guests).low, 0);
+    assert.equal(totals.groups.wedding.low, lowSum);
+    assert.equal(totals.contingency.low, Math.round(lowSum * 0.1));
+    assert.equal(totals.wedding.low, lowSum + totals.contingency.low);
+    assert.ok(totals.groups.parties.low > 0);
+    assert.ok(totals.wedding.high > 50000, "the high estimate is over the $50k target");
+  }
+  const plan = planTotals(budget);
+  assert.equal(plan.options.length, 2);
+  assert.ok(plan.cautious.amount > plan.options.find((option) => option.id === "byo").amount);
+  assert.ok(plan.cautious.total.high < 50000, "the cautious $50k plan still fits");
+  assert.equal(perGuestCeiling(50000, 175), 285);
+  assert.equal(perGuestCeiling(50000, 200), 250);
+  assert.equal(perGuestCeiling(50000, 250), 200);
+  const dj = budget.plan.lines.find((line) => line.lineId === "dj");
+  const lion = budget.plan.lines.find((line) => line.lineId === "lion");
+  assert.equal(dj.over, "over");
+  assert.equal(lion.over, "over");
+  for (const line of budget.lines) {
+    if (line.taskId) assert.ok(model.tasks.some((task) => task.id === line.taskId), line.id);
+  }
+});
+
+test("wedding party of 4 + 4 needs extra tray carriers for 5 or 7 trays", () => {
+  const party = model.weddingParty;
+  assert.equal(party.bridesmaids, 4);
+  assert.equal(party.groomsmen, 4);
+  assert.deepEqual(party.teaCeremonyTrays, [5, 7]);
+  assert.equal(extraTrayCarriers(party, 5), 1);
+  assert.equal(extraTrayCarriers(party, 7), 3);
+  assert.equal(extraTrayCarriers(party, 3), 0);
+});
+
+test("vendor shortlist covers the bookings and states venue alcohol rules", () => {
+  const vendors = model.vendorOptions;
+  assert.ok(vendors.length >= 40);
+  const categories = groupVendorOptions(vendors).map((group) => group.category);
+  for (const category of ["Venue", "Catering", "Planner", "Photo & video", "Music & MC", "Beauty", "Flowers & decor", "Cake", "Rentals", "Bar", "Transportation", "Ceremony", "Attire", "Parties"]) {
+    assert.ok(categories.includes(category), category);
+  }
+  const ids = new Set();
+  for (const vendor of vendors) {
+    assert.ok(!ids.has(vendor.id), vendor.id);
+    ids.add(vendor.id);
+    assert.match(vendor.url, /^https:\/\//, vendor.name);
+    assert.ok(model.tasks.some((task) => task.id === vendor.taskId), vendor.name);
+    assert.ok(vendor.fit, vendor.name);
+  }
+  const centre = vendors.find((vendor) => vendor.id === "v-event-centre");
+  assert.equal(centre.byoAlcohol, "bartender");
+  assert.equal(centre.outsideCatering, "approved");
+  assert.match(centre.caveat, /only if a rite/);
+  const belle = vendors.find((vendor) => vendor.id === "v-belle-oaks");
+  assert.equal(belle.byoAlcohol, "unknown");
+  assert.equal(belle.outsideCatering, "yes");
+  assert.doesNotMatch(belle.caveat, /for sale/i);
+  assert.ok(vendors.some((vendor) => vendor.taskId === "bachelor"));
+  assert.ok(vendors.some((vendor) => vendor.taskId === "sax") === false);
+  assert.equal(model.tasks.find((task) => task.id === "sax").status, "researching");
+  assert.equal(model.tasks.find((task) => task.id === "venue-tea").byoAlcohol, "yes");
+  assert.match(model.tasks.find((task) => task.id === "bachelor").due, /^2028-01-1/);
+  assert.equal(raw.includes("Lagayette"), false);
+  assert.equal(raw.includes("2028-03-04"), false);
+});
+
+test("bad budget and vendor entries warn instead of breaking the page", () => {
+  const broken = buildModel({
+    settings: data.settings,
+    phases: data.phases,
+    tasks: [{ id: "a", title: "A", category: "Venue" }],
+    budgetEstimate: { guestCounts: [100], lines: [
+      { id: "x", item: "Backwards", flat: { low: 10, high: 5 } },
+      { id: "y", item: "Empty" },
+      { id: "z", item: "Orphan", taskId: "nope", flat: { low: 1, high: 2 } },
+    ] },
+    vendorOptions: [
+      { name: "Sketchy", url: "javascript:alert(1)", taskId: "a", category: "Venue" },
+      { url: "https://example.com" },
+    ],
+  });
+  assert.equal(broken.budget.lines.length, 1);
+  assert.equal(broken.vendorOptions.length, 1);
+  assert.equal(broken.vendorOptions[0].url, "");
+  assert.ok(broken.warnings.length >= 5);
 });

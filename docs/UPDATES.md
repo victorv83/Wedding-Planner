@@ -79,6 +79,8 @@ Empty string `""` on `due` or `dueMonth` clears that field. You may delete the k
 | `cost` | Quoted cost as a number, or `null`. No currency symbol. |
 | `deposit` | Amount already paid, or `null`. |
 | `balanceDue` | `YYYY-MM-DD` or `null`. |
+| `byoAlcohol` | On venue tasks only: `yes`, `bartender`, `no`, or `unknown`. |
+| `outsideCatering` | On venue tasks only: `yes`, `approved`, `no`, or `unknown`. |
 
 `todo` is not started. `researching`, `contacted`, and `in-progress` are underway. `booked` and `done` are complete: they fill the progress bars and they are not overdue.
 

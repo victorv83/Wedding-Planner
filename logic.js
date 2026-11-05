@@ -414,6 +414,295 @@ function textOr(value, fallback) {
   return typeof value === "string" && value.trim() ? value.trim() : fallback;
 }
 
+function finite(value) {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+export const ALCOHOL_POLICIES = {
+  yes: "BYO alcohol",
+  bartender: "BYO with licensed bartender",
+  no: "No BYO alcohol",
+  unknown: "Alcohol unknown",
+};
+
+export const CATERING_POLICIES = {
+  yes: "Outside catering",
+  approved: "Approved caterers only",
+  no: "No outside catering",
+  unknown: "Catering unknown",
+};
+
+export function venuePolicy(category) {
+  return cleanString(category).toLowerCase() === "venue";
+}
+
+export function normalizeAlcohol(value) {
+  return Object.prototype.hasOwnProperty.call(ALCOHOL_POLICIES, value) ? value : "unknown";
+}
+
+export function normalizeCatering(value) {
+  return Object.prototype.hasOwnProperty.call(CATERING_POLICIES, value) ? value : "unknown";
+}
+
+function parseRange(raw) {
+  if (raw == null) return null;
+  if (typeof raw !== "object" || Array.isArray(raw)) return undefined;
+  if (!finite(raw.low) || !finite(raw.high) || raw.low < 0 || raw.high < raw.low) return undefined;
+  return { low: raw.low, high: raw.high };
+}
+
+function parseSources(raw) {
+  return (Array.isArray(raw) ? raw : [])
+    .map((source) => ({ label: textOr(source?.label, ""), url: safeHttpUrl(source?.url) }))
+    .filter((source) => source.label && source.url);
+}
+
+export const BUDGET_GROUPS = {
+  wedding: "Wedding day",
+  optional: "Optional",
+  parties: "Bachelor and bachelorette",
+};
+
+/** Low and high cost of one budget line at a guest count: flat + perGuest × guests. */
+export function estimateLine(line, guests) {
+  const n = finite(guests) && guests > 0 ? guests : 0;
+  const flat = line?.flat || { low: 0, high: 0 };
+  const per = line?.perGuest || { low: 0, high: 0 };
+  return {
+    low: Math.round(flat.low + per.low * n),
+    high: Math.round(flat.high + per.high * n),
+  };
+}
+
+/**
+ * Totals for one guest count. The wedding group gets contingency on top.
+ * Optional lines and bachelor/bachelorette costs stay out of the wedding total.
+ */
+export function budgetTotals(budget, guests) {
+  const groups = {};
+  for (const key of Object.keys(BUDGET_GROUPS)) groups[key] = { low: 0, high: 0 };
+  for (const line of budget?.lines || []) {
+    const cost = estimateLine(line, guests);
+    const group = groups[line.group] ? line.group : "wedding";
+    groups[group].low += cost.low;
+    groups[group].high += cost.high;
+  }
+  const pct = budget?.contingencyPercent || { low: 0, high: 0 };
+  const contingency = {
+    low: Math.round((groups.wedding.low * pct.low) / 100),
+    high: Math.round((groups.wedding.high * pct.high) / 100),
+  };
+  const wedding = {
+    low: groups.wedding.low + contingency.low,
+    high: groups.wedding.high + contingency.high,
+  };
+  const perGuest = guests > 0
+    ? { low: Math.round(wedding.low / guests), high: Math.round(wedding.high / guests) }
+    : null;
+  return { groups, contingency, wedding, perGuest };
+}
+
+function parseBudget(raw, taskIds, warnings) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const counts = (Array.isArray(raw.guestCounts) ? raw.guestCounts : []).filter((n) => finite(n) && n > 0);
+  const pct = parseRange(raw.contingencyPercent) || { low: 0, high: 0 };
+  const seen = new Set();
+  const lines = [];
+  for (const [index, line] of (Array.isArray(raw.lines) ? raw.lines : []).entries()) {
+    const id = textOr(line?.id, `line-${index + 1}`);
+    const item = textOr(line?.item, id);
+    if (seen.has(id)) warnings.push(`Budget line “${item}” repeats the id “${id}”.`);
+    seen.add(id);
+    const flat = parseRange(line?.flat);
+    const perGuest = parseRange(line?.perGuest);
+    if (flat === undefined || perGuest === undefined) {
+      warnings.push(`Budget line “${item}” needs low and high numbers, with high at least low.`);
+      continue;
+    }
+    if (!flat && !perGuest) {
+      warnings.push(`Budget line “${item}” has no flat or perGuest cost.`);
+      continue;
+    }
+    const taskId = textOr(line?.taskId, "");
+    if (taskId && !taskIds.has(taskId)) warnings.push(`Budget line “${item}” points at task “${taskId}”, which does not exist.`);
+    lines.push({
+      id,
+      item,
+      category: textOr(line?.category, "General"),
+      taskId,
+      group: BUDGET_GROUPS[line?.group] ? line.group : "wedding",
+      flat,
+      perGuest,
+      basis: textOr(line?.basis, ""),
+      priceType: line?.priceType === "listed" ? "listed" : "estimate",
+      notes: textOr(line?.notes, ""),
+      sources: parseSources(line?.sources),
+    });
+  }
+  const plan = parsePlan(raw.plan, lines, warnings);
+  const ceilings = (Array.isArray(raw.ceilings) ? raw.ceilings : []).filter((n) => finite(n) && n > 0);
+  return {
+    asOf: textOr(raw.asOf, ""),
+    summary: textOr(raw.summary, ""),
+    guestCounts: counts,
+    contingencyPercent: pct,
+    target: finite(raw.target) ? raw.target : null,
+    ceilings,
+    lines,
+    plan,
+  };
+}
+
+function parsePlan(raw, lines, warnings) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const byId = new Map(lines.map((line) => [line.id, line]));
+  const guests = finite(raw.guests) && raw.guests > 0 ? raw.guests : 0;
+  const planLines = [];
+  for (const entry of Array.isArray(raw.lines) ? raw.lines : []) {
+    const lineId = textOr(entry?.lineId, "");
+    const source = byId.get(lineId);
+    if (!source) {
+      warnings.push(`The $50k plan points at “${lineId || "a line"}”, which is not a budget line.`);
+      continue;
+    }
+    if (!finite(entry?.amount) || entry.amount < 0) {
+      warnings.push(`The $50k plan amount for “${source.item}” needs to be a number.`);
+      continue;
+    }
+    const estimate = estimateLine(source, guests);
+    let over = "";
+    if (estimate.low > entry.amount) over = "over";
+    else if (entry.amount > estimate.low && estimate.high > entry.amount) over = "high";
+    planLines.push({
+      lineId,
+      item: source.item,
+      amount: entry.amount,
+      choice: textOr(entry?.choice, ""),
+      priceType: source.priceType,
+      estimate,
+      over,
+    });
+  }
+  const barOptions = [];
+  for (const option of Array.isArray(raw.barOptions) ? raw.barOptions : []) {
+    if (!finite(option?.amount) || option.amount < 0) continue;
+    barOptions.push({
+      id: textOr(option?.id, "bar"),
+      lineId: textOr(option?.lineId, ""),
+      label: textOr(option?.label, "Bar"),
+      amount: option.amount,
+      priceType: option?.priceType === "listed" ? "listed" : "estimate",
+      basis: textOr(option?.basis, ""),
+    });
+  }
+  return {
+    id: textOr(raw.id, "plan"),
+    label: textOr(raw.label, "Plan"),
+    guests,
+    summary: textOr(raw.summary, ""),
+    lines: planLines,
+    barOptions,
+  };
+}
+
+/** Both bar choices, with contingency. The cautious total is the higher one. */
+export function planTotals(budget) {
+  const plan = budget?.plan;
+  if (!plan) return null;
+  const base = plan.lines.reduce((sum, line) => sum + line.amount, 0);
+  const pct = budget.contingencyPercent || { low: 0, high: 0 };
+  const options = plan.barOptions.map((option) => {
+    const subtotal = base + option.amount;
+    const contingency = {
+      low: Math.round((subtotal * pct.low) / 100),
+      high: Math.round((subtotal * pct.high) / 100),
+    };
+    const total = { low: subtotal + contingency.low, high: subtotal + contingency.high };
+    const perGuest = plan.guests > 0
+      ? { low: Math.round(total.low / plan.guests), high: Math.round(total.high / plan.guests) }
+      : null;
+    return { ...option, subtotal, contingency, total, perGuest };
+  });
+  const cautious = options.reduce((best, option) => (option.total.high > (best?.total.high ?? -1) ? option : best), null);
+  return { base, options, cautious };
+}
+
+export function perGuestCeiling(target, guests) {
+  if (!finite(target) || !finite(guests) || guests <= 0) return null;
+  return Math.floor(target / guests);
+}
+
+function parseVendorOptions(raw, taskIds, warnings) {
+  const seen = new Set();
+  const vendors = [];
+  for (const [index, item] of (Array.isArray(raw) ? raw : []).entries()) {
+    const name = textOr(item?.name, "");
+    if (!name) {
+      warnings.push(`Vendor option ${index + 1} is missing a name.`);
+      continue;
+    }
+    const id = textOr(item?.id, `vendor-${index + 1}`);
+    if (seen.has(id)) warnings.push(`Vendor option “${name}” repeats the id “${id}”.`);
+    seen.add(id);
+    const taskId = textOr(item?.taskId, "");
+    if (taskId && !taskIds.has(taskId)) warnings.push(`Vendor option “${name}” points at task “${taskId}”, which does not exist.`);
+    if (item?.url && !safeHttpUrl(item.url)) warnings.push(`Vendor option “${name}” has a link that is not http or https.`);
+    const source = item?.source ? parseSources([item.source])[0] || null : null;
+    const policySource = item?.policySource ? parseSources([item.policySource])[0] || null : null;
+    const isVenue = textOr(item?.category, "") === "Venue" || taskId === "venue-reception";
+    vendors.push({
+      id,
+      name,
+      category: textOr(item?.category, "General"),
+      taskId,
+      url: safeHttpUrl(item?.url),
+      base: textOr(item?.base, ""),
+      pricing: textOr(item?.pricing, ""),
+      priceType: ["listed", "estimate"].includes(item?.priceType) ? item.priceType : "quote",
+      fit: textOr(item?.fit, ""),
+      caveat: textOr(item?.caveat, ""),
+      source,
+      byoAlcohol: isVenue ? normalizeAlcohol(item?.byoAlcohol) : "",
+      outsideCatering: isVenue ? normalizeCatering(item?.outsideCatering) : "",
+      policySource,
+    });
+  }
+  return vendors;
+}
+
+function parseWeddingParty(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const trays = (Array.isArray(raw.teaCeremonyTrays) ? raw.teaCeremonyTrays : []).filter((n) => finite(n) && n > 0);
+  return {
+    bridesmaids: finite(raw.bridesmaids) ? raw.bridesmaids : null,
+    groomsmen: finite(raw.groomsmen) ? raw.groomsmen : null,
+    teaCeremonyTrays: trays,
+    summary: textOr(raw.summary, ""),
+    sources: parseSources(raw.sources),
+  };
+}
+
+/** Extra people each side needs so every tray has a carrier and a receiver. */
+export function extraTrayCarriers(party, trays) {
+  const smallest = Math.min(party?.bridesmaids ?? 0, party?.groomsmen ?? 0);
+  return Math.max(0, trays - smallest);
+}
+
+/** Vendor options grouped by category, in first-seen order. */
+export function groupVendorOptions(vendors) {
+  const groups = [];
+  const byCategory = new Map();
+  for (const vendor of vendors || []) {
+    if (!byCategory.has(vendor.category)) {
+      const group = { category: vendor.category, vendors: [] };
+      byCategory.set(vendor.category, group);
+      groups.push(group);
+    }
+    byCategory.get(vendor.category).vendors.push(vendor);
+  }
+  return groups;
+}
+
 export function buildModel(data) {
   if (!data || typeof data !== "object" || Array.isArray(data)) {
     throw new Error("Wedding data must be a JSON object.");
@@ -491,6 +780,8 @@ export function buildModel(data) {
       cost: typeof raw.cost === "number" && Number.isFinite(raw.cost) ? raw.cost : null,
       deposit: typeof raw.deposit === "number" && Number.isFinite(raw.deposit) ? raw.deposit : null,
       balanceDue,
+      byoAlcohol: venuePolicy(textOr(raw.category, "General")) ? normalizeAlcohol(raw.byoAlcohol) : "",
+      outsideCatering: venuePolicy(textOr(raw.category, "General")) ? normalizeCatering(raw.outsideCatering) : "",
       local: "file",
     };
   });
@@ -514,7 +805,12 @@ export function buildModel(data) {
     if (!parseISODate(value)) warnings.push(`Candidate date “${value}” is not YYYY-MM-DD and was skipped.`);
   }
 
-  return { settings, phases, tasks, warnings };
+  const taskIds = new Set(tasks.map((task) => task.id));
+  const budget = parseBudget(data.budgetEstimate, taskIds, warnings);
+  const vendorOptions = parseVendorOptions(data.vendorOptions, taskIds, warnings);
+  const weddingParty = parseWeddingParty(data.weddingParty);
+
+  return { settings, phases, tasks, warnings, budget, vendorOptions, weddingParty };
 }
 
 const PATCH_FIELDS = [
@@ -532,6 +828,8 @@ const PATCH_FIELDS = [
   "cost",
   "deposit",
   "balanceDue",
+  "byoAlcohol",
+  "outsideCatering",
 ];
 
 function cleanString(value) {
@@ -589,6 +887,8 @@ export function taskSnapshot(task) {
     cost: vendorTracked ? cleanMoney(task?.cost) : null,
     deposit: vendorTracked ? cleanMoney(task?.deposit) : null,
     balanceDue: vendorTracked ? balanceDue : "",
+    byoAlcohol: venuePolicy(task?.category) ? normalizeAlcohol(task?.byoAlcohol) : "",
+    outsideCatering: venuePolicy(task?.category) ? normalizeCatering(task?.outsideCatering) : "",
   };
   return snapshot;
 }
@@ -801,6 +1101,8 @@ export function snapshotFromDraft(draft) {
       cost: vendorTracked && costParsed.ok ? costParsed.amount : null,
       deposit: vendorTracked && depositParsed.ok ? depositParsed.amount : null,
       balanceDue,
+      byoAlcohol: venuePolicy(category) ? normalizeAlcohol(draft?.byoAlcohol) : "",
+      outsideCatering: venuePolicy(category) ? normalizeCatering(draft?.outsideCatering) : "",
     },
   };
 }

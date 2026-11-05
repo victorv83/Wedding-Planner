@@ -25,7 +25,7 @@ The HTML, CSS, scripts, and `data/wedding.json` load once. After that, the secti
 | Countdown | `#overview` | Date countdown and the guest, budget, and Tết facts |
 | Progress | `#progress` | Overall, phase, and category bars |
 | Timeline | `#timeline` | Phases, filters, and editable items |
-| Vendors | `#vendors` | Vendor and cost table |
+| Vendors | `#vendors` | Bookings, the shortlist, tray carriers, and the budget, including the $50,000 plan |
 
 **View all sections**, the control directly under the nav, stacks every section the way the long page used to, and sets `#all`. In that mode that control is the one marked current. Otherwise the open section’s nav link is marked current (`aria-current="page"`).
 
@@ -81,7 +81,7 @@ UTF-8 is required so Vietnamese diacritics stay intact (`lễ gia tiên`, `áo d
 | `candidateDates` | Array of `YYYY-MM-DD` Saturdays still in the running, including the ideal date. The others are shown as alternatives. |
 | `selectedDate` | The chosen Saturday, or `null` if you have not decided. This overrides `idealDate` and the label becomes **Selected date**. |
 | `guestCount` | A number, or `null`. |
-| `budget` | A number in `currency`, or `null`. No `$` in the JSON. |
+| `budget` | Target in `currency`. The seed target is `50000`. No `$` in the JSON. |
 | `currency` | ISO code, default `USD`. |
 | `tetDate` / `tetLabel` | Shown as a fact next to guests and budget. |
 
@@ -138,16 +138,26 @@ A task appears in the vendor table when it includes `vendorName`, `vendorUrl`, o
 
 Within a phase, tasks stay in the order they appear in the file. To reorder, move the whole object. Unknown phase ids are grouped at the end under **Other**.
 
+### Budget, shortlist, and venue rules
+
+`budgetEstimate` is the table on the Vendors page. Each line is `flat + perGuest × guests`, with a low and a high, priced at 175 and 250 guests. `group` is `wedding` (in the total), `optional`, or `parties`. Bachelor and bachelorette costs are `parties` and are not in the wedding total. `contingencyPercent` adds 10–15% for tax, tips, and fees. `priceType` is `listed` only when a vendor or directory published the number.
+
+`target` is `50000`. The page compares the 175- and 250-guest totals with that target and shows the per-guest ceiling at 175, 200, and 250. `plan` is the **Plan to hit $50k** column for about 200 guests. It prices the bar twice — bring-your-own alcohol with a licensed bartender, and a venue bar package — and the cautious total is the higher one. A line is marked over the allocation when the researched range does not fit that choice.
+
+`vendorOptions` is the shortlist, not a booking. Venue candidates include `byoAlcohol` (`yes`, `bartender`, `no`, or `unknown`) and `outsideCatering` (`yes`, `approved`, `no`, or `unknown`), plus `policySource` when a page states the rule. The same two fields are on venue tasks, so the timeline editor can change them. `weddingParty` is 4 bridesmaids and 4 groomsmen, and the extra carriers needed for 5 or 7 mâm quả trays.
+
+The tea ceremony is at a family home, so that place is `$0`. Decor, rentals, flowers, and the photographer still have lines. The student sax task is an estimate for about an hour.
+
 ### Phases already in the file
 
 | `id` | When | What belongs there |
 | --- | --- | --- |
 | `now` | Now – January 2027 | Rough guest count, choose the date, reception venue, tea ceremony location, caterer |
-| `early-2027` | Early 2027 | Planner, local photo and video, officiant, confirm Tuấn, DJ or band |
-| `spring-summer-2027` | Spring – summer 2027 | Catering tasting, hair and makeup, florist and altar decor |
+| `early-2027` | Early 2027 | Planner, local photo and video, officiant, confirm Tuấn, DJ or band, student sax |
+| `spring-summer-2027` | Spring – summer 2027 | Catering tasting, hair and makeup, florist, rentals, bar, tray carriers |
 | `vietnam-2027` | September 2027 | Dress, áo dài, and suit fittings; pre-wedding photos; print bilingual invitations |
-| `autumn-2027` | October – November 2027 | Alterations at home, cake, and transportation |
-| `final` | January – early March 2028 | Mail invitations in mid-January, elder spokespeople, optional lion dance, mâm quả, tea set, ceremony jewelry, RSVPs |
+| `autumn-2027` | October – November 2027 | Alterations at home, cake, transportation, hotel block |
+| `final` | January – early March 2028 | Mail invitations, bachelor hiking trip (before Tết), bachelorette weekend, license, ceremony details, RSVPs |
 
 The seed list follows a common vendor booking order (venue, planner, attire, photo and video, catering, officiant, MC and music, hair and makeup, flowers, cake, invitations, transportation, then ceremony details), placed into those windows. The Vietnam trip in September 2027 is for the pre-wedding photo shoot, fittings, and printing invitations.
 
