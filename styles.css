@@ -1195,6 +1195,207 @@ tfoot th {
   border: 0;
 }
 
+.subhead {
+  margin-top: 1.35rem;
+}
+
+.party-panel {
+  margin-top: 1.6rem;
+}
+
+.party-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.6rem;
+  margin: 0 0 0.6rem;
+}
+
+.party-facts div {
+  min-width: 7rem;
+}
+
+.party-facts dt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.party-facts dd {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  line-height: 1.1;
+  color: var(--lacquer);
+}
+
+.party-panel p,
+.target-panel p,
+.plan-block > .hint {
+  margin: 0.45rem 0 0;
+}
+
+.target-panel,
+.plan-block {
+  margin-top: 1rem;
+}
+
+.budget-table {
+  min-width: 52rem;
+}
+
+.budget-table td.basis {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  min-width: 16rem;
+}
+
+.budget-table .group-row th {
+  background: #fbf5ea;
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--lacquer-deep);
+}
+
+.budget-table .subtotal-row td,
+.budget-table .over-row td {
+  background: #fffaf3;
+}
+
+.over-row td:first-child {
+  box-shadow: inset 3px 0 0 var(--lacquer);
+}
+
+.line-note,
+.sources,
+.per-guest {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.over-flag {
+  color: var(--lacquer-deep);
+  font-weight: 700;
+}
+
+.under-flag {
+  color: var(--done);
+  font-weight: 700;
+}
+
+.pill {
+  display: inline-block;
+  margin: 0 0.2rem 0.2rem 0;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: 0.1em;
+  white-space: nowrap;
+}
+
+.pill-listed {
+  background: var(--done-bg);
+  color: var(--done);
+}
+
+.pill-estimate,
+.pill-quote,
+.pill-unknown {
+  background: var(--progress-bg);
+  color: var(--progress);
+}
+
+.pill-yes,
+.pill-bartender,
+.pill-approved {
+  background: var(--done-bg);
+  color: var(--done);
+}
+
+.pill-no {
+  background: var(--overdue-bg);
+  color: var(--lacquer-deep);
+}
+
+.pill-over {
+  background: var(--overdue-bg);
+  color: var(--lacquer-deep);
+}
+
+.policy-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.shortlist-group {
+  margin: 0.6rem 0;
+  background: var(--paper);
+  border: 1px solid var(--gold-line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+.shortlist-group > summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.shortlist-group > summary .count {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.shortlist {
+  list-style: none;
+  margin: 0;
+  padding: 0 1rem 0.9rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 0.75rem;
+}
+
+.vendor-card {
+  border-top: 1px solid rgba(36, 28, 25, 0.08);
+  padding-top: 0.7rem;
+}
+
+.vendor-card p {
+  margin: 0 0 0.35rem;
+}
+
+.vendor-card .vendor-name {
+  font-weight: 700;
+}
+
+.vendor-base {
+  display: block;
+  font-weight: 400;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.vendor-caveat {
+  color: var(--lacquer-deep);
+}
+
 @media (max-width: 720px) {
   .site-header {
     padding-top: 1.15rem;
@@ -1244,8 +1445,22 @@ tfoot th {
     align-items: flex-start;
   }
 
-  .field-row {
+  .field-row,
+  .shortlist {
     grid-template-columns: 1fr;
+  }
+
+  .budget-table {
+    min-width: 0;
+  }
+
+  .budget-table td.basis {
+    min-width: 0;
+  }
+
+  .budget-table .group-row th {
+    display: block;
+    width: 100%;
   }
 
   .details {

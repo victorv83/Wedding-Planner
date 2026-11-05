@@ -1,4 +1,7 @@
 import {
+  ALCOHOL_POLICIES,
+  BUDGET_GROUPS,
+  CATERING_POLICIES,
   STATUS_LABELS,
   STATUS_ORDER,
   SECTION_IDS,
@@ -14,6 +17,8 @@ import {
   dateListMarker,
   daysUntil,
   diffTask,
+  estimateLine,
+  extraTrayCarriers,
   displayCouple,
   editCounts,
   formatDue,
@@ -23,13 +28,17 @@ import {
   formatNumber,
   githubIssueUrl,
   groupByPhase,
+  groupVendorOptions,
   isCompleteStatus,
   isOverdue,
   isUnderwayStatus,
   knownCostTotal,
   nextOpenTarget,
+  perGuestCeiling,
+  planTotals,
   parseISODate,
   progressStats,
+  budgetTotals,
   pruneEdits,
   resolveDue,
   roughSpan,
@@ -325,7 +334,7 @@ function renderOverview() {
   const guests = settings.guestCount;
   facts.push(["Guests", typeof guests === "number" && Number.isFinite(guests) ? formatNumber(guests) : "Not set"]);
   const budget = settings.budget;
-  facts.push(["Budget", typeof budget === "number" && Number.isFinite(budget) ? formatMoney(budget, currency()) : "Not set"]);
+  facts.push(["Budget target", typeof budget === "number" && Number.isFinite(budget) ? formatMoney(budget, currency()) : "Not set"]);
   const tet = parseISODate(settings.tetDate);
   if (tet) {
     const label = settingText(settings, "tetLabel") || "Tết";
@@ -464,6 +473,8 @@ function draftFromTask(task) {
     cost: typeof task.cost === "number" ? String(task.cost) : "",
     deposit: typeof task.deposit === "number" ? String(task.deposit) : "",
     balanceDue: parseISODate(task.balanceDue) ? task.balanceDue : "",
+    byoAlcohol: task.byoAlcohol || "unknown",
+    outsideCatering: task.outsideCatering || "unknown",
   };
 }
 
@@ -485,6 +496,8 @@ function newDraft() {
     cost: "",
     deposit: "",
     balanceDue: "",
+    byoAlcohol: "unknown",
+    outsideCatering: "unknown",
   };
 }
 
@@ -505,6 +518,8 @@ function readDraftFromForm(form) {
     cost: form.elements.cost.value,
     deposit: form.elements.deposit.value,
     balanceDue: form.elements.balanceDue.value,
+    byoAlcohol: form.elements.byoAlcohol?.value || "unknown",
+    outsideCatering: form.elements.outsideCatering?.value || "unknown",
   };
 }
 
@@ -519,6 +534,16 @@ function labeledField(label, control, className = "field") {
     el("span", { class: "field-label", text: label }),
     control,
   ]);
+}
+
+function isVenueCategory(category) {
+  return String(category || "").trim().toLowerCase() === "venue";
+}
+
+function policySelect(name, labels, value) {
+  const select = el("select", { name }, Object.entries(labels).map(([key, label]) => el("option", { value: key, text: label })));
+  select.value = Object.prototype.hasOwnProperty.call(labels, value) ? value : "unknown";
+  return select;
 }
 
 function statusChoices(current) {
@@ -650,6 +675,14 @@ function taskForm(draft, { formId, isNew }) {
       ]),
       labeledField("Balance due date", fieldInput("input", { name: "balanceDue", type: "date" }, draft.balanceDue)),
     ]),
+    el("fieldset", { class: "venue-policies", hidden: !isVenueCategory(draft.category) }, [
+      el("legend", { text: "Venue rules" }),
+      el("div", { class: "field-row" }, [
+        labeledField("Alcohol", policySelect("byoAlcohol", ALCOHOL_POLICIES, draft.byoAlcohol || "unknown")),
+        labeledField("Outside catering", policySelect("outsideCatering", CATERING_POLICIES, draft.outsideCatering || "unknown")),
+      ]),
+      el("p", { class: "privacy-note", text: "These match the shortlist badges. Unknown is fine until the venue confirms the rule." }),
+    ]),
     el("p", { class: "editor-note", text: "Saved on this device until you send updates." }),
     el("div", { class: "form-actions" }, [
       el("button", { type: "submit", class: "primary", text: "Save" }),
@@ -680,13 +713,18 @@ function bindEditor(form, { isNew }) {
     form.dataset.vendorTouched = "yes";
     syncVendor();
   });
-  if (isNew) {
-    form.elements.category.addEventListener("change", () => {
-      if (form.dataset.vendorTouched === "yes") return;
-      form.elements.vendorTracked.checked = categorySuggestsVendor(form.elements.category.value.trim());
-      syncVendor();
-    });
-  }
+  const syncVenuePolicy = () => {
+    const panel = form.querySelector(".venue-policies");
+    if (panel) panel.hidden = !isVenueCategory(form.elements.category.value);
+  };
+  form.elements.category.addEventListener("input", syncVenuePolicy);
+  form.elements.category.addEventListener("change", () => {
+    syncVenuePolicy();
+    if (!isNew || form.dataset.vendorTouched === "yes") return;
+    form.elements.vendorTracked.checked = categorySuggestsVendor(form.elements.category.value.trim());
+    syncVendor();
+  });
+  syncVenuePolicy();
   form.addEventListener("input", () => {
     state.formErrors = [];
     form.querySelector(".form-errors")?.remove();
@@ -826,6 +864,22 @@ function detailList(task) {
     if (typeof task.deposit === "number") rows.push(["Deposit paid", formatMoney(task.deposit, currency())]);
     const balance = parseISODate(task.balanceDue);
     if (balance) rows.push(["Balance due", formatLongDate(balance)]);
+  }
+  if (isVenueCategory(task.category)) {
+    if (task.byoAlcohol) rows.push(["Alcohol", ALCOHOL_POLICIES[task.byoAlcohol] || task.byoAlcohol]);
+    if (task.outsideCatering) rows.push(["Catering", CATERING_POLICIES[task.outsideCatering] || task.outsideCatering]);
+  }
+  const shortlist = (state.model.vendorOptions || []).filter((vendor) => vendor.taskId === task.id);
+  if (shortlist.length) {
+    const shown = shortlist.slice(0, 3);
+    const more = shortlist.length - shown.length;
+    rows.push(["Shortlist", el("span", {}, [
+      ...shown.flatMap((vendor, index) => [
+        index ? ", " : "",
+        vendor.url ? externalLink(vendor.url, vendor.name) : vendor.name,
+      ]),
+      more ? ` +${more} more` : "",
+    ])]);
   }
   if (!rows.length) return null;
   return el("dl", { class: "details" }, rows.flatMap(([label, value]) => [
@@ -1078,9 +1132,272 @@ function renderVendors() {
 
   const section = el("section", { class: "section", id: "vendors", "aria-labelledby": "vendors-heading" }, [
     el("h2", { id: "vendors-heading", text: "Vendors" }),
+    el("h3", { class: "subhead", text: "Bookings" }),
     el("div", { class: "table-scroll" }, [table]),
+    renderWeddingParty(),
+    renderBudget(),
+    renderShortlist(),
   ]);
   $("mount-vendors").replaceChildren(section);
+}
+
+function sourceList(sources) {
+  if (!sources?.length) return null;
+  return el("span", { class: "sources" }, [
+    "Source: ",
+    ...sources.flatMap((source, index) => [index ? " · " : "", externalLink(source.url, source.label)]),
+  ]);
+}
+
+function moneyRange(range) {
+  const code = currency();
+  if (!range) return "—";
+  if (range.low === range.high) return formatMoney(range.low, code);
+  return `${formatMoney(range.low, code)} – ${formatMoney(range.high, code)}`;
+}
+
+function policyBadges(vendor) {
+  if (!vendor.byoAlcohol && !vendor.outsideCatering) return null;
+  const bits = [];
+  if (vendor.byoAlcohol) bits.push(el("span", { class: `pill pill-policy pill-${vendor.byoAlcohol}`, text: ALCOHOL_POLICIES[vendor.byoAlcohol] }));
+  if (vendor.outsideCatering) bits.push(el("span", { class: `pill pill-policy pill-${vendor.outsideCatering}`, text: CATERING_POLICIES[vendor.outsideCatering] }));
+  return el("p", { class: "policy-badges" }, bits.flatMap((node, index) => [index ? " " : "", node]));
+}
+
+function renderWeddingParty() {
+  const party = state.model.weddingParty;
+  if (!party) return null;
+  const facts = [];
+  if (party.bridesmaids != null) facts.push(["Bridesmaids", formatNumber(party.bridesmaids)]);
+  if (party.groomsmen != null) facts.push(["Groomsmen", formatNumber(party.groomsmen)]);
+  for (const trays of party.teaCeremonyTrays) {
+    const extra = extraTrayCarriers(party, trays);
+    facts.push([`${trays} trays`, extra ? `+${extra} per side` : "Covered"]);
+  }
+  return el("div", { class: "panel party-panel" }, [
+    el("h3", { class: "subhead", text: "Wedding party and tray carriers" }),
+    el("dl", { class: "party-facts" }, facts.map(([term, value]) => el("div", {}, [
+      el("dt", { text: term }),
+      el("dd", { text: value }),
+    ]))),
+    party.summary ? el("p", {}, richText(party.summary)) : null,
+    party.sources.length ? el("p", { class: "hint" }, [sourceList(party.sources)]) : null,
+  ]);
+}
+
+function budgetCounts() {
+  const budget = state.model.budget;
+  const counts = [...(budget?.guestCounts || [])];
+  const guests = state.model.settings.guestCount;
+  if (typeof guests === "number" && Number.isFinite(guests) && guests > 0 && !counts.includes(guests)) counts.push(guests);
+  return counts.sort((a, b) => a - b);
+}
+
+function compareToTarget(total, target) {
+  if (!total || typeof target !== "number") return "";
+  if (total.high < target) return `under ${formatMoney(target, currency())}`;
+  if (total.low > target) return `over ${formatMoney(target, currency())}`;
+  return `spans ${formatMoney(target, currency())}`;
+}
+
+function renderBudget() {
+  const budget = state.model.budget;
+  if (!budget || !budget.lines.length) return null;
+  const counts = budgetCounts();
+  const setGuests = state.model.settings.guestCount;
+  const countLabel = (n) => (n === setGuests ? `${formatNumber(n)} guests (your count)` : `${formatNumber(n)} guests`);
+  const totals = counts.map((n) => budgetTotals(budget, n));
+  const target = budget.target ?? state.model.settings.budget;
+
+  const rows = [];
+  for (const [group, groupLabel] of Object.entries(BUDGET_GROUPS)) {
+    const lines = budget.lines.filter((line) => line.group === group);
+    if (!lines.length) continue;
+    rows.push(el("tr", { class: "group-row" }, [
+      el("th", { scope: "colgroup", colspan: String(counts.length + 2), text: groupLabel }),
+    ]));
+    for (const line of lines) {
+      rows.push(el("tr", {}, [
+        el("td", { "data-label": "Item" }, [
+          el("span", { class: "line-item" }, richText(line.item)),
+          " ",
+          el("span", { class: `pill pill-${line.priceType}`, text: line.priceType === "listed" ? "Listed" : "Estimate" }),
+        ]),
+        ...counts.map((n) => el("td", { class: "num", "data-label": countLabel(n), text: moneyRange(estimateLine(line, n)) })),
+        el("td", { class: "basis", "data-label": "Basis" }, [
+          el("span", {}, richText(line.basis)),
+          line.notes ? el("span", { class: "line-note" }, richText(line.notes)) : null,
+          sourceList(line.sources),
+        ]),
+      ]));
+    }
+    if (group === "wedding") {
+      const pct = budget.contingencyPercent;
+      rows.push(el("tr", { class: "subtotal-row" }, [
+        el("td", { "data-label": "Item", text: "Subtotal" }),
+        ...totals.map((total, index) => el("td", { class: "num", "data-label": countLabel(counts[index]), text: moneyRange(total.groups.wedding) })),
+        el("td", { class: "basis", "data-label": "Basis", text: "Wedding-day lines only. Optional lines and the two parties are not included." }),
+      ]));
+      rows.push(el("tr", { class: "subtotal-row" }, [
+        el("td", { "data-label": "Item", text: `Tax, tips, and fees (${pct.low}–${pct.high}%)` }),
+        ...totals.map((total, index) => el("td", { class: "num", "data-label": countLabel(counts[index]), text: moneyRange(total.contingency) })),
+        el("td", { class: "basis", "data-label": "Basis", text: "The low percent applies to the low subtotal, and the high percent to the high subtotal." }),
+      ]));
+    }
+  }
+
+  const table = el("table", { class: "budget-table" }, [
+    el("caption", { text: budget.summary }),
+    el("thead", {}, [
+      el("tr", {}, [
+        el("th", { scope: "col", text: "Item" }),
+        ...counts.map((n) => el("th", { scope: "col", class: "num", text: countLabel(n) })),
+        el("th", { scope: "col", text: "Basis" }),
+      ]),
+    ]),
+    el("tbody", {}, rows),
+    el("tfoot", {}, [
+      el("tr", {}, [
+        el("th", { scope: "row", text: "Wedding total" }),
+        ...totals.map((total, index) => el("td", { class: "num", "data-label": countLabel(counts[index]) }, [
+          el("strong", { text: moneyRange(total.wedding) }),
+          total.perGuest ? el("span", { class: "per-guest", text: `${moneyRange(total.perGuest)} per guest` }) : null,
+          typeof target === "number" ? el("span", { class: targetClass(total.wedding, target), text: compareToTarget(total.wedding, target) }) : null,
+        ])),
+        el("td", { "data-label": "Note", text: "Excludes optional lines and bachelor or bachelorette costs. Both bar options are inside this range." }),
+      ]),
+    ]),
+  ]);
+
+  return el("div", { class: "budget-block", id: "budget-estimate" }, [
+    el("h3", { class: "subhead", text: "Budget estimate" }),
+    el("p", { class: "hint", text: `Ranges for ${counts.map(formatNumber).join(" and ")} guests${budget.asOf ? `, checked ${budget.asOf}` : ""}. Listed means a vendor or directory published the number. Everything else is an estimate.` }),
+    renderTargetComparison(budget, totals, counts),
+    renderPlan(budget),
+    el("div", { class: "table-scroll" }, [table]),
+  ]);
+}
+
+function targetClass(total, target) {
+  if (total.low > target) return "per-guest over-flag";
+  if (total.high < target) return "per-guest under-flag";
+  return "per-guest";
+}
+
+function renderTargetComparison(budget, totals, counts) {
+  const target = budget.target ?? state.model.settings.budget;
+  if (typeof target !== "number") return null;
+  const ceilings = (budget.ceilings?.length ? budget.ceilings : [175, 200, 250]).map((guests) => {
+    const ceiling = perGuestCeiling(target, guests);
+    return `${formatNumber(guests)} guests: ${formatMoney(ceiling, currency())} per guest`;
+  });
+  const compare = counts.map((guests, index) => {
+    const total = totals[index].wedding;
+    return `${formatNumber(guests)} guests ${moneyRange(total)} (${compareToTarget(total, target)})`;
+  });
+  return el("div", { class: "panel target-panel" }, [
+    el("h3", { class: "subhead", text: `Target ${formatMoney(target, currency())}` }),
+    el("p", {}, compare.join(". ") + "."),
+    el("p", { class: "hint", text: `Per-guest ceiling if the whole target is spent on the wedding: ${ceilings.join("; ")}.` }),
+  ]);
+}
+
+function renderPlan(budget) {
+  const plan = budget.plan;
+  const totals = planTotals(budget);
+  if (!plan || !totals) return null;
+  const target = budget.target ?? state.model.settings.budget;
+  const rows = plan.lines.map((line) => el("tr", { class: line.over ? "over-row" : "" }, [
+    el("td", { "data-label": "Item" }, [
+      line.item,
+      " ",
+      el("span", { class: `pill pill-${line.priceType}`, text: line.priceType === "listed" ? "Listed" : "Estimate" }),
+      line.over === "over" ? el("span", { class: "pill pill-over", text: "Over allocation" }) : null,
+      line.over === "high" ? el("span", { class: "pill pill-over", text: "High end over" }) : null,
+    ]),
+    el("td", { class: "num", "data-label": "Plan", text: formatMoney(line.amount, currency()) }),
+    el("td", { class: "num", "data-label": "Estimate at this count", text: moneyRange(line.estimate) }),
+    el("td", { class: "basis", "data-label": "Choice", text: line.choice }),
+  ]));
+  const optionRows = totals.options.map((option) => {
+    const cautious = option.id === totals.cautious?.id;
+    return el("tr", { class: cautious ? "subtotal-row" : "" }, [
+      el("td", { "data-label": "Bar option" }, [
+        option.label,
+        " ",
+        el("span", { class: "pill pill-estimate", text: "Estimate" }),
+        cautious ? el("span", { class: "pill pill-over", text: "Higher option" }) : null,
+      ]),
+      el("td", { class: "num", "data-label": "Plan", text: formatMoney(option.amount, currency()) }),
+      el("td", { class: "num", "data-label": "Total with tax and tips", text: moneyRange(option.total) }),
+      el("td", { class: "basis", "data-label": "Basis" }, [
+        option.basis,
+        typeof target === "number" ? el("span", { class: "line-note", text: compareToTarget(option.total, target) }) : null,
+      ]),
+    ]);
+  });
+  return el("div", { class: "plan-block", id: "plan-50k" }, [
+    el("h3", { class: "subhead", text: plan.label }),
+    el("p", { class: "hint", text: plan.summary }),
+    el("p", { class: "hint", text: `Allocations are for ${formatNumber(plan.guests)} guests. A line is marked over when its researched low is already above that allocation, or when only the high end is.` }),
+    el("div", { class: "table-scroll" }, [
+      el("table", { class: "budget-table plan-table" }, [
+        el("caption", { text: "Plan to hit the target. The two bar totals are separate. The cautious reading is the higher one." }),
+        el("thead", {}, [
+          el("tr", {}, [
+            el("th", { scope: "col", text: "Item" }),
+            el("th", { scope: "col", class: "num", text: "Plan" }),
+            el("th", { scope: "col", class: "num", text: "Researched range" }),
+            el("th", { scope: "col", text: "Why this number" }),
+          ]),
+        ]),
+        el("tbody", {}, [
+          ...rows,
+          el("tr", { class: "group-row" }, [
+            el("th", { scope: "colgroup", colspan: "4", text: "Bar, two options — not added together" }),
+          ]),
+          ...optionRows,
+        ]),
+      ]),
+    ]),
+  ]);
+}
+
+function renderShortlist() {
+  const vendors = state.model.vendorOptions;
+  if (!vendors?.length) return null;
+  const titles = new Map(state.model.tasks.map((task) => [task.id, task.title]));
+  const groups = groupVendorOptions(vendors);
+  const blocks = groups.map((group) => el("details", { class: "shortlist-group", id: `shortlist-${group.category.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}` }, [
+    el("summary", {}, [
+      el("span", { text: group.category }),
+      el("span", { class: "count", text: String(group.vendors.length) }),
+    ]),
+    el("ul", { class: "shortlist" }, group.vendors.map((vendor) => el("li", { class: "vendor-card", id: `vendor-option-${vendor.id}` }, [
+      el("p", { class: "vendor-name" }, [
+        vendor.url ? externalLink(vendor.url, vendor.name) : vendor.name,
+        vendor.base ? el("span", { class: "vendor-base", text: vendor.base }) : null,
+      ]),
+      policyBadges(vendor),
+      vendor.pricing ? el("p", { class: "vendor-price" }, [
+        el("span", { class: `pill pill-${vendor.priceType === "listed" ? "listed" : "estimate"}`, text: { listed: "Listed", estimate: "Estimate", quote: "Quote" }[vendor.priceType] || "Quote" }),
+        " ",
+        vendor.pricing,
+      ]) : null,
+      vendor.fit ? el("p", {}, richText(vendor.fit)) : null,
+      vendor.caveat ? el("p", { class: "vendor-caveat" }, [el("strong", { text: "Check: " }), ...richText(vendor.caveat)]) : null,
+      el("p", { class: "vendor-meta" }, [
+        vendor.taskId && titles.has(vendor.taskId) ? `For: ${titles.get(vendor.taskId)}` : "",
+        vendor.policySource ? el("span", { class: "line-note" }, [sourceList([vendor.policySource])]) : null,
+        vendor.source ? el("span", { class: "line-note" }, [sourceList([vendor.source])]) : null,
+      ]),
+    ]))),
+  ]));
+  return el("div", { class: "shortlist-block", id: "vendor-shortlist" }, [
+    el("h3", { class: "subhead", text: "Vendor shortlist" }),
+    el("p", { class: "hint", text: `${vendors.length} candidates to contact. They are not bookings and they are not in Known costs. Venue cards show alcohol and outside-catering rules when a source states them.` }),
+    ...blocks,
+  ]);
 }
 
 function renderSendMount() {
