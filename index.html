@@ -37,6 +37,7 @@
       <p class="view-all-row">
         <button type="button" id="view-all" class="view-all">View all sections</button>
       </p>
+      <div id="mount-send" class="send-row"></div>
     </div>
   </header>
 
@@ -54,8 +55,8 @@
 
     <section class="section panel how-to" id="how" hidden aria-labelledby="how-heading">
       <h2 id="how-heading">How status is saved</h2>
-      <p>The saved plan is <code>data/wedding.json</code> on the <code>main</code> branch. Edit that file on GitHub, commit, and reload this page.</p>
-      <p>A “Preview as done” checkbox changes this browser only. It is kept on this device and is not written back to the file. Reset preview clears it.</p>
+      <p>The saved plan is <code>data/wedding.json</code> on the <code>main</code> branch. Edits you make on this page stay in this browser until you send them.</p>
+      <p><strong>Send updates</strong> opens a GitHub issue with a summary and a JSON block. An assistant merges that JSON into the file, then you choose <strong>Reset local edits</strong>. The format is in <a href="docs/UPDATES.md">docs/UPDATES.md</a>.</p>
       <p>Field-by-field instructions, including how to turn on GitHub Pages, are in the <a href="https://github.com/victorv83/Wedding-Planner/blob/main/README.md">README on GitHub</a>.</p>
     </section>
   </main>
@@ -63,10 +64,11 @@
   <footer class="site-footer">
     <div class="wrap">
       <p id="footer-line">Victor &amp; Mít · wedding planning tracker</p>
-      <p>Official task status is the <code>status</code> field in <code>data/wedding.json</code>.</p>
+      <p>Edits stay in this browser until you send them. The saved plan is <code>data/wedding.json</code>.</p>
     </div>
   </footer>
 
+  <div id="dialog-root"></div>
   <script type="module" src="app.js"></script>
 </body>
 </html>
