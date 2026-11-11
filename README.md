@@ -25,6 +25,11 @@ The HTML, CSS, scripts, and `data/wedding.json` load once. After that, the secti
 | Countdown | `#overview` | Date countdown and the guest, budget, and Tết facts |
 | Progress | `#progress` | Overall, phase, and category bars |
 | Timeline | `#timeline` | Phases, filters, and editable items |
+| Months | `#months` | The same tasks, grouped from November 2026 through March 2028 |
+| Day of | `#dayof` | A draft run of show for March 18, 2028 |
+| Tea | `#ceremony` | Home tea-ceremony guide |
+| Guests | `#guests` | Side counts around 200, RSVPs, and 20 tables |
+| Drafts | `#outreach` | Vendor questions and labeled inquiry drafts to copy. Nothing is sent |
 | Vendors | `#vendors` | Bookings, the shortlist, tray carriers, and the budget, including the $50,000 plan |
 
 **View all sections**, the control directly under the nav, stacks every section the way the long page used to, and sets `#all`. In that mode that control is the one marked current. Otherwise the open section’s nav link is marked current (`aria-current="page"`).

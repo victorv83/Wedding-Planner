@@ -51,7 +51,19 @@ import {
   statusAfterMarkDone,
   taskSnapshot,
   viewFromHash,
+  fitReport,
 } from "./logic.js";
+import {
+  applyGuestEdits,
+  guestEditsDirty,
+  loadGuestEdits,
+  renderCeremony,
+  renderDayOf,
+  renderGuests,
+  renderMonths,
+  renderOutreach,
+  saveGuestEdits,
+} from "./guides.js";
 
 const STORAGE_KEY = "weddingPlanner.localEdits.v1";
 const LEGACY_STORAGE_KEY = "weddingPlanner.previewStatus.v1";
@@ -66,6 +78,8 @@ const state = {
   draft: null,
   formErrors: [],
   issue: null,
+  guides: null,
+  guestEdits: null,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -141,7 +155,7 @@ function currency() {
 }
 
 function usingEdits() {
-  return editCounts(state.edits).total > 0;
+  return editCounts(state.edits).total > 0 || guestEditsDirty(state.model?.guestPlan, state.guestEdits);
 }
 
 function renderShellText() {
@@ -369,7 +383,7 @@ function renderOverview() {
 }
 
 function sendButton(id) {
-  const count = editCounts(state.edits).total;
+  const count = editCounts(state.edits).total + (guestEditsDirty(state.model?.guestPlan, state.guestEdits) ? 1 : 0);
   const button = el("button", {
     type: "button",
     class: "primary send-updates",
@@ -839,10 +853,12 @@ function resetEdits() {
   const confirmed = window.confirm("Clear every local edit on this device? data/wedding.json stays the same.");
   if (!confirmed) return;
   state.edits = {};
+  state.guestEdits = null;
   state.editingId = null;
   state.formErrors = [];
   state.issue = null;
   saveEdits(state.edits);
+  saveGuestEdits(null);
   render({ focusId: "send-updates" });
 }
 
@@ -1187,10 +1203,14 @@ function renderWeddingParty() {
 
 function budgetCounts() {
   const budget = state.model.budget;
-  const counts = [...(budget?.guestCounts || [])];
-  const guests = state.model.settings.guestCount;
-  if (typeof guests === "number" && Number.isFinite(guests) && guests > 0 && !counts.includes(guests)) counts.push(guests);
-  return counts.sort((a, b) => a - b);
+  const primary = state.model.settings.guestCount;
+  const counts = [];
+  if (typeof primary === "number" && Number.isFinite(primary) && primary > 0) counts.push(primary);
+  for (const count of budget?.guestCounts || []) {
+    if (!counts.includes(count)) counts.push(count);
+  }
+  const tail = counts.slice(1).sort((a, b) => a - b);
+  return counts.length ? [counts[0], ...tail] : tail;
 }
 
 function compareToTarget(total, target) {
@@ -1205,7 +1225,7 @@ function renderBudget() {
   if (!budget || !budget.lines.length) return null;
   const counts = budgetCounts();
   const setGuests = state.model.settings.guestCount;
-  const countLabel = (n) => (n === setGuests ? `${formatNumber(n)} guests (your count)` : `${formatNumber(n)} guests`);
+  const countLabel = (n) => (n === setGuests ? `${formatNumber(n)} guests (baseline)` : `${formatNumber(n)} guests`);
   const totals = counts.map((n) => budgetTotals(budget, n));
   const target = budget.target ?? state.model.settings.budget;
 
@@ -1299,6 +1319,26 @@ function renderTargetComparison(budget, totals, counts) {
     el("h3", { class: "subhead", text: `Target ${formatMoney(target, currency())}` }),
     el("p", {}, compare.join(". ") + "."),
     el("p", { class: "hint", text: `Per-guest ceiling if the whole target is spent on the wedding: ${ceilings.join("; ")}.` }),
+    renderFit(budget, target),
+  ]);
+}
+
+function renderFit(budget, target) {
+  const guests = state.model.settings.guestCount;
+  if (typeof guests !== "number" || typeof target !== "number") return null;
+  const fit = fitReport(budget, guests, target);
+  const levers = budget.levers || [];
+  const verdict = fit.planFitsHigh
+    ? `The cost-saving plan at ${formatNumber(guests)} guests fits under ${formatMoney(target, currency())} even with the higher bar and the 15% allowance.`
+    : `The cost-saving plan at ${formatNumber(guests)} guests is still over ${formatMoney(target, currency())} on the high allowance.`;
+  const range = fit.estimateFitsHigh
+    ? `The full researched range also fits.`
+    : fit.estimateFitsLow
+      ? `The full researched range runs ${moneyRange(fit.estimate)}, so only the low end fits. The high end is the gap.`
+      : `The full researched range runs ${moneyRange(fit.estimate)}, over the target at both ends.`;
+  return el("div", {}, [
+    el("p", {}, [el("strong", { text: verdict }), " ", range]),
+    levers.length ? el("ul", { class: "guide-list" }, levers.map((line) => el("li", { text: line }))) : null,
   ]);
 }
 
@@ -1390,6 +1430,8 @@ function renderShortlist() {
         vendor.taskId && titles.has(vendor.taskId) ? `For: ${titles.get(vendor.taskId)}` : "",
         vendor.policySource ? el("span", { class: "line-note" }, [sourceList([vendor.policySource])]) : null,
         vendor.source ? el("span", { class: "line-note" }, [sourceList([vendor.source])]) : null,
+        vendor.email ? el("span", { class: "line-note", text: `Email: ${vendor.email}` }) : null,
+        vendor.phone ? el("span", { class: "line-note", text: `Phone: ${vendor.phone}` }) : null,
       ]),
     ]))),
   ]));
@@ -1443,14 +1485,17 @@ function downloadJson(filename, text) {
 
 function openIssuePreview() {
   const updatedOn = formatISO(startOfToday());
-  const payload = buildUpdatePayload(state.model.tasks, state.edits, updatedOn, currency(), state.model.phases);
+  const guestPlan = guestEditsDirty(state.model.guestPlan, state.guestEdits)
+    ? applyGuestEdits(state.model.guestPlan, state.guestEdits)
+    : null;
+  const payload = buildUpdatePayload(state.model.tasks, state.edits, updatedOn, currency(), state.model.phases, { guestPlan });
   const link = githubIssueUrl({ title: payload.title, body: payload.body });
   state.issue = {
     ...payload,
     ...link,
     opened: false,
     notice: "",
-    empty: Object.keys(payload.changes).length === 0,
+    empty: Object.keys(payload.changes).length === 0 && !guestPlan,
   };
   render({ focusId: state.issue.empty ? "close-issue" : "open-issue" });
 }
@@ -1620,6 +1665,7 @@ function render(options = {}) {
   renderProgress();
   renderTasks();
   renderVendors();
+  renderGuideMounts();
   renderSendMount();
   renderIssue();
   applyView({ scroll: Boolean(options.scroll) });
@@ -1645,11 +1691,31 @@ function renderFatal(error) {
   if (how) how.hidden = false;
 }
 
+function renderGuideMounts() {
+  const guides = state.guides;
+  const tasks = viewTasks();
+  if (!guides) return;
+  $("mount-ceremony")?.replaceChildren(renderCeremony(guides, tasks));
+  $("mount-guests")?.replaceChildren(renderGuests(state.model.guestPlan, state.guestEdits, (next) => {
+    state.guestEdits = next;
+    saveGuestEdits(next);
+    render();
+  }));
+  $("mount-outreach")?.replaceChildren(renderOutreach(guides, tasks));
+  $("mount-months")?.replaceChildren(renderMonths(guides, tasks));
+  $("mount-dayof")?.replaceChildren(renderDayOf(guides));
+}
+
 async function init() {
   const response = await fetch("data/wedding.json", { cache: "no-cache" });
   if (!response.ok) throw new Error(`Could not load wedding data (${response.status}).`);
   const data = await response.json();
+  const guidesResponse = await fetch("data/guides.json", { cache: "no-cache" });
+  if (!guidesResponse.ok) throw new Error(`Could not load guides (${guidesResponse.status}).`);
+  state.guides = await guidesResponse.json();
   state.model = buildModel(data);
+  state.model.guestPlan = data.guestPlan || { target: 200, tableSize: 10, sides: [], households: [] };
+  state.guestEdits = loadGuestEdits();
   state.edits = pruneEdits(state.model.tasks, loadEdits());
   saveEdits(state.edits);
   $("app-status").hidden = true;

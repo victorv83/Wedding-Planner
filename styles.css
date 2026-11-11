@@ -1396,6 +1396,130 @@ tfoot th {
   color: var(--lacquer-deep);
 }
 
+.guide-fold {
+  margin: 0.75rem 0;
+  background: var(--paper);
+  border: 1px solid var(--gold-line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+.guide-fold > summary {
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.guide-fold-body {
+  padding: 0 1rem 1rem;
+}
+
+.guide-list {
+  margin: 0.4rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.guide-list li + li,
+.run-list li + li {
+  margin-top: 0.45rem;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+}
+
+.gallery figure {
+  margin: 0;
+}
+
+.gallery img {
+  width: 100%;
+  height: 14rem;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #f3eee6;
+}
+
+.gallery figcaption,
+.email-draft {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.email-draft {
+  white-space: pre-wrap;
+  background: var(--ivory);
+  border-radius: 12px;
+  padding: 0.8rem;
+  font-family: var(--sans);
+}
+
+.households {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0.6rem 0;
+}
+
+.household {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1.4fr) 4.5rem minmax(7rem, 1fr) 6.5rem 4.5rem minmax(6rem, 1fr) auto;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.household input,
+.household select {
+  width: 100%;
+  min-height: 44px;
+}
+
+.side-grid {
+  margin-bottom: 0.6rem;
+}
+
+.run-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.run-list li {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid rgba(140, 106, 47, 0.28);
+}
+
+.run-list time {
+  font-weight: 700;
+  color: var(--lacquer);
+}
+
+.run-list p {
+  margin: 0.15rem 0 0;
+}
+
+.month-block {
+  margin: 1rem 0;
+}
+
+.happiness {
+  margin: 0.2rem 0 0.6rem;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--lacquer);
+}
+
+.toc {
+  max-width: 46rem;
+}
+
 @media (max-width: 720px) {
   .site-header {
     padding-top: 1.15rem;
@@ -1446,7 +1570,9 @@ tfoot th {
   }
 
   .field-row,
-  .shortlist {
+  .shortlist,
+  .household,
+  .run-list li {
     grid-template-columns: 1fr;
   }
 

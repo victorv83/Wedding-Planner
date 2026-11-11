@@ -35,13 +35,18 @@ const VENDOR_CATEGORIES = new Set([
 ]);
 
 /** Sections the nav can open. "all" stacks every section, including the save note. */
-export const SECTION_IDS = ["overview", "progress", "timeline", "vendors"];
+export const SECTION_IDS = ["overview", "progress", "timeline", "months", "dayof", "ceremony", "guests", "outreach", "vendors"];
 
 const HASH_TO_SECTION = {
   overview: "overview",
   progress: "progress",
   timeline: "timeline",
   tasks: "timeline",
+  months: "months",
+  dayof: "dayof",
+  ceremony: "ceremony",
+  guests: "guests",
+  outreach: "outreach",
   vendors: "vendors",
 };
 
@@ -605,6 +610,60 @@ function parsePlan(raw, lines, warnings) {
   };
 }
 
+/** Whether the researched range and the cost-saving plan fit the target at one guest count. */
+export function fitReport(budget, guests, target) {
+  const estimate = budgetTotals(budget, guests).wedding;
+  const plan = planTotals(budget);
+  const cautious = plan?.cautious?.total || null;
+  return {
+    guests,
+    target,
+    estimate,
+    cautious,
+    estimateFitsLow: estimate.low <= target,
+    estimateFitsHigh: estimate.high <= target,
+    planFitsHigh: cautious ? cautious.high <= target : null,
+  };
+}
+
+export function monthsInRange(start, end) {
+  const [sy, sm] = start.split("-").map(Number);
+  const [ey, em] = end.split("-").map(Number);
+  const months = [];
+  let year = sy;
+  let month = sm;
+  while (year < ey || (year === ey && month <= em)) {
+    months.push(`${year}-${String(month).padStart(2, "0")}`);
+    month += 1;
+    if (month === 13) {
+      month = 1;
+      year += 1;
+    }
+  }
+  return months;
+}
+
+export function tasksInMonth(tasks, yearMonth) {
+  return (tasks || []).filter((task) => {
+    const due = resolveDue(task);
+    if (!due) return false;
+    const month = `${due.date.getFullYear()}-${String(due.date.getMonth() + 1).padStart(2, "0")}`;
+    return month === yearMonth;
+  });
+}
+
+export function guestSideTotal(plan) {
+  return (plan?.sides || []).reduce((sum, side) => sum + (Number(side.estimate) || 0), 0);
+}
+
+export function guestTablePlan(plan) {
+  const size = plan?.tableSize > 0 ? plan.tableSize : 10;
+  const target = plan?.target > 0 ? plan.target : 0;
+  const tables = target ? Math.ceil(target / size) : 0;
+  const assigned = (plan?.households || []).reduce((sum, house) => sum + (Number(house.count) || 0), 0);
+  return { size, target, tables, seats: tables * size, assigned };
+}
+
 /** Both bar choices, with contingency. The cautious total is the higher one. */
 export function planTotals(budget) {
   const plan = budget?.plan;
@@ -665,6 +724,8 @@ function parseVendorOptions(raw, taskIds, warnings) {
       byoAlcohol: isVenue ? normalizeAlcohol(item?.byoAlcohol) : "",
       outsideCatering: isVenue ? normalizeCatering(item?.outsideCatering) : "",
       policySource,
+      email: textOr(item?.email, ""),
+      phone: textOr(item?.phone, ""),
     });
   }
   return vendors;
@@ -1254,15 +1315,20 @@ export function summarizeEdits(tasks, edits, currency = "USD", phases = []) {
   return lines;
 }
 
-export function buildUpdatePayload(tasks, edits, updatedOn, currency = "USD", phases = []) {
+export function buildUpdatePayload(tasks, edits, updatedOn, currency = "USD", phases = [], extras = {}) {
   const changes = orderEdits(tasks, pruneEdits(tasks, edits));
   const summaryLines = summarizeEdits(tasks, changes, currency, phases);
   const document = { updatedOn, changes };
+  const lines = [...summaryLines];
+  if (extras?.guestPlan) {
+    document.guestPlan = extras.guestPlan;
+    lines.push("Guest-list edits are in guestPlan. Replace settings-side counts and the households array with this object.");
+  }
   const json = JSON.stringify(document, null, 2);
   const body = [
     `Updates from the wedding tracker on ${updatedOn}.`,
     "",
-    ...(summaryLines.length ? summaryLines.map((line) => `- ${line}`) : ["- No local edits."]),
+    ...(lines.length ? lines.map((line) => `- ${line}`) : ["- No local edits."]),
     "",
     "Merge `changes` into `data/wedding.json` by task id. See docs/UPDATES.md.",
     "",

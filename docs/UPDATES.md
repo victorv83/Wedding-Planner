@@ -41,7 +41,7 @@ The block is an object:
 }
 ```
 
-`updatedOn` is the day the issue was created. `changes` is keyed by task `id`. Ignore any prose around the fence; the object is the source of truth. If the issue says the JSON was copied to the clipboard, use the pasted object, which has the same shape.
+`updatedOn` is the day the issue was created. `changes` is keyed by task `id`. If `guestPlan` is present, replace the guest-plan object in `data/wedding.json` with it. Ignore any prose around the fence; the object is the source of truth. If the issue says the JSON was copied to the clipboard, use the pasted object, which has the same shape.
 
 ## Merge rules
 
