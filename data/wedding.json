@@ -462,7 +462,7 @@
       "low": 10,
       "high": 15
     },
-    "summary": "Planning ranges for a reception near Orange and Beaumont, with the tea ceremony at home. Wedding-day lines include a 10–15% allowance for tax, tips, and fees. Bachelor and bachelorette costs are shown apart and are not in the wedding total. Figures are estimates unless marked Listed.",
+    "summary": "Planning ranges for a reception near Orange and Beaumont, with the tea ceremony at home. A 10–15% allowance for tax, tips, and fees applies only to wedding-day lines that do not already include them. The Vietnamese dinner already includes Kim Sơn's service and tax, so it is left out of that allowance. Bachelor and bachelorette costs are shown apart and are not in the wedding total.",
     "lines": [
       {
         "id": "venue",
@@ -506,7 +506,7 @@
           "low": 83,
           "high": 162
         },
-        "basis": "Kim Sơn publishes presets from $615 to $1,195 plus 25% service and 8.25% tax. These per-guest numbers assume a table of 10. The PDF does not say per table or per person. To confirm. Travel to Beaumont is not included. The wedding-wide 10–15% allowance may count this service and tax a second time.",
+        "basis": "Kim Sơn publishes presets from $615 to $1,195 plus 25% service and 8.25% tax. These per-guest numbers assume a table of 10. The PDF does not say per table or per person. To confirm. Travel to Beaumont is not included. Service and tax are already in this line, so the 10–15% allowance does not apply to it.",
         "priceType": "listed",
         "sources": [
           {
@@ -514,7 +514,8 @@
             "url": "https://static-content.owner.com/document/33217388-9452-4522-9654-f08dd201d6c4.pdf"
           }
         ],
-        "notes": "If the packages are per person, ignore this line and get another caterer."
+        "notes": "If the packages are per person, use the per-person scenario. That total does not fit $50,000.",
+        "feesIncluded": true
       },
       {
         "id": "rentals",
@@ -1002,7 +1003,7 @@
       "id": "hit-50k",
       "label": "Plan to hit $50k",
       "guests": 200,
-      "summary": "One way to aim at $50,000 for about 200 guests using published rates where we have them: the Event Centre noncommercial all-day rental plus the $400 access fee, Kim Sơn Bronze if that preset is per table of 10, Sydney's 10-hour photo package, and the lowest published Houston DJ package. The tea ceremony stays at home. The lion dance stays out until there is a quote. The bar is not assumed to be bring-your-own. Both bar options are priced, and the cautious total uses the higher one. That higher path stays just under $50,000 after 15% only if the Kim Sơn unit is per table, travel is modest, and police security is small. Those are to confirm. Kim Sơn's service and tax are already in the catering number, so the 10–15% allowance may count them twice.",
+      "summary": "One way to aim at $50,000 for about 200 guests using published rates where we have them: the Event Centre noncommercial all-day rental plus the $400 access fee, Kim Sơn Bronze if that preset is per table of 10, Sydney's 10-hour photo package, and the lowest published Houston DJ package. The tea ceremony stays at home. The lion dance stays out until there is a quote. The bar is not assumed to be bring-your-own. Both bar paths are priced. The 10–15% allowance skips the catering line because service and tax are already in it. The per-person reading of the same Kim Sơn preset does not fit.",
       "lines": [
         {
           "lineId": "venue",
@@ -1017,7 +1018,7 @@
         {
           "lineId": "catering",
           "amount": 16644,
-          "choice": "Kim Sơn Bronze at $615 assumed per table of 10, plus 25% service and 8.25% tax, for 20 tables ($16,644). Unit and travel are to confirm. The global 10–15% may count that service and tax again."
+          "choice": "Kim Sơn Bronze at $615 assumed per table of 10, plus 25% service and 8.25% tax, for 20 tables ($16,644). Unit and travel are to confirm. This amount is left out of the 10–15% allowance."
         },
         {
           "lineId": "rentals",
@@ -1142,6 +1143,22 @@
           "priceType": "estimate",
           "basis": "Low end of a $25–$45 a guest venue-bar estimate at 200 guests. Not a published local package."
         }
+      ],
+      "unitScenarios": [
+        {
+          "id": "per-table",
+          "label": "Per table of 10",
+          "lineId": "catering",
+          "amount": 16644,
+          "detail": "Bronze $615 × 20 tables, then 25% service and 8.25% tax. Travel is not included."
+        },
+        {
+          "id": "per-person",
+          "label": "Per person",
+          "lineId": "catering",
+          "amount": 166434,
+          "detail": "The same Bronze $615 × 200 guests, then 25% service and 8.25% tax. This does not fit $50,000."
+        }
       ]
     },
     "levers": [
@@ -1150,8 +1167,8 @@
       "Kim Sơn only stays in range if the preset is per table of 10. Per person would break the budget. Travel is still unknown.",
       "Reign Hills does not allow bring-your-own alcohol. Belle Oaks does not say that you may bring it.",
       "The lion dance stays out of the plan until there is a quote. Attire and the pre-wedding shoot stay on the Vietnam trip.",
-      "Kim Sơn's 25% service fee and 8.25% tax are already inside the catering line. The extra 10–15% on the wedding total may count that food tax and service a second time until Kim Sơn confirms what is included.",
-      "Beaumont PD security is required at the Event Centre and the rate is not published, so the plan total does not include it. To confirm."
+      "Beaumont PD security is required at the Event Centre and the rate is not published, so the plan total does not include it. To confirm.",
+      "The 10–15% allowance skips the catering line, because Kim Sơn's 25% service and 8.25% tax are already in that number."
     ]
   },
   "vendorOptions": [
@@ -2127,5 +2144,27 @@
       }
     ],
     "households": []
-  }
+  },
+  "nextActions": [
+    {
+      "id": "inquire-venue-caterer",
+      "label": "Send the Kim Sơn and Event Centre inquiries"
+    },
+    {
+      "id": "confirm-kimson",
+      "label": "Confirm Kim Sơn’s unit and travel fee"
+    },
+    {
+      "id": "ask-security",
+      "label": "Ask Beaumont PD what security costs"
+    },
+    {
+      "id": "shortlist-lion",
+      "label": "Shortlist a lion dance troupe"
+    },
+    {
+      "id": "start-guest-list",
+      "label": "Start the guest list by household"
+    }
+  ]
 }

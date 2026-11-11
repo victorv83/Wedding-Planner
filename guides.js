@@ -76,7 +76,14 @@ function fold(title, children) {
 
 function gallery(images) {
   return el("div", { class: "gallery" }, (images || []).map((image) => el("figure", {}, [
-    el("img", { src: image.src, alt: image.alt, loading: "lazy", decoding: "async", width: "640", height: "480" }),
+    el("img", {
+      src: image.src,
+      alt: image.alt || image.caption || "Reference photo",
+      loading: "lazy",
+      decoding: "async",
+      width: "640",
+      height: "480",
+    }),
     el("figcaption", { text: image.caption }),
   ])));
 }

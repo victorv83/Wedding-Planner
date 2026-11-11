@@ -41,7 +41,7 @@ The block is an object:
 }
 ```
 
-`updatedOn` is the day the issue was created. `changes` is keyed by task `id`. If `guestPlan` is present, replace the guest-plan object in `data/wedding.json` with it. Ignore any prose around the fence; the object is the source of truth. If the issue says the JSON was copied to the clipboard, use the pasted object, which has the same shape.
+`updatedOn` is the day the issue was created. `changes` is keyed by task `id`. If `guestPlan` is present, replace the guest-plan object in `data/wedding.json` with it. If `quotes` is present, it is keyed by vendor id (`amount`, `deposit`, `quotedOn`, `holdDeadline`, `notes`). A quote amount replaces that task's budget estimate until you write the number into the plan. If `nextActions` is present, `true` means that checklist item was checked. If `cateringUnit` is `per-person` or `per-table`, that is the Kim Sơn scenario selected on the device. Ignore any prose around the fence; the object is the source of truth. If the issue says the JSON was copied to the clipboard, use the pasted object, which has the same shape.
 
 ## Merge rules
 
