@@ -29,6 +29,8 @@ import {
   nextOpenTarget,
   perGuestCeiling,
   planTotals,
+  quotesByTask,
+  normalizeQuotes,
   parseISODate,
   progressStats,
   pruneEdits,
@@ -349,24 +351,46 @@ test("budget prices 175 and 250 guests and keeps parties out of the wedding tota
   assert.deepEqual(monthsInRange("2026-11", "2027-01"), ["2026-11", "2026-12", "2027-01"]);
   assert.ok(tasksInMonth(model.tasks, "2028-01").some((task) => task.id === "bachelor"));
   const catering = budget.lines.find((line) => line.id === "catering");
+  assert.equal(catering.feesIncluded, true);
   assert.deepEqual(estimateLine(catering, 175), { low: 14525, high: 28350 });
   assert.deepEqual(estimateLine(catering, 250), { low: 20750, high: 40500 });
   const teaPlace = budget.lines.find((line) => line.id === "tea-place");
   assert.deepEqual(estimateLine(teaPlace, 200), { low: 0, high: 0 });
-  for (const guests of [175, 250]) {
+  for (const guests of [175, 200, 250]) {
     const totals = budgetTotals(budget, guests);
     const weddingLines = budget.lines.filter((line) => line.group === "wedding");
     const lowSum = weddingLines.reduce((sum, line) => sum + estimateLine(line, guests).low, 0);
+    const allowance = weddingLines
+      .filter((line) => !line.feesIncluded)
+      .reduce((sum, line) => sum + estimateLine(line, guests).low, 0);
     assert.equal(totals.groups.wedding.low, lowSum);
-    assert.equal(totals.contingency.low, Math.round(lowSum * 0.1));
+    assert.equal(totals.allowanceBase.low, allowance);
+    assert.ok(allowance < lowSum, "catering is left out of the allowance");
+    assert.equal(totals.contingency.low, Math.round(allowance * 0.1));
+    assert.equal(totals.contingency.high, Math.round(totals.allowanceBase.high * 0.15));
+    assert.notEqual(totals.contingency.low, Math.round(lowSum * 0.1));
     assert.equal(totals.wedding.low, lowSum + totals.contingency.low);
     assert.ok(totals.groups.parties.low > 0);
-    assert.ok(totals.wedding.high > 50000, "the high estimate is over the $50k target");
+    if (guests !== 200) assert.ok(totals.wedding.high > 50000, "the high estimate is over the $50k target");
   }
   const plan = planTotals(budget);
   assert.equal(plan.options.length, 2);
-  assert.ok(plan.cautious.amount > plan.options.find((option) => option.id === "byo").amount);
+  const byo = plan.options.find((option) => option.id === "byo");
+  const venueBar = plan.options.find((option) => option.id === "venue-package");
+  assert.deepEqual(byo.total, { low: 44371, high: 45631 });
+  assert.deepEqual(venueBar.total, { low: 45911, high: 47241 });
+  assert.equal(byo.allowanceBase.low, byo.subtotal.low - 16644);
+  assert.ok(plan.cautious.total.high > byo.total.high);
   assert.ok(plan.cautious.total.high < 50000, "the cautious $50k plan still fits");
+  const perPerson = budget.plan.unitScenarios.find((item) => item.id === "per-person");
+  const personPlan = planTotals(budget, { scenario: perPerson });
+  assert.deepEqual(personPlan.options.find((option) => option.id === "byo").total, { low: 194161, high: 195421 });
+  assert.ok(personPlan.options.every((option) => option.total.low > 50000));
+  const quoted = quotesByTask(model.vendorOptions, normalizeQuotes({ "c-kim-son": { amount: 12000, quotedOn: "2026-11-12", notes: "Per table" } }));
+  assert.deepEqual(quoted.catering, { low: 12000, high: 12000, count: 1 });
+  const withQuote = planTotals(budget, { quoteByTask: quoted });
+  assert.deepEqual(withQuote.rows.find((line) => line.lineId === "catering").used, { low: 12000, high: 12000 });
+  assert.equal(withQuote.options.find((option) => option.id === "byo").allowanceBase.low, byo.allowanceBase.low);
   assert.equal(perGuestCeiling(50000, 175), 285);
   assert.equal(perGuestCeiling(50000, 200), 250);
   assert.equal(perGuestCeiling(50000, 250), 200);

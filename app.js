@@ -52,6 +52,10 @@ import {
   taskSnapshot,
   viewFromHash,
   fitReport,
+  lineCost,
+  normalizeQuotes,
+  parseMoneyInput,
+  quotesByTask,
 } from "./logic.js";
 import {
   applyGuestEdits,
@@ -67,6 +71,9 @@ import {
 
 const STORAGE_KEY = "weddingPlanner.localEdits.v1";
 const LEGACY_STORAGE_KEY = "weddingPlanner.previewStatus.v1";
+const QUOTE_KEY = "weddingPlanner.quotes.v1";
+const ACTION_KEY = "weddingPlanner.nextActions.v1";
+const UNIT_KEY = "weddingPlanner.cateringUnit.v1";
 const NEW_ITEM = "__new__";
 
 const state = {
@@ -80,6 +87,11 @@ const state = {
   issue: null,
   guides: null,
   guestEdits: null,
+  quotes: {},
+  actionChecks: {},
+  cateringUnit: "per-table",
+  openQuoteId: null,
+  quoteError: null,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -114,6 +126,15 @@ function readJsonStorage(key) {
     return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
   } catch {
     return null;
+  }
+}
+
+function writeJsonStorage(key, value) {
+  try {
+    if (!value) localStorage.removeItem(key);
+    else localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    /* In-memory edits still work for this visit. */
   }
 }
 
@@ -154,8 +175,37 @@ function currency() {
   return settingText(state.model.settings, "currency") || "USD";
 }
 
+function savedQuotes() {
+  return normalizeQuotes(state.quotes);
+}
+
+function currentQuoteMap() {
+  return quotesByTask(state.model?.vendorOptions, savedQuotes());
+}
+
+function currentScenario() {
+  const scenarios = state.model?.budget?.plan?.unitScenarios || [];
+  return scenarios.find((item) => item.id === state.cateringUnit) || null;
+}
+
+function quotesDirty() {
+  return Object.keys(savedQuotes()).length > 0;
+}
+
+function actionsDirty() {
+  return Object.values(state.actionChecks || {}).some(Boolean);
+}
+
+function unitDirty() {
+  return state.cateringUnit && state.cateringUnit !== "per-table";
+}
+
 function usingEdits() {
-  return editCounts(state.edits).total > 0 || guestEditsDirty(state.model?.guestPlan, state.guestEdits);
+  return editCounts(state.edits).total > 0
+    || guestEditsDirty(state.model?.guestPlan, state.guestEdits)
+    || quotesDirty()
+    || actionsDirty()
+    || unitDirty();
 }
 
 function renderShellText() {
@@ -292,6 +342,31 @@ function renderWarnings() {
   );
 }
 
+function renderNextActions() {
+  const actions = state.model.nextActions || [];
+  if (!actions.length) return null;
+  const done = actions.filter((action) => state.actionChecks[action.id]).length;
+  return el("div", { class: "panel next-actions" }, [
+    el("h3", { class: "subhead", id: "next-actions-heading", text: "Next 5 actions" }),
+    el("p", { class: "hint", text: `${done} of ${actions.length} checked. Checks stay on this device until you send updates.` }),
+    el("ul", { class: "action-list" }, actions.map((action) => {
+      const input = el("input", { type: "checkbox", id: `action-${action.id}` });
+      input.checked = Boolean(state.actionChecks[action.id]);
+      input.addEventListener("change", () => {
+        const next = { ...state.actionChecks };
+        if (input.checked) next[action.id] = true;
+        else delete next[action.id];
+        state.actionChecks = next;
+        writeJsonStorage(ACTION_KEY, Object.keys(next).length ? next : null);
+        render({ focusId: input.id });
+      });
+      return el("li", {}, [
+        el("label", {}, [input, el("span", { text: action.label })]),
+      ]);
+    })),
+  ]);
+}
+
 function renderOverview() {
   const { settings } = state.model;
   const today = startOfToday();
@@ -364,6 +439,7 @@ function renderOverview() {
     : null;
 
   const section = el("section", { class: "section", id: "overview", "aria-labelledby": "overview-heading" }, [
+    renderNextActions(),
     el("h2", { id: "overview-heading", text: "Countdown" }),
     el("div", { class: "panel" }, [
       countdownBlock,
@@ -383,7 +459,11 @@ function renderOverview() {
 }
 
 function sendButton(id) {
-  const count = editCounts(state.edits).total + (guestEditsDirty(state.model?.guestPlan, state.guestEdits) ? 1 : 0);
+  const count = editCounts(state.edits).total
+    + (guestEditsDirty(state.model?.guestPlan, state.guestEdits) ? 1 : 0)
+    + (quotesDirty() ? 1 : 0)
+    + (actionsDirty() ? 1 : 0)
+    + (unitDirty() ? 1 : 0);
   const button = el("button", {
     type: "button",
     class: "primary send-updates",
@@ -854,11 +934,19 @@ function resetEdits() {
   if (!confirmed) return;
   state.edits = {};
   state.guestEdits = null;
+  state.quotes = {};
+  state.actionChecks = {};
+  state.cateringUnit = "per-table";
+  state.openQuoteId = null;
+  state.quoteError = null;
   state.editingId = null;
   state.formErrors = [];
   state.issue = null;
   saveEdits(state.edits);
   saveGuestEdits(null);
+  writeJsonStorage(QUOTE_KEY, null);
+  writeJsonStorage(ACTION_KEY, null);
+  writeJsonStorage(UNIT_KEY, null);
   render({ focusId: "send-updates" });
 }
 
@@ -1226,7 +1314,8 @@ function renderBudget() {
   const counts = budgetCounts();
   const setGuests = state.model.settings.guestCount;
   const countLabel = (n) => (n === setGuests ? `${formatNumber(n)} guests (baseline)` : `${formatNumber(n)} guests`);
-  const totals = counts.map((n) => budgetTotals(budget, n));
+  const quoteByTask = currentQuoteMap();
+  const totals = counts.map((n) => budgetTotals(budget, n, quoteByTask));
   const target = budget.target ?? state.model.settings.budget;
 
   const rows = [];
@@ -1242,8 +1331,16 @@ function renderBudget() {
           el("span", { class: "line-item" }, richText(line.item)),
           " ",
           el("span", { class: `pill pill-${line.priceType}`, text: line.priceType === "listed" ? "Listed" : "Estimate" }),
+          line.feesIncluded ? el("span", { class: "pill pill-listed", text: "Fees included" }) : null,
         ]),
-        ...counts.map((n) => el("td", { class: "num", "data-label": countLabel(n), text: moneyRange(estimateLine(line, n)) })),
+        ...counts.map((n) => {
+          const cost = lineCost(line, n, quoteByTask);
+          return el("td", { class: "num", "data-label": countLabel(n) }, [
+            cost.quoted ? el("span", { class: "pill pill-quote", text: "Quote" }) : null,
+            " ",
+            moneyRange(cost),
+          ]);
+        }),
         el("td", { class: "basis", "data-label": "Basis" }, [
           el("span", {}, richText(line.basis)),
           line.notes ? el("span", { class: "line-note" }, richText(line.notes)) : null,
@@ -1261,7 +1358,7 @@ function renderBudget() {
       rows.push(el("tr", { class: "subtotal-row" }, [
         el("td", { "data-label": "Item", text: `Tax, tips, and fees (${pct.low}–${pct.high}%)` }),
         ...totals.map((total, index) => el("td", { class: "num", "data-label": countLabel(counts[index]), text: moneyRange(total.contingency) })),
-        el("td", { class: "basis", "data-label": "Basis", text: "The low percent applies to the low subtotal, and the high percent to the high subtotal." }),
+        el("td", { class: "basis", "data-label": "Basis", text: "Applied only to wedding-day lines that do not already include service and tax. Lines marked Fees included, including the Vietnamese dinner, are left out." }),
       ]));
     }
   }
@@ -1293,6 +1390,7 @@ function renderBudget() {
     el("h3", { class: "subhead", text: "Budget estimate" }),
     el("p", { class: "hint", text: `Ranges for ${counts.map(formatNumber).join(" and ")} guests${budget.asOf ? `, checked ${budget.asOf}` : ""}. Listed means a vendor or directory published the number. Everything else is an estimate.` }),
     renderTargetComparison(budget, totals, counts),
+    renderUnitScenarios(budget),
     renderPlan(budget),
     el("div", { class: "table-scroll" }, [table]),
   ]);
@@ -1326,7 +1424,8 @@ function renderTargetComparison(budget, totals, counts) {
 function renderFit(budget, target) {
   const guests = state.model.settings.guestCount;
   if (typeof guests !== "number" || typeof target !== "number") return null;
-  const fit = fitReport(budget, guests, target);
+  const planOptions = { quoteByTask: currentQuoteMap(), scenario: currentScenario() };
+  const fit = fitReport(budget, guests, target, planOptions);
   const levers = budget.levers || [];
   const verdict = fit.planFitsHigh
     ? `The cost-saving plan at ${formatNumber(guests)} guests fits under ${formatMoney(target, currency())} even with the higher bar and the 15% allowance.`
@@ -1336,36 +1435,96 @@ function renderFit(budget, target) {
     : fit.estimateFitsLow
       ? `The full researched range runs ${moneyRange(fit.estimate)}, so only the low end fits. The high end is the gap.`
       : `The full researched range runs ${moneyRange(fit.estimate)}, over the target at both ends.`;
+  const checks = [175, 200, 250].map((count) => {
+    const total = budgetTotals(budget, count, planOptions.quoteByTask).wedding;
+    return `${formatNumber(count)} guests ${moneyRange(total)}`;
+  });
+  const bars = (planTotals(budget, planOptions)?.options || [])
+    .map((option) => `${option.label} ${moneyRange(option.total)}`);
   return el("div", {}, [
     el("p", {}, [el("strong", { text: verdict }), " ", range]),
+    el("p", { class: "hint", text: `Researched total after the corrected allowance: ${checks.join("; ")}.` }),
+    bars.length ? el("p", { class: "hint", text: `200-guest plan, both bar paths: ${bars.join("; ")}.` }) : null,
     levers.length ? el("ul", { class: "guide-list" }, levers.map((line) => el("li", { text: line }))) : null,
   ]);
 }
 
+function renderUnitScenarios(budget) {
+  const scenarios = budget.plan?.unitScenarios || [];
+  if (scenarios.length < 2) return null;
+  const selectedId = currentScenario()?.id || scenarios[0].id;
+  const quoted = Boolean(currentQuoteMap()[budget.lines.find((line) => line.id === "catering")?.taskId]);
+  const cards = scenarios.map((scenario) => {
+    const totals = planTotals(budget, { scenario });
+    const selected = scenario.id === selectedId;
+    const input = el("input", {
+      type: "radio",
+      name: "catering-unit",
+      value: scenario.id,
+      id: `unit-${scenario.id}`,
+    });
+    input.checked = selected;
+    return el("div", { class: selected ? "scenario scenario-selected" : "scenario" }, [
+      el("label", { for: `unit-${scenario.id}` }, [input, el("span", { text: scenario.label })]),
+      el("p", { text: scenario.detail }),
+      el("p", {}, [el("strong", { text: formatMoney(scenario.amount, currency()) }), " catering"]),
+      ...(totals?.options || []).map((option) => el("p", { class: "hint", text: `${option.label}: ${moneyRange(option.total)}` })),
+    ]);
+  });
+  const fieldset = el("fieldset", { class: "scenario-grid" }, [
+    el("legend", { text: "Per person or per table" }),
+    el("p", { class: "hint", text: quoted
+      ? "Both published readings stay visible. A received catering quote replaces the selected one in the plan total."
+      : "Kim Sơn’s menu does not say which unit the preset uses. Both readings are priced at 200 guests. The plan below follows the one you select." }),
+    ...cards,
+  ]);
+  fieldset.addEventListener("change", (event) => {
+    if (event.target?.name !== "catering-unit") return;
+    state.cateringUnit = event.target.value;
+    writeJsonStorage(UNIT_KEY, state.cateringUnit === "per-table" ? null : { id: state.cateringUnit });
+    render({ focusId: event.target.id });
+  });
+  return fieldset;
+}
+
+function planRowFlag(line) {
+  if (line.used.low > line.estimate.high) return "above";
+  if (line.estimate.low > line.used.high) return "over";
+  if (line.used.low > line.estimate.low && line.estimate.high > line.used.low) return "high";
+  return "";
+}
+
 function renderPlan(budget) {
   const plan = budget.plan;
-  const totals = planTotals(budget);
+  const totals = planTotals(budget, { quoteByTask: currentQuoteMap(), scenario: currentScenario() });
   if (!plan || !totals) return null;
   const target = budget.target ?? state.model.settings.budget;
-  const rows = plan.lines.map((line) => el("tr", { class: line.over ? "over-row" : "" }, [
-    el("td", { "data-label": "Item" }, [
-      line.item,
-      " ",
-      el("span", { class: `pill pill-${line.priceType}`, text: line.priceType === "listed" ? "Listed" : "Estimate" }),
-      line.over === "over" ? el("span", { class: "pill pill-over", text: "Over allocation" }) : null,
-      line.over === "high" ? el("span", { class: "pill pill-over", text: "High end over" }) : null,
-    ]),
-    el("td", { class: "num", "data-label": "Plan", text: formatMoney(line.amount, currency()) }),
-    el("td", { class: "num", "data-label": "Estimate at this count", text: moneyRange(line.estimate) }),
-    el("td", { class: "basis", "data-label": "Choice", text: line.choice }),
-  ]));
+  const rows = totals.rows.map((line) => {
+    const flag = planRowFlag(line);
+    const amount = line.used.low === line.used.high ? formatMoney(line.used.low, currency()) : moneyRange(line.used);
+    return el("tr", { class: flag ? "over-row" : "" }, [
+      el("td", { "data-label": "Item" }, [
+        line.item,
+        " ",
+        el("span", { class: `pill pill-${line.priceType}`, text: line.priceType === "listed" ? "Listed" : "Estimate" }),
+        line.feesIncluded ? el("span", { class: "pill pill-listed", text: "Fees included" }) : null,
+        line.origin === "quote" ? el("span", { class: "pill pill-quote", text: "Quote" }) : null,
+        flag === "over" ? el("span", { class: "pill pill-over", text: "Over allocation" }) : null,
+        flag === "high" ? el("span", { class: "pill pill-over", text: "High end over" }) : null,
+        flag === "above" ? el("span", { class: "pill pill-over", text: "Above researched range" }) : null,
+      ]),
+      el("td", { class: "num", "data-label": "Plan", text: amount }),
+      el("td", { class: "num", "data-label": "Estimate at this count", text: moneyRange(line.estimate) }),
+      el("td", { class: "basis", "data-label": "Choice", text: line.choice }),
+    ]);
+  });
   const optionRows = totals.options.map((option) => {
     const cautious = option.id === totals.cautious?.id;
     return el("tr", { class: cautious ? "subtotal-row" : "" }, [
       el("td", { "data-label": "Bar option" }, [
         option.label,
         " ",
-        el("span", { class: "pill pill-estimate", text: "Estimate" }),
+        el("span", { class: `pill pill-${option.quoted ? "quote" : "estimate"}`, text: option.quoted ? "Quote" : "Estimate" }),
         cautious ? el("span", { class: "pill pill-over", text: "Higher option" }) : null,
       ]),
       el("td", { class: "num", "data-label": "Plan", text: formatMoney(option.amount, currency()) }),
@@ -1379,7 +1538,7 @@ function renderPlan(budget) {
   return el("div", { class: "plan-block", id: "plan-50k" }, [
     el("h3", { class: "subhead", text: plan.label }),
     el("p", { class: "hint", text: plan.summary }),
-    el("p", { class: "hint", text: `Allocations are for ${formatNumber(plan.guests)} guests. A line is marked over when its researched low is already above that allocation, or when only the high end is.` }),
+    el("p", { class: "hint", text: `Allocations are for ${formatNumber(plan.guests)} guests. The 10–15% allowance skips lines marked Fees included. A received quote replaces the estimate. A line is marked over when its researched low is already above that allocation.` }),
     el("div", { class: "table-scroll" }, [
       el("table", { class: "budget-table plan-table" }, [
         el("caption", { text: "Plan to hit the target. The two bar totals are separate. The cautious reading is the higher one." }),
@@ -1403,12 +1562,94 @@ function renderPlan(budget) {
   ]);
 }
 
+function renderQuoteEditor(vendor) {
+  const quote = savedQuotes()[vendor.id] || { amount: null, deposit: null, quotedOn: "", holdDeadline: "", notes: "" };
+  const details = el("details", { class: "quote-fold", id: `quote-${vendor.id}`, open: state.openQuoteId === vendor.id });
+  const summary = el("summary", {
+    text: quote.amount != null ? `Quote received ${formatMoney(quote.amount, currency())}` : "Add a quote",
+  });
+  const amount = fieldInput("input", { type: "text", inputmode: "decimal", name: "amount", autocomplete: "off" }, quote.amount == null ? "" : String(quote.amount));
+  const quotedOn = fieldInput("input", { type: "date", name: "quotedOn" }, quote.quotedOn || "");
+  const deposit = fieldInput("input", { type: "text", inputmode: "decimal", name: "deposit", autocomplete: "off" }, quote.deposit == null ? "" : String(quote.deposit));
+  const hold = fieldInput("input", { type: "date", name: "holdDeadline" }, quote.holdDeadline || "");
+  const notes = fieldInput("textarea", { name: "notes", rows: "2" }, quote.notes || "");
+  const form = el("form", { class: "quote-form" }, [
+    labeled("Quote amount", amount),
+    labeled("Date", quotedOn),
+    labeled("Deposit", deposit),
+    labeled("Hold deadline", hold),
+    labeled("Notes", notes),
+    state.quoteError?.id === vendor.id
+      ? el("ul", { class: "form-errors" }, state.quoteError.messages.map((message) => el("li", { text: message })))
+      : null,
+    el("div", { class: "form-actions" }, [
+      el("button", { type: "submit", text: "Save quote" }),
+      el("button", { type: "button", class: "text-button", text: "Clear quote" }),
+    ]),
+  ]);
+  form.querySelector("button.text-button").addEventListener("click", () => {
+    const next = { ...state.quotes };
+    delete next[vendor.id];
+    state.quotes = next;
+    state.quoteError = null;
+    state.openQuoteId = vendor.id;
+    writeJsonStorage(QUOTE_KEY, Object.keys(savedQuotes()).length ? savedQuotes() : null);
+    render({ focusId: `quote-${vendor.id}` });
+  });
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const amountResult = parseMoneyInput(amount.value);
+    const depositResult = parseMoneyInput(deposit.value);
+    const messages = [];
+    if (!amountResult.ok) messages.push("Quote amount needs to be a number, or blank.");
+    if (!depositResult.ok) messages.push("Deposit needs to be a number, or blank.");
+    if (quotedOn.value && !parseISODate(quotedOn.value)) messages.push("Date needs to be a real day.");
+    if (hold.value && !parseISODate(hold.value)) messages.push("Hold deadline needs to be a real day.");
+    if (messages.length) {
+      state.quoteError = { id: vendor.id, messages };
+      state.openQuoteId = vendor.id;
+      render({ focusId: `quote-${vendor.id}` });
+      return;
+    }
+    const next = normalizeQuotes({
+      ...savedQuotes(),
+      [vendor.id]: {
+        amount: amountResult.amount,
+        deposit: depositResult.amount,
+        quotedOn: quotedOn.value,
+        holdDeadline: hold.value,
+        notes: notes.value,
+      },
+    });
+    state.quotes = next;
+    state.quoteError = null;
+    state.openQuoteId = vendor.id;
+    writeJsonStorage(QUOTE_KEY, Object.keys(next).length ? next : null);
+    render({ focusId: `quote-${vendor.id}` });
+  });
+  details.append(summary, form);
+  return details;
+}
+
+function labeled(text, control) {
+  const id = `field-${Math.random().toString(36).slice(2, 8)}`;
+  control.id = id;
+  return el("label", { class: "field", for: id }, [
+    el("span", { class: "field-label", text }),
+    control,
+  ]);
+}
+
 function renderShortlist() {
   const vendors = state.model.vendorOptions;
   if (!vendors?.length) return null;
   const titles = new Map(state.model.tasks.map((task) => [task.id, task.title]));
   const groups = groupVendorOptions(vendors);
-  const blocks = groups.map((group) => el("details", { class: "shortlist-group", id: `shortlist-${group.category.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}` }, [
+  const blocks = groups.map((group) => el("details", {
+    class: "shortlist-group",
+    id: `shortlist-${group.category.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`,
+    open: group.vendors.some((vendor) => vendor.id === state.openQuoteId),
+  }, [
     el("summary", {}, [
       el("span", { text: group.category }),
       el("span", { class: "count", text: String(group.vendors.length) }),
@@ -1433,6 +1674,7 @@ function renderShortlist() {
         vendor.email ? el("span", { class: "line-note", text: `Email: ${vendor.email}` }) : null,
         vendor.phone ? el("span", { class: "line-note", text: `Phone: ${vendor.phone}` }) : null,
       ]),
+      renderQuoteEditor(vendor),
     ]))),
   ]));
   return el("div", { class: "shortlist-block", id: "vendor-shortlist" }, [
@@ -1488,14 +1730,24 @@ function openIssuePreview() {
   const guestPlan = guestEditsDirty(state.model.guestPlan, state.guestEdits)
     ? applyGuestEdits(state.model.guestPlan, state.guestEdits)
     : null;
-  const payload = buildUpdatePayload(state.model.tasks, state.edits, updatedOn, currency(), state.model.phases, { guestPlan });
+  const quotes = quotesDirty() ? savedQuotes() : null;
+  const nextActions = actionsDirty()
+    ? Object.fromEntries(Object.entries(state.actionChecks).filter(([, checked]) => checked))
+    : null;
+  const cateringUnit = unitDirty() ? state.cateringUnit : null;
+  const payload = buildUpdatePayload(state.model.tasks, state.edits, updatedOn, currency(), state.model.phases, {
+    guestPlan,
+    quotes,
+    nextActions,
+    cateringUnit,
+  });
   const link = githubIssueUrl({ title: payload.title, body: payload.body });
   state.issue = {
     ...payload,
     ...link,
     opened: false,
     notice: "",
-    empty: Object.keys(payload.changes).length === 0 && !guestPlan,
+    empty: Object.keys(payload.changes).length === 0 && !guestPlan && !quotes && !nextActions && !cateringUnit,
   };
   render({ focusId: state.issue.empty ? "close-issue" : "open-issue" });
 }
@@ -1716,6 +1968,10 @@ async function init() {
   state.model = buildModel(data);
   state.model.guestPlan = data.guestPlan || { target: 200, tableSize: 10, sides: [], households: [] };
   state.guestEdits = loadGuestEdits();
+  state.quotes = normalizeQuotes(readJsonStorage(QUOTE_KEY) || {});
+  state.actionChecks = readJsonStorage(ACTION_KEY) || {};
+  const storedUnit = readJsonStorage(UNIT_KEY);
+  state.cateringUnit = storedUnit?.id === "per-person" ? "per-person" : "per-table";
   state.edits = pruneEdits(state.model.tasks, loadEdits());
   saveEdits(state.edits);
   $("app-status").hidden = true;
@@ -1750,6 +2006,13 @@ function bindChrome() {
   });
 
   document.addEventListener("keydown", (event) => {
+    if ((event.key === "Enter" || event.key === " ") && event.target?.tagName === "SUMMARY") {
+      const details = event.target.parentElement;
+      if (details?.tagName === "DETAILS") {
+        event.preventDefault();
+        details.open = !details.open;
+      }
+    }
     if (event.key !== "Escape") return;
     if (state.issue) {
       closeIssue();

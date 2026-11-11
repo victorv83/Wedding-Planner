@@ -480,22 +480,40 @@ export function estimateLine(line, guests) {
 }
 
 /**
- * Totals for one guest count. The wedding group gets contingency on top.
- * Optional lines and bachelor/bachelorette costs stay out of the wedding total.
+ * Cost used for a line. A received quote replaces the researched estimate.
+ * quoteByTask is keyed by the line's task id.
  */
-export function budgetTotals(budget, guests) {
+export function lineCost(line, guests, quoteByTask) {
+  const quote = quoteByTask?.[line?.taskId];
+  if (quote && finite(quote.low) && finite(quote.high) && quote.high >= quote.low && quote.low >= 0) {
+    return { low: quote.low, high: quote.high, quoted: true };
+  }
+  return { ...estimateLine(line, guests), quoted: false };
+}
+
+/**
+ * Totals for one guest count. The 10–15% allowance applies only to wedding
+ * lines that do not already include service and tax. Optional lines and
+ * bachelor/bachelorette costs stay out of the wedding total.
+ */
+export function budgetTotals(budget, guests, quoteByTask = null) {
   const groups = {};
   for (const key of Object.keys(BUDGET_GROUPS)) groups[key] = { low: 0, high: 0 };
+  const allowanceBase = { low: 0, high: 0 };
   for (const line of budget?.lines || []) {
-    const cost = estimateLine(line, guests);
+    const cost = lineCost(line, guests, quoteByTask);
     const group = groups[line.group] ? line.group : "wedding";
     groups[group].low += cost.low;
     groups[group].high += cost.high;
+    if (group === "wedding" && !line.feesIncluded) {
+      allowanceBase.low += cost.low;
+      allowanceBase.high += cost.high;
+    }
   }
   const pct = budget?.contingencyPercent || { low: 0, high: 0 };
   const contingency = {
-    low: Math.round((groups.wedding.low * pct.low) / 100),
-    high: Math.round((groups.wedding.high * pct.high) / 100),
+    low: Math.round((allowanceBase.low * pct.low) / 100),
+    high: Math.round((allowanceBase.high * pct.high) / 100),
   };
   const wedding = {
     low: groups.wedding.low + contingency.low,
@@ -504,7 +522,7 @@ export function budgetTotals(budget, guests) {
   const perGuest = guests > 0
     ? { low: Math.round(wedding.low / guests), high: Math.round(wedding.high / guests) }
     : null;
-  return { groups, contingency, wedding, perGuest };
+  return { groups, contingency, wedding, perGuest, allowanceBase };
 }
 
 function parseBudget(raw, taskIds, warnings) {
@@ -542,6 +560,7 @@ function parseBudget(raw, taskIds, warnings) {
       priceType: line?.priceType === "listed" ? "listed" : "estimate",
       notes: textOr(line?.notes, ""),
       sources: parseSources(line?.sources),
+      feesIncluded: line?.feesIncluded === true,
     });
   }
   const plan = parsePlan(raw.plan, lines, warnings);
@@ -581,11 +600,33 @@ function parsePlan(raw, lines, warnings) {
     planLines.push({
       lineId,
       item: source.item,
+      taskId: source.taskId,
       amount: entry.amount,
       choice: textOr(entry?.choice, ""),
       priceType: source.priceType,
+      feesIncluded: source.feesIncluded === true,
       estimate,
       over,
+    });
+  }
+  const unitScenarios = [];
+  for (const item of Array.isArray(raw.unitScenarios) ? raw.unitScenarios : []) {
+    const scenarioLine = textOr(item?.lineId, "");
+    const source = byId.get(scenarioLine);
+    if (!source) {
+      warnings.push(`Unit scenario “${textOr(item?.label, scenarioLine) || "unnamed"}” points at a missing budget line.`);
+      continue;
+    }
+    if (!finite(item?.amount) || item.amount < 0) {
+      warnings.push(`Unit scenario “${textOr(item?.label, scenarioLine)}” needs an amount.`);
+      continue;
+    }
+    unitScenarios.push({
+      id: textOr(item?.id, scenarioLine),
+      label: textOr(item?.label, "Scenario"),
+      lineId: scenarioLine,
+      amount: item.amount,
+      detail: textOr(item?.detail, ""),
     });
   }
   const barOptions = [];
@@ -607,13 +648,14 @@ function parsePlan(raw, lines, warnings) {
     summary: textOr(raw.summary, ""),
     lines: planLines,
     barOptions,
+    unitScenarios,
   };
 }
 
 /** Whether the researched range and the cost-saving plan fit the target at one guest count. */
-export function fitReport(budget, guests, target) {
-  const estimate = budgetTotals(budget, guests).wedding;
-  const plan = planTotals(budget);
+export function fitReport(budget, guests, target, options = {}) {
+  const estimate = budgetTotals(budget, guests, options.quoteByTask).wedding;
+  const plan = planTotals(budget, options);
   const cautious = plan?.cautious?.total || null;
   return {
     guests,
@@ -664,26 +706,86 @@ export function guestTablePlan(plan) {
   return { size, target, tables, seats: tables * size, assigned };
 }
 
-/** Both bar choices, with contingency. The cautious total is the higher one. */
-export function planTotals(budget) {
+/** Quotes with an amount, grouped by the vendor's task id. Low and high differ when more than one vendor on that task has a quote. */
+export function quotesByTask(vendors, quotes) {
+  const buckets = new Map();
+  for (const vendor of vendors || []) {
+    const quote = quotes?.[vendor.id];
+    if (!quote || !finite(quote.amount) || quote.amount < 0 || !vendor.taskId) continue;
+    const bucket = buckets.get(vendor.taskId) || [];
+    bucket.push(quote.amount);
+    buckets.set(vendor.taskId, bucket);
+  }
+  const byTask = {};
+  for (const [taskId, amounts] of buckets) {
+    byTask[taskId] = { low: Math.min(...amounts), high: Math.max(...amounts), count: amounts.length };
+  }
+  return byTask;
+}
+
+export function normalizeQuotes(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const quotes = {};
+  for (const [id, quote] of Object.entries(raw)) {
+    if (!quote || typeof quote !== "object") continue;
+    const amount = finite(quote.amount) && quote.amount >= 0 ? quote.amount : null;
+    const deposit = finite(quote.deposit) && quote.deposit >= 0 ? quote.deposit : null;
+    const quotedOn = parseISODate(quote.quotedOn) ? String(quote.quotedOn).trim() : "";
+    const holdDeadline = parseISODate(quote.holdDeadline) ? String(quote.holdDeadline).trim() : "";
+    const notes = textOr(quote.notes, "");
+    if (amount == null && deposit == null && !quotedOn && !holdDeadline && !notes) continue;
+    quotes[id] = { amount, deposit, quotedOn, holdDeadline, notes };
+  }
+  return quotes;
+}
+
+function rangeAdd(left, right) {
+  return { low: left.low + right.low, high: left.high + right.high };
+}
+
+/** Both bar choices. The allowance skips lines that already include service and tax. A quote or unit scenario replaces that line's plan amount. */
+export function planTotals(budget, options = {}) {
   const plan = budget?.plan;
   if (!plan) return null;
-  const base = plan.lines.reduce((sum, line) => sum + line.amount, 0);
+  const quoteByTask = options.quoteByTask || null;
+  const scenario = options.scenario || null;
+  const taskOfLine = new Map((budget.lines || []).map((line) => [line.id, line.taskId]));
+  const rows = plan.lines.map((line) => {
+    const quote = quoteByTask?.[line.taskId];
+    let used = { low: line.amount, high: line.amount };
+    let origin = "plan";
+    if (quote) {
+      used = { low: quote.low, high: quote.high };
+      origin = "quote";
+    } else if (scenario && scenario.lineId === line.lineId && finite(scenario.amount) && scenario.amount >= 0) {
+      used = { low: scenario.amount, high: scenario.amount };
+      origin = "scenario";
+    }
+    return { ...line, used, origin };
+  });
+  const base = rows.reduce((sum, line) => rangeAdd(sum, line.used), { low: 0, high: 0 });
+  const included = rows.filter((line) => line.feesIncluded).reduce((sum, line) => rangeAdd(sum, line.used), { low: 0, high: 0 });
   const pct = budget.contingencyPercent || { low: 0, high: 0 };
-  const options = plan.barOptions.map((option) => {
-    const subtotal = base + option.amount;
-    const contingency = {
-      low: Math.round((subtotal * pct.low) / 100),
-      high: Math.round((subtotal * pct.high) / 100),
+  const barOptions = plan.barOptions.map((option) => {
+    const quote = quoteByTask?.[taskOfLine.get(option.lineId)];
+    const bar = quote ? { low: quote.low, high: quote.high } : { low: option.amount, high: option.amount };
+    const subtotal = rangeAdd(base, bar);
+    const allowanceBase = {
+      low: Math.max(0, subtotal.low - included.low),
+      high: Math.max(0, subtotal.high - included.high),
     };
-    const total = { low: subtotal + contingency.low, high: subtotal + contingency.high };
+    const contingency = {
+      low: Math.round((allowanceBase.low * pct.low) / 100),
+      high: Math.round((allowanceBase.high * pct.high) / 100),
+    };
+    const total = rangeAdd(subtotal, contingency);
     const perGuest = plan.guests > 0
       ? { low: Math.round(total.low / plan.guests), high: Math.round(total.high / plan.guests) }
       : null;
-    return { ...option, subtotal, contingency, total, perGuest };
+    return { ...option, amount: bar.low === bar.high ? bar.low : option.amount, bar, subtotal, allowanceBase, contingency, total, perGuest, quoted: Boolean(quote) };
   });
-  const cautious = options.reduce((best, option) => (option.total.high > (best?.total.high ?? -1) ? option : best), null);
-  return { base, options, cautious };
+  const cautious = barOptions.reduce((best, option) => (option.total.high > (best?.total.high ?? -1) ? option : best), null);
+  return { base, included, rows, options: barOptions, cautious, scenario };
 }
 
 export function perGuestCeiling(target, guests) {
@@ -870,8 +972,23 @@ export function buildModel(data) {
   const budget = parseBudget(data.budgetEstimate, taskIds, warnings);
   const vendorOptions = parseVendorOptions(data.vendorOptions, taskIds, warnings);
   const weddingParty = parseWeddingParty(data.weddingParty);
+  const nextActions = parseNextActions(data.nextActions, warnings);
 
-  return { settings, phases, tasks, warnings, budget, vendorOptions, weddingParty };
+  return { settings, phases, tasks, warnings, budget, vendorOptions, weddingParty, nextActions };
+}
+
+function parseNextActions(raw, warnings) {
+  const seen = new Set();
+  const actions = [];
+  for (const item of Array.isArray(raw) ? raw : []) {
+    const id = textOr(item?.id, "");
+    const label = textOr(item?.label, "");
+    if (!id || !label) continue;
+    if (seen.has(id)) warnings.push(`Next action “${label}” repeats the id “${id}”.`);
+    seen.add(id);
+    actions.push({ id, label });
+  }
+  return actions;
 }
 
 const PATCH_FIELDS = [
@@ -1323,6 +1440,18 @@ export function buildUpdatePayload(tasks, edits, updatedOn, currency = "USD", ph
   if (extras?.guestPlan) {
     document.guestPlan = extras.guestPlan;
     lines.push("Guest-list edits are in guestPlan. Replace settings-side counts and the households array with this object.");
+  }
+  if (extras?.quotes && Object.keys(extras.quotes).length) {
+    document.quotes = extras.quotes;
+    lines.push("Received quotes are in quotes, keyed by vendor id. Use a quote amount in place of that line's estimate.");
+  }
+  if (extras?.nextActions && Object.keys(extras.nextActions).length) {
+    document.nextActions = extras.nextActions;
+    lines.push("Checked next actions are in nextActions. true means done on this device.");
+  }
+  if (extras?.cateringUnit) {
+    document.cateringUnit = extras.cateringUnit;
+    lines.push(`Kim Sơn unit scenario on this device: ${extras.cateringUnit}.`);
   }
   const json = JSON.stringify(document, null, 2);
   const body = [
