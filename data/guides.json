@@ -1,0 +1,445 @@
+{
+  "galleries": {
+    "ceremony": [
+      {
+        "src": "assets/img/ao-dai-wedding.webp",
+        "alt": "A white wedding áo dài photographed in a Hanoi studio.",
+        "caption": "Wedding áo dài, Hanoi studio. Public domain, Khương Việt Hà."
+      },
+      {
+        "src": "assets/img/ao-dai-khan.webp",
+        "alt": "A woman in a red áo dài and khăn vấn.",
+        "caption": "Áo dài and khăn vấn. CC BY-SA 4.0, Vietcuongdao."
+      },
+      {
+        "src": "assets/img/fruit-tray.webp",
+        "alt": "A round tray of arranged fruit for Tết.",
+        "caption": "A Tết fruit tray (mâm ngũ quả), not a full betrothal set. Use it only as a starting idea for the fruit tray. CC0, Rachel41Ng."
+      }
+    ],
+    "reception": [
+      {
+        "src": "assets/img/red-lanterns.webp",
+        "alt": "Rows of red lanterns hanging outdoors in daylight.",
+        "caption": "Red lanterns at the 2008 Taiwan Lantern Festival. Color inspiration only, not a photo of this wedding. CC BY-SA 2.0, Pascal Terjan."
+      },
+      {
+        "src": "assets/img/lion-dance.webp",
+        "alt": "A lion dance costume in a city street.",
+        "caption": "Lion dance at a New York Chinese New Year. A general reference, not a Houston or Beaumont troupe. CC BY 2.0, Bob Jagendorf."
+      }
+    ],
+    "vietnam": [
+      {
+        "src": "assets/img/hoi-an-lanterns.webp",
+        "alt": "Lanterns glowing over a street in Hội An at night.",
+        "caption": "Hội An lanterns at night. CC BY 2.0, www.viajar24h.com."
+      },
+      {
+        "src": "assets/img/hoi-an-shop.webp",
+        "alt": "Colorful lanterns inside a Hội An shop.",
+        "caption": "A lantern shop in Hội An. CC BY-SA 4.0, Christophe95."
+      },
+      {
+        "src": "assets/img/da-lat.webp",
+        "alt": "A green hillside view in Đà Lạt.",
+        "caption": "Đà Lạt. CC BY-SA 4.0, Tuong Lam Photos."
+      },
+      {
+        "src": "assets/img/saigon-basilica.webp",
+        "alt": "Notre-Dame Cathedral Basilica of Saigon with the statue of Mary in front.",
+        "caption": "Notre-Dame Cathedral Basilica of Saigon. CC BY-SA 4.0, Steffen Schmitz."
+      }
+    ]
+  },
+  "ceremony": {
+    "intro": "The tea ceremony (lễ gia tiên) is at one of the couple's homes, not at the reception hall. Families do this differently. Treat the order below as a draft to confirm with both families, not as a rule.",
+    "order": [
+      {
+        "title": "House is ready",
+        "detail": "Altar, backdrop, tea set, trays, and extra chairs are in place before anyone arrives. To confirm who is in charge of the room."
+      },
+      {
+        "title": "Groom's family arrives",
+        "detail": "If you also do lễ rước dâu, this is the visit to the bride's house. To confirm whether you want that procession or only the tea at one home."
+      },
+      {
+        "title": "Trays come in",
+        "detail": "Carriers and receivers walk the mâm quả in. With 4 and 4 in the wedding party, 5 trays needs one extra person per side and 7 trays needs three."
+      },
+      {
+        "title": "Greeting and bows",
+        "detail": "The couple greets both families and bows at the ancestor altar. The exact number of bows is a family decision."
+      },
+      {
+        "title": "Tea for the elders",
+        "detail": "The couple serves tea. Elders may speak and give lì xì. To confirm the order of elders with both families."
+      },
+      {
+        "title": "Photos, then a break",
+        "detail": "Pictures at the house, then time to eat, rest, and change before the reception."
+      }
+    ],
+    "trays": [
+      {
+        "item": "Betel leaves and areca",
+        "note": "Traditional. To confirm that both families still want this tray."
+      },
+      {
+        "item": "Tea",
+        "note": "For serving the elders, and often a tray of its own."
+      },
+      {
+        "item": "Wine or spirits",
+        "note": "Common. Skip it if a family prefers not to."
+      },
+      {
+        "item": "Fruit",
+        "note": "The fruit-tray photo in this section is a Tết arrangement, only a visual starting point."
+      },
+      {
+        "item": "Cakes and bánh",
+        "note": "To confirm flavors and whether anything is made at home."
+      },
+      {
+        "item": "Roast pig",
+        "note": "Often included and often the awkward one to transport. To confirm."
+      }
+    ],
+    "setup": [
+      {
+        "item": "Backdrop behind the altar",
+        "taskId": "florist"
+      },
+      {
+        "item": "Ancestor altar and photos",
+        "taskId": "florist"
+      },
+      {
+        "item": "Tea set",
+        "taskId": "tea-set"
+      },
+      {
+        "item": "Mâm quả trays and contents",
+        "taskId": "mam-qua"
+      },
+      {
+        "item": "Carriers, receivers, and áo dài",
+        "taskId": "tray-carriers"
+      },
+      {
+        "item": "Extra chairs and tables for family",
+        "taskId": "rentals"
+      },
+      {
+        "item": "Tent or shade, only if the yard needs it",
+        "taskId": "rentals"
+      },
+      {
+        "item": "Photographer at the house first",
+        "taskId": "photo-dayof"
+      },
+      {
+        "item": "Cars between the house and the reception",
+        "taskId": "transport"
+      }
+    ],
+    "morning": "A working guess, to confirm: start preparing the room by 7:30, family in place around 8:30, tea finished before noon, then a long break before an evening reception. No venue rental is budgeted for this house."
+  },
+  "outreach": [
+    {
+      "id": "draft-1",
+      "title": "Draft: Downtown Event Centre (City of Beaumont Events)",
+      "taskId": "venue-reception",
+      "questions": [
+        "Are any of those three Saturdays available, and do you accept holds this far in advance? I understand inquiries are accepted up to two years out.",
+        "For a private wedding, would we be billed at the commercial or noncommercial rate? The published all-day Event Centre rates I saw are $2,640 commercial and $2,250 noncommercial, plus a $400 food and beverage access fee.",
+        "Could you confirm the rental-only cost for about 200 guests, including any required security (Beaumont Police Department), labor, or other fees, and what is included (tables, chairs, set-up, A/V)?",
+        "Do you allow an outside licensed Vietnamese caterer? If there is an approved-caterer list, may I receive it?",
+        "Is bring-your-own alcohol allowed if it is served by a licensed bartender? What are the bartender and insurance requirements?",
+        "What time must music end, and what is the deposit or hold policy?"
+      ],
+      "email": "DRAFT — not sent. Copy this text and send it yourself.\n\nTo: events@beaumonttexas.gov\nPhone: (409) 838-3435\nForm: https://beaumonteventstx.com/bookinginquiry/\nSubject: Availability and rental-only quote — Saturday, March 18, 2028 (200 guests)\n\nDear Beaumont Events team,\n\nMy name is Victor. I am planning a Vietnamese-American wedding reception for about 200 guests near Beaumont and would like to check the Downtown Event Centre.\n\nOur ideal date is Saturday, March 18, 2028. If that date is not available, please also check Saturday, February 5, 2028 and Saturday, February 19, 2028.\n\nI have seen the rate sheet effective October 1, 2026, and I have a few questions so I can budget accurately:\n\n1. Are any of those three Saturdays available, and do you accept holds this far in advance? I understand inquiries are accepted up to two years out.\n2. For a private wedding, would we be billed at the commercial or noncommercial rate? The published all-day Event Centre rates I saw are $2,640 commercial and $2,250 noncommercial, plus a $400 food and beverage access fee.\n3. Could you confirm the rental-only cost for about 200 guests, including any required security (Beaumont Police Department), labor, or other fees, and what is included (tables, chairs, set-up, A/V)?\n4. Do you allow an outside licensed Vietnamese caterer? If there is an approved-caterer list, may I receive it?\n5. Is bring-your-own alcohol allowed if it is served by a licensed bartender? What are the bartender and insurance requirements?\n6. What time must music end, and what is the deposit or hold policy?\n\nThe tea ceremony will be held at a family home, so we would be using the Event Centre for the reception (and possibly a short welcome or photos). Thank you for your help. I am glad to complete your venue inquiry form as well.\n\nSincerely,\nVictor and Mít\n"
+    },
+    {
+      "id": "draft-2",
+      "title": "Draft: The Brown Estate of Lamar State College Orange",
+      "taskId": "venue-reception",
+      "questions": [
+        "Are any of those three Saturdays available, and what is the deposit or hold policy?",
+        "Published third-party listings mention a $3,000 reception rental for four hours, $500 to add a ceremony, and $750 per extra hour. Could you confirm the current 2028 rates and what is included (tables, chairs, linens, china, glassware)?",
+        "Can the estate comfortably seat about 200 guests for a plated or family-style dinner indoors? I have seen an indoor reception figure of 175 guests and want to be sure 200 will fit, or whether we would need an outdoor or combined layout.",
+        "We would like a Vietnamese multi-course dinner. Is catering required to be in-house, or may we bring a licensed outside Vietnamese caterer?",
+        "Is bring-your-own alcohol allowed, and what are the bartender or bar-service fees?",
+        "What time must music end?"
+      ],
+      "email": "DRAFT — not sent. Copy this text and send it yourself.\n\nTo: BrownEstate@lsco.edu\nPhone: (409) 883-2939\nSubject: 2028 wedding availability and catering policy — Saturday, March 18 (about 200 guests)\n\nDear Brown Estate team,\n\nMy name is Victor. I am planning a wedding reception for about 200 guests and hoped to learn whether the Brown Estate in Orange is available in early 2028.\n\nOur ideal date is Saturday, March 18, 2028. Alternate dates are Saturday, February 5, 2028 and Saturday, February 19, 2028.\n\nI would be grateful for current pricing and for answers to a few planning questions:\n\n1. Are any of those three Saturdays available, and what is the deposit or hold policy?\n2. Published third-party listings mention a $3,000 reception rental for four hours, $500 to add a ceremony, and $750 per extra hour. Could you confirm the current 2028 rates and what is included (tables, chairs, linens, china, glassware)?\n3. Can the estate comfortably seat about 200 guests for a plated or family-style dinner indoors? I have seen an indoor reception figure of 175 guests and want to be sure 200 will fit, or whether we would need an outdoor or combined layout.\n4. We would like a Vietnamese multi-course dinner. Is catering required to be in-house, or may we bring a licensed outside Vietnamese caterer?\n5. Is bring-your-own alcohol allowed, and what are the bartender or bar-service fees?\n6. What time must music end?\n\nThe tea ceremony will be at a family home. We are looking to the estate for the reception. Thank you very much. I would welcome a tour once it is convenient.\n\nSincerely,\nVictor and Mít\n"
+    },
+    {
+      "id": "draft-3",
+      "title": "Draft: The Venue at Belle Oaks",
+      "taskId": "venue-reception",
+      "questions": [
+        "Are any of those dates available, and what is the deposit or hold policy for a 2028 Saturday?",
+        "Does the Saturday package still include tables and chairs for up to 460 guests, TABC bartenders, security, the prep kitchen, and an event manager? Are linens extra?",
+        "Does the “full-service bar” mean we must purchase alcohol through the venue, or may we bring our own alcohol for your bartenders to serve? If you offer bar packages, could you share current per-person rates for beer/wine and a full bar for about 200 guests?",
+        "May we bring a licensed outside Vietnamese caterer to use the prep kitchen? Are there insurance or preferred-vendor requirements?",
+        "The Saturday package lists a five-hour event with exclusive use until midnight. Can event time be extended, and at what cost? What time must music end and guests be out?"
+      ],
+      "email": "DRAFT — not sent. Copy this text and send it yourself.\n\nTo: info@thevenueatbelleoaks.com\nPhone: (409) 540-8247\nForm: https://www.thevenueatbelleoaks.com/wedding-pricing\nSubject: Saturday, March 18, 2028 wedding inquiry — about 200 guests\n\nDear Venue at Belle Oaks team,\n\nMy name is Victor. I am planning a Vietnamese-American wedding for about 200 guests and would like to ask about The Venue at Belle Oaks.\n\nOur ideal date is Saturday, March 18, 2028. If that Saturday is not open, please also check Saturday, February 5, 2028 and Saturday, February 19, 2028.\n\nI have read the published Saturday package at $8,500 (and $5,000 Friday/Sunday, $10,000 weekend) and have a few questions:\n\n1. Are any of those dates available, and what is the deposit or hold policy for a 2028 Saturday?\n2. Does the Saturday package still include tables and chairs for up to 460 guests, TABC bartenders, security, the prep kitchen, and an event manager? Are linens extra?\n3. Does the “full-service bar” mean we must purchase alcohol through the venue, or may we bring our own alcohol for your bartenders to serve? If you offer bar packages, could you share current per-person rates for beer/wine and a full bar for about 200 guests?\n4. May we bring a licensed outside Vietnamese caterer to use the prep kitchen? Are there insurance or preferred-vendor requirements?\n5. The Saturday package lists a five-hour event with exclusive use until midnight. Can event time be extended, and at what cost? What time must music end and guests be out?\n\nThe tea ceremony will be at a family home. We would use Belle Oaks for the ceremony (if we add one on site) and the reception. Thank you, and I would be glad to schedule a tour.\n\nSincerely,\nVictor and Mít\n"
+    },
+    {
+      "id": "draft-4",
+      "title": "Draft: Beaumont Botanical Gardens (Garden Center)",
+      "taskId": "venue-reception",
+      "questions": [
+        "Are any of those Saturdays available, and what is the current Saturday rate? I understand Saturday is $200 per hour with a three-hour minimum, 9:00 a.m. to midnight, for up to 250 guests.",
+        "If we needed access from 9:00 a.m. until midnight, would that be billed as 15 hours ($3,000 at the 2026 Saturday rate), or do you quote a different wedding-day package? Is the $4,000 Friday-plus-Saturday weekend special still offered?",
+        "May a licensed and insured Vietnamese caterer use the kitchen? We would follow your rules on equipment and insurance.",
+        "We expect to serve alcohol with a TABC-licensed bartender. Could you outline the security, insurance, and bartender requirements, and give a typical security estimate for 200 guests?",
+        "What is the deposit and cancellation policy for a Saturday in 2028, and are the bridal suite and groom’s room still $50 add-ons?"
+      ],
+      "email": "DRAFT — not sent. Copy this text and send it yourself.\n\nTo: info@bbgtx.org\nPhone: (409) 842-3135\nForm: https://www.bbgtx.org/rental\nSubject: Saturday Garden Center rental inquiry — March 18, 2028 (about 200 guests)\n\nDear Beaumont Botanical Gardens team,\n\nMy name is Victor. I am planning a wedding reception for about 200 guests and am interested in the Garden Center at Tyrrell Park.\n\nOur ideal date is Saturday, March 18, 2028. Alternate dates are Saturday, February 5, 2028 and Saturday, February 19, 2028.\n\nI have read your 2026 venue pricing guide and wanted to confirm a few details for 2028:\n\n1. Are any of those Saturdays available, and what is the current Saturday rate? I understand Saturday is $200 per hour with a three-hour minimum, 9:00 a.m. to midnight, for up to 250 guests.\n2. If we needed access from 9:00 a.m. until midnight, would that be billed as 15 hours ($3,000 at the 2026 Saturday rate), or do you quote a different wedding-day package? Is the $4,000 Friday-plus-Saturday weekend special still offered?\n3. May a licensed and insured Vietnamese caterer use the kitchen? We would follow your rules on equipment and insurance.\n4. We expect to serve alcohol with a TABC-licensed bartender. Could you outline the security, insurance, and bartender requirements, and give a typical security estimate for 200 guests?\n5. What is the deposit and cancellation policy for a Saturday in 2028, and are the bridal suite and groom’s room still $50 add-ons?\n\nThe tea ceremony will be at a family home. Thank you, and I would welcome a weekday tour.\n\nSincerely,\nVictor and Mít\n"
+    },
+    {
+      "id": "draft-5",
+      "title": "Draft: Reign Hills",
+      "taskId": "venue-reception",
+      "questions": [
+        "Are any of those three Saturdays available? At current published rates I see $6,000 for a Saturday in March and $5,500 for a Saturday in February. Will those rates still apply in 2028?",
+        "What is the retainer and payment schedule? I understand a $2,000 retainer holds the date and a $1,000 security deposit is due with the final balance.",
+        "I understand there is no BYOB and that alcohol must be purchased through your required bartending vendor. Could you share current bar-package prices for about 200 guests (beer and wine, and a full bar)?",
+        "May we bring a licensed and insured Vietnamese caterer? If you need proof of insurance or have a preferred list, please let me know.",
+        "You require a professional day-of coordinator. Could you share your preferred-coordinator list and any upcharge if we use a licensed coordinator who is not on that list?",
+        "Please confirm guest curfew (11:00 p.m.) and when vendors must exit."
+      ],
+      "email": "DRAFT — not sent. Copy this text and send it yourself.\n\nTo: info@reignhills.com\nSubject: Saturday, March 18, 2028 availability — about 200 guests (Vietnamese reception)\n\nDear Reign Hills team,\n\nMy name is Victor. I am planning a Vietnamese-American wedding for about 200 guests and would like to ask about Reign Hills in Kountze.\n\nOur ideal date is Saturday, March 18, 2028. Alternate dates are Saturday, February 5, 2028 and Saturday, February 19, 2028.\n\nI have reviewed your published investment page and hoped you could confirm:\n\n1. Are any of those three Saturdays available? At current published rates I see $6,000 for a Saturday in March and $5,500 for a Saturday in February. Will those rates still apply in 2028?\n2. What is the retainer and payment schedule? I understand a $2,000 retainer holds the date and a $1,000 security deposit is due with the final balance.\n3. I understand there is no BYOB and that alcohol must be purchased through your required bartending vendor. Could you share current bar-package prices for about 200 guests (beer and wine, and a full bar)?\n4. May we bring a licensed and insured Vietnamese caterer? If you need proof of insurance or have a preferred list, please let me know.\n5. You require a professional day-of coordinator. Could you share your preferred-coordinator list and any upcharge if we use a licensed coordinator who is not on that list?\n6. Please confirm guest curfew (11:00 p.m.) and when vendors must exit.\n\nThe tea ceremony will be at a family home. We would use Reign Hills for the reception, and possibly the ceremony. Thank you, and I would be glad to book a tour.\n\nSincerely,\nVictor and Mít\n"
+    },
+    {
+      "id": "draft-6",
+      "title": "Draft: 434 Fannin",
+      "taskId": "venue-reception",
+      "questions": [
+        "Availability on those three Saturdays, and your deposit or hold policy?",
+        "The current Saturday rate for about 200 guests, and costs for chairs and linens?",
+        "Your alcohol policy. May we bring our own alcohol with a licensed bartender, or is bar service provided or required by the venue?",
+        "Any insurance, security, or other fees we should budget, and the time music must end?",
+        "Whether a licensed Vietnamese caterer may deliver and serve a family-style banquet for about 200 guests?"
+      ],
+      "email": "DRAFT — not sent. Copy this text and send it yourself.\n\nTo: info@434fannin.com\nPhone: (409) 832-1621\nSubject: Saturday rental inquiry — March 18, 2028 (about 200 guests)\n\nDear 434 Fannin team,\n\nMy name is Victor. I am planning a wedding reception for about 200 guests in downtown Beaumont and would like to ask about 434 Fannin.\n\nOur ideal date is Saturday, March 18, 2028. Alternate dates are Saturday, February 5, 2028 and Saturday, February 19, 2028.\n\nI saw that Saturday rentals begin at $3,500, with access from 9:00 a.m. until midnight, tables set up, and cleanup included, and that linens and chairs are rented separately. I also understand food must be prepared off site and delivered by the caterer of our choice.\n\nCould you please confirm:\n\n1. Availability on those three Saturdays, and your deposit or hold policy?\n2. The current Saturday rate for about 200 guests, and costs for chairs and linens?\n3. Your alcohol policy. May we bring our own alcohol with a licensed bartender, or is bar service provided or required by the venue?\n4. Any insurance, security, or other fees we should budget, and the time music must end?\n5. Whether a licensed Vietnamese caterer may deliver and serve a family-style banquet for about 200 guests?\n\nThe tea ceremony will be at a family home. Thank you, and I would welcome a tour.\n\nSincerely,\nVictor and Mít\n"
+    },
+    {
+      "id": "draft-7",
+      "title": "Draft: Broussard Farm and Sevenne Hall",
+      "taskId": "venue-reception",
+      "questions": [
+        "Whether any of those Saturdays are available, and your deposit or hold policy.",
+        "Current 2028 rental pricing, what is included (tables, chairs, linens), and typical extra fees.",
+        "Whether a licensed outside Vietnamese caterer is allowed, or whether catering is in-house.",
+        "Your alcohol policy, including whether we may bring our own alcohol and whether a licensed bartender is required.",
+        "Guest capacity for a seated dinner of about 200, and the time guests and vendors must be out."
+      ],
+      "email": "DRAFT — not sent. Copy this text and send it yourself.\n\nTo: info@broussardfarm.com\nPhone: (409) 937-4026\nForm: https://new.broussardfarm.com/contact/\nSubject: 2028 wedding availability — Saturday, March 18 (about 200 guests)\n\nDear Broussard Farm team,\n\nMy name is Victor. I am planning a Vietnamese-American wedding for about 200 guests and would like to learn more about Broussard Farm and Sevenne Hall.\n\nOur ideal date is Saturday, March 18, 2028. Alternate dates are Saturday, February 5, 2028 and Saturday, February 19, 2028.\n\nI have seen third-party listings of about $4,300 for ceremony and reception and $3,800 for reception only, and I would like to confirm current figures with you.\n\nPlease let me know:\n\n1. Whether any of those Saturdays are available, and your deposit or hold policy.\n2. Current 2028 rental pricing, what is included (tables, chairs, linens), and typical extra fees.\n3. Whether a licensed outside Vietnamese caterer is allowed, or whether catering is in-house.\n4. Your alcohol policy, including whether we may bring our own alcohol and whether a licensed bartender is required.\n5. Guest capacity for a seated dinner of about 200, and the time guests and vendors must be out.\n\nThe tea ceremony will be at a family home. Thank you very much. I would be glad to schedule a tour.\n\nSincerely,\nVictor and Mít\n"
+    },
+    {
+      "id": "draft-8",
+      "title": "Draft: Kim Sơn Catering",
+      "taskId": "catering",
+      "questions": [
+        "Are those package prices per table of 10, or per person?",
+        "Do you travel to Beaumont or Orange to staff a wedding banquet of about 200 guests? If so, what is the travel fee, and what staffing, service ware, and chafing equipment are included?",
+        "Could you provide a sample quote for about 200 guests, family-style, including the 25% service fee, tax, and travel?",
+        "What deposit or hold policy do you use for a 2028 date, and how far in advance should we book?",
+        "Our reception venue is not yet chosen. Some local halls allow an outside licensed caterer; some do not. If we send a venue name later, can you confirm you can work there and provide proof of insurance if the venue requires it?"
+      ],
+      "email": "DRAFT — not sent. Copy this text and send it yourself.\n\nTo: info@kimson.com\nPhone: (281) 598-1777\nForm: https://kimson.com/catering (optional form — this page does not submit it)\nSubject: Off-site wedding catering to Beaumont / Orange — Saturday, March 18, 2028 (about 200 guests)\n\nDear Kim Sơn Catering team,\n\nMy name is Victor. I am planning a Vietnamese-American wedding for about 200 guests near Beaumont and Orange, Texas, and I would like to ask about off-site catering from your Houston kitchen.\n\nOur ideal date is Saturday, March 18, 2028. Alternate dates are Saturday, February 5, 2028 and Saturday, February 19, 2028.\n\nI have seen your wedding pre-set menus (Bronze $615, Silver $640, Gold $785, Platinum $995, and Diamond $1,195) and the build-your-own eight-course menu. Before I can budget, I hoped you could clarify:\n\n1. Are those package prices per table of 10, or per person?\n2. Do you travel to Beaumont or Orange to staff a wedding banquet of about 200 guests? If so, what is the travel fee, and what staffing, service ware, and chafing equipment are included?\n3. Could you provide a sample quote for about 200 guests, family-style, including the 25% service fee, tax, and travel?\n4. What deposit or hold policy do you use for a 2028 date, and how far in advance should we book?\n5. Our reception venue is not yet chosen. Some local halls allow an outside licensed caterer; some do not. If we send a venue name later, can you confirm you can work there and provide proof of insurance if the venue requires it?\n\nThank you very much. I would be glad to discuss a tasting once we are further along.\n\nSincerely,\nVictor and Mít\n"
+    },
+    {
+      "id": "draft-9",
+      "title": "Draft: Wildflower Catering",
+      "taskId": "catering",
+      "questions": [
+        "Whether you are available on any of those dates, and whether you travel to Beaumont or Orange?",
+        "What the travel or delivery fee would be, and whether you can provide on-site staffing and service for about 200 guests, or only drop-off?",
+        "A sample menu and estimated range for 200 guests, including tax and any service fees?",
+        "Your deposit and hold policy, and whether you can provide insurance certificates for a venue?"
+      ],
+      "email": "DRAFT — not sent. Copy this text and send it yourself.\n\nTo: orders@wildflowerhou.com\nPhone: (281) 725-4664\nSubject: Wedding catering inquiry — Beaumont / Orange, Saturday, March 18, 2028 (about 200 guests)\n\nDear Wildflower Catering,\n\nMy name is Victor. I am planning a Vietnamese-American wedding for about 200 guests near Beaumont and Orange, Texas, and I would like to ask whether you cater weddings that far from Houston.\n\nOur ideal date is Saturday, March 18, 2028. Alternate dates are Saturday, February 5, 2028 and Saturday, February 19, 2028.\n\nThe tea ceremony will be at a family home, and the reception will be at a hall in the Beaumont or Orange area (venue still to be chosen). We are hoping for a Vietnamese family-style or multi-course dinner.\n\nCould you please let me know:\n\n1. Whether you are available on any of those dates, and whether you travel to Beaumont or Orange?\n2. What the travel or delivery fee would be, and whether you can provide on-site staffing and service for about 200 guests, or only drop-off?\n3. A sample menu and estimated range for 200 guests, including tax and any service fees?\n4. Your deposit and hold policy, and whether you can provide insurance certificates for a venue?\n\nThank you. I would be happy to set up a call or tasting.\n\nSincerely,\nVictor and Mít\n"
+    },
+    {
+      "id": "draft-10",
+      "title": "Draft: A-1 Rentals of Beaumont",
+      "taskId": "rentals",
+      "questions": [
+        "Home tea ceremony: a modest tent or canopy if weather requires it, plus about 40 to 60 chairs, a few round or rectangular tables, linens, and any décor tables for a traditional altar and trays.",
+        "Reception backup package for about 200 guests, in case our venue does not include linens, china, or glassware: tables, chairs, linens, china, flatware, and glassware."
+      ],
+      "email": "DRAFT — not sent. Copy this text and send it yourself.\n\nTo: A-1 Rentals of Beaumont — no public email was listed on the official site. Call (409) 833-6464, or send this text if they provide an email.\nSubject: Quote for home tea ceremony and reception rentals — March 18, 2028 (about 200 guests)\n\nDear A-1 Rentals team,\n\nMy name is Victor. I am planning a Vietnamese-American wedding for about 200 guests on Saturday, March 18, 2028, near Beaumont and Orange, with Saturday, February 5 and Saturday, February 19, 2028 as backups.\n\nWe will host the tea ceremony at a family home and will need rentals there even if the reception hall includes tables and chairs. I would like a quote for two possible setups:\n\n1. Home tea ceremony: a modest tent or canopy if weather requires it, plus about 40 to 60 chairs, a few round or rectangular tables, linens, and any décor tables for a traditional altar and trays.\n2. Reception backup package for about 200 guests, in case our venue does not include linens, china, or glassware: tables, chairs, linens, china, flatware, and glassware.\n\nPlease include delivery, set-up, and pickup to a Beaumont or Orange address, your deposit policy, and whether a Friday-to-Monday event rental would cover this timeline. I can share a more exact address and floor plan once the house and venue are set.\n\nThank you very much.\n\nSincerely,\nVictor and Mít\n"
+    },
+    {
+      "id": "draft-11",
+      "title": "Draft: Houston Lion Kings",
+      "taskId": "lion",
+      "questions": [
+        "Availability on those dates?",
+        "Typical wedding packages (number of lions, drums, length of the performance) and pricing, including the travel fee to Beaumont or Orange?",
+        "Your deposit or hold policy, and any venue or space requirements we should plan for?"
+      ],
+      "email": "DRAFT — not sent. Copy this text and send it yourself.\n\nTo: info@houstonlionkings.com\nPhone: (713) 510-3502\nSubject: Lion dance for a Beaumont / Orange wedding — Saturday, March 18, 2028\n\nDear Houston Lion Kings,\n\nMy name is Victor. I am planning a Vietnamese-American wedding near Beaumont and Orange, Texas, and I would like to ask about a lion dance performance.\n\nOur ideal date is Saturday, March 18, 2028. Alternate dates are Saturday, February 5, 2028 and Saturday, February 19, 2028. We expect about 200 guests.\n\nThe tea ceremony will be at a family home, and the reception will be at a nearby venue. We are still deciding whether the lion dance would be at the home, at the reception entrance, or both.\n\nCould you please let me know:\n\n1. Availability on those dates?\n2. Typical wedding packages (number of lions, drums, length of the performance) and pricing, including the travel fee to Beaumont or Orange?\n3. Your deposit or hold policy, and any venue or space requirements we should plan for?\n\nThank you very much.\n\nSincerely,\nVictor and Mít\n"
+    },
+    {
+      "id": "draft-12",
+      "title": "Draft: Min Photography Studio",
+      "taskId": "photo-dayof",
+      "questions": [
+        "Availability on those dates?",
+        "Current package options and pricing for a tea ceremony plus reception, including hours, a second photographer if recommended, and whether video is available or referred out?",
+        "The travel fee to Beaumont or Orange?",
+        "Your deposit or hold policy for a 2028 date?"
+      ],
+      "email": "DRAFT — not sent. Copy this text and send it yourself.\n\nTo: minphotographystudio@gmail.com\nPhone: (832) 738-9036\nSubject: Wedding photography inquiry — Beaumont / Orange, Saturday, March 18, 2028\n\nDear Min Photography Studio,\n\nMy name is Victor. I am planning a Vietnamese-American wedding near Beaumont and Orange, Texas, and I would like to ask about photography coverage for the tea ceremony and the reception.\n\nOur ideal date is Saturday, March 18, 2028. Alternate dates are Saturday, February 5, 2028 and Saturday, February 19, 2028. We expect about 200 guests.\n\nThe day will include a traditional lễ gia tiên (tea ceremony) at a family home, with áo dài, and a reception at a venue in the Beaumont or Orange area. We may also want getting-ready coverage.\n\nCould you please share:\n\n1. Availability on those dates?\n2. Current package options and pricing for a tea ceremony plus reception, including hours, a second photographer if recommended, and whether video is available or referred out?\n3. The travel fee to Beaumont or Orange?\n4. Your deposit or hold policy for a 2028 date?\n\nThank you. I would be glad to set up a call.\n\nSincerely,\nVictor and Mít\n"
+    },
+    {
+      "id": "dj",
+      "title": "Questions still to draft: DJ",
+      "taskId": "music",
+      "questions": [
+        "Do you play both Vietnamese and American music, and can you hand off to an MC?",
+        "What is the rate for a shorter reception if a saxophonist covers cocktail hour?",
+        "What is the travel fee to Orange or Beaumont?",
+        "Until what time can you play if the hall has an 11 pm curfew?"
+      ],
+      "email": "Hello,\n\nWe are looking for a DJ for a reception of about 200 guests on Saturday, March 18, 2028, near Orange and Beaumont. We may also have a saxophonist for cocktail hour.\n\nCould you send a rate for the evening, and a rate if cocktail hour is already covered?\n\nThank you,\nVictor and Mít"
+    },
+    {
+      "id": "florist",
+      "title": "Questions still to draft: Florist",
+      "taskId": "florist",
+      "questions": [
+        "Can you dress a home altar and backdrop in the morning, then reception flowers later?",
+        "What is a lean package for about 20 reception tables?",
+        "Do you provide the double-happiness and red-and-gold accents, or only flowers?"
+      ],
+      "email": "Hello,\n\nWe would like flowers for a home tea-ceremony altar on the morning of Saturday, March 18, 2028, and for a reception of about 20 tables afterward.\n\nCould you share a range for that split day?\n\nThank you,\nVictor and Mít"
+    },
+    {
+      "id": "sax",
+      "title": "Questions still to draft: Student sax player",
+      "taskId": "sax",
+      "questions": [
+        "Are you a student or amateur available for about one hour?",
+        "Can you play a ceremony entrance and cocktail-hour set?",
+        "What is your fee, and the travel cost to Orange or Beaumont?",
+        "Do you bring a speaker, or do you use the DJ's sound?"
+      ],
+      "email": "Hello,\n\nWe are looking for a saxophonist for about an hour on Saturday, March 18, 2028, for a ceremony entrance and cocktail hour near Orange and Beaumont. A student or amateur is what we have budgeted for.\n\nCould you tell us your fee and whether you can travel that day?\n\nThank you,\nVictor and Mít"
+    },
+    {
+      "id": "cake",
+      "title": "Questions still to draft: Cake",
+      "taskId": "cake",
+      "questions": [
+        "What is the price for dessert for about 200 guests?",
+        "Can you deliver to the reception hall?",
+        "What lead time do you need for a March 2028 date?"
+      ],
+      "email": "Hello,\n\nWe are asking about wedding dessert for about 200 guests on Saturday, March 18, 2028, with delivery to a reception near Orange and Beaumont.\n\nCould you share a per-person or total range?\n\nThank you,\nVictor and Mít"
+    },
+    {
+      "id": "hmu",
+      "title": "Questions still to draft: Hair and makeup",
+      "taskId": "hmu",
+      "questions": [
+        "Can you do an áo dài look for the morning tea and a second look for the reception?",
+        "What is the price for the bride plus a small party?",
+        "How long is the changeover, and where do you work?"
+      ],
+      "email": "Hello,\n\nWe need hair and makeup on Saturday, March 18, 2028, for two looks: áo dài at a morning tea ceremony, then the reception. About 200 guests are invited, but the beauty party is small.\n\nCould you share a rate?\n\nThank you,\nVictor and Mít"
+    }
+  ],
+  "runOfShow": [
+    {
+      "time": "7:30",
+      "title": "House setup",
+      "detail": "Altar, backdrop, tea set, trays, and extra chairs. To confirm the start time."
+    },
+    {
+      "time": "8:30",
+      "title": "Families gather",
+      "detail": "To confirm which home, and whether the groom's family processes in."
+    },
+    {
+      "time": "9:30",
+      "title": "Tea ceremony",
+      "detail": "Bows, tea for elders, lì xì, and the mâm quả. The order is a family decision."
+    },
+    {
+      "time": "11:00",
+      "title": "Photos at the house",
+      "detail": "The photographer starts here, not at the hall."
+    },
+    {
+      "time": "12:00",
+      "title": "Break",
+      "detail": "Eat, rest, and change. The gap before the reception is intentional."
+    },
+    {
+      "time": "16:00",
+      "title": "Reception look",
+      "detail": "Second hair and makeup look, then travel to the hall."
+    },
+    {
+      "time": "17:00",
+      "title": "Cocktail hour",
+      "detail": "Student saxophonist, if booked. Guests arrive."
+    },
+    {
+      "time": "18:00",
+      "title": "MC Tuấn opens the reception",
+      "detail": "Bilingual welcome so both families can follow."
+    },
+    {
+      "time": "18:20",
+      "title": "Grand entrance",
+      "detail": "Sax or DJ, to confirm which."
+    },
+    {
+      "time": "18:30",
+      "title": "Lion dance, if booked",
+      "detail": "Optional. Skip this block if you do not hire a troupe."
+    },
+    {
+      "time": "18:45",
+      "title": "Dinner",
+      "detail": "Multi-course Vietnamese dinner. About 20 tables of 10."
+    },
+    {
+      "time": "20:00",
+      "title": "Toasts and table visits",
+      "detail": "Tuấn keeps the order. To confirm who speaks."
+    },
+    {
+      "time": "20:30",
+      "title": "Cake",
+      "detail": "After the main courses, not instead of them."
+    },
+    {
+      "time": "21:00",
+      "title": "Dancing",
+      "detail": "DJ. Confirm the hall curfew before you promise a late night."
+    },
+    {
+      "time": "22:30",
+      "title": "Send-off",
+      "detail": "To confirm. Some halls, including Downtown Event Centre, end music at 11 pm."
+    }
+  ],
+  "monthNotes": {
+    "2026-11": "You are here. The working guest count is about 200, and the ideal Saturday is March 18, 2028.",
+    "2027-01": "Guest count, date, reception hall, home tea-ceremony plan, and caterer.",
+    "2027-07": "Save-the-dates are not a separate task. If you want them, aim for late summer 2027. To confirm.",
+    "2027-09": "Vietnam trip: fittings, pre-wedding photos, and printed invitations. Hội An, Đà Lạt, and Saigon are ideas, not a booked itinerary.",
+    "2028-01": "Mail invitations around January 16. Bachelor hiking weekend January 15. Bachelorette weekend January 8. Both are before Tết on January 26.",
+    "2028-03": "Ideal wedding day is Saturday, March 18. Get the Texas marriage license around March 2. It is valid 90 days and has a 72-hour wait unless a Twogether certificate waives the wait."
+  }
+}

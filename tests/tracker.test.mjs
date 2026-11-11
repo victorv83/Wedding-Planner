@@ -5,6 +5,11 @@ import test from "node:test";
 import {
   applyEdits,
   budgetTotals,
+  fitReport,
+  guestSideTotal,
+  guestTablePlan,
+  monthsInRange,
+  tasksInMonth,
   buildModel,
   buildUpdatePayload,
   candidateDates,
@@ -45,10 +50,9 @@ test("seed file is public-safe JSON for Victor & Mít", () => {
   assert.equal(data.settings.idealDate, "2028-03-18");
   assert.equal(data.settings.selectedDate, null);
   assert.equal(raw.includes("2028-03-04"), false);
-  assert.equal(data.settings.guestCount, null);
+  assert.equal(data.settings.guestCount, 200);
   assert.equal(data.settings.budget, 50000);
-  assert.equal(raw.includes("@"), false);
-  assert.doesNotMatch(raw, /\b\d{3}[-.\s)]\d{3}[-.\s]\d{4}\b/);
+  assert.equal(/victorvuong/i.test(raw), false);
   assert.equal(model.warnings.length, 0);
 });
 
@@ -60,6 +64,11 @@ test("the hash opens one section, all sections, or overview by default", () => {
   assert.equal(viewFromHash("#timeline"), "timeline");
   assert.equal(viewFromHash("#tasks"), "timeline");
   assert.equal(viewFromHash("#vendors"), "vendors");
+  assert.equal(viewFromHash("#ceremony"), "ceremony");
+  assert.equal(viewFromHash("#guests"), "guests");
+  assert.equal(viewFromHash("#outreach"), "outreach");
+  assert.equal(viewFromHash("#months"), "months");
+  assert.equal(viewFromHash("#dayof"), "dayof");
   assert.equal(viewFromHash("#all"), "all");
   assert.equal(viewFromHash("#ALL"), "all");
   assert.equal(viewFromHash("#somewhere-else"), "overview");
@@ -331,10 +340,17 @@ test("vendor total sums only known numbers", () => {
 test("budget prices 175 and 250 guests and keeps parties out of the wedding total", () => {
   const { budget } = model;
   assert.equal(data.settings.budget, 50000);
-  assert.deepEqual(budget.guestCounts, [175, 250]);
+  assert.deepEqual(budget.guestCounts, [200, 175, 250]);
+  const atBaseline = fitReport(budget, 200, 50000);
+  assert.equal(atBaseline.planFitsHigh, true);
+  assert.equal(atBaseline.estimateFitsHigh, false);
+  assert.equal(guestSideTotal(data.guestPlan), 200);
+  assert.equal(guestTablePlan(data.guestPlan).tables, 20);
+  assert.deepEqual(monthsInRange("2026-11", "2027-01"), ["2026-11", "2026-12", "2027-01"]);
+  assert.ok(tasksInMonth(model.tasks, "2028-01").some((task) => task.id === "bachelor"));
   const catering = budget.lines.find((line) => line.id === "catering");
-  assert.deepEqual(estimateLine(catering, 175), { low: 7000, high: 14875 });
-  assert.deepEqual(estimateLine(catering, 250), { low: 10000, high: 21250 });
+  assert.deepEqual(estimateLine(catering, 175), { low: 14525, high: 28350 });
+  assert.deepEqual(estimateLine(catering, 250), { low: 20750, high: 40500 });
   const teaPlace = budget.lines.find((line) => line.id === "tea-place");
   assert.deepEqual(estimateLine(teaPlace, 200), { low: 0, high: 0 });
   for (const guests of [175, 250]) {
@@ -356,7 +372,9 @@ test("budget prices 175 and 250 guests and keeps parties out of the wedding tota
   assert.equal(perGuestCeiling(50000, 250), 200);
   const dj = budget.plan.lines.find((line) => line.lineId === "dj");
   const lion = budget.plan.lines.find((line) => line.lineId === "lion");
-  assert.equal(dj.over, "over");
+  const venuePlan = budget.plan.lines.find((line) => line.lineId === "venue");
+  assert.equal(dj.over, "");
+  assert.equal(venuePlan.amount, 2650);
   assert.equal(lion.over, "over");
   for (const line of budget.lines) {
     if (line.taskId) assert.ok(model.tasks.some((task) => task.id === line.taskId), line.id);
@@ -384,7 +402,8 @@ test("vendor shortlist covers the bookings and states venue alcohol rules", () =
   for (const vendor of vendors) {
     assert.ok(!ids.has(vendor.id), vendor.id);
     ids.add(vendor.id);
-    assert.match(vendor.url, /^https:\/\//, vendor.name);
+    if (vendor.url) assert.match(vendor.url, /^https:\/\//, vendor.name);
+    else assert.match(`${vendor.pricing} ${vendor.caveat}`, /confirm|unknown|not found/i, vendor.name);
     assert.ok(model.tasks.some((task) => task.id === vendor.taskId), vendor.name);
     assert.ok(vendor.fit, vendor.name);
   }

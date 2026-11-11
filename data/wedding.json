@@ -11,13 +11,14 @@
       "2028-03-18"
     ],
     "selectedDate": null,
-    "guestCount": null,
+    "guestCount": 200,
     "budget": 50000,
     "currency": "USD",
     "tetDate": "2028-01-26",
     "tetLabel": "Tết Nguyên Đán",
     "planningGuestRange": [
       175,
+      200,
       250
     ]
   },
@@ -61,7 +62,7 @@
       "phase": "now",
       "due": "2027-01-15",
       "status": "todo",
-      "notes": "Agree on a rough headcount before venue and catering contracts. A precise number comes later, with RSVPs. When you trust a figure, set settings.guestCount."
+      "notes": "The planning baseline is about 200 guests. Check the same plan at 175 and at 250. A precise number comes later, with RSVPs. When you trust a figure, change settings.guestCount."
     },
     {
       "id": "pick-date",
@@ -104,7 +105,7 @@
       "phase": "now",
       "dueMonth": "2027-01",
       "status": "todo",
-      "notes": "Book a local Vietnamese caterer for a multi-course menu. Confirm they can work at the reception venue, and plan a tasting once the contract is in place.",
+      "notes": "Book a local Vietnamese caterer for a multi-course menu. Confirm they can work at the reception venue, and plan a tasting once the contract is in place. Price the menu at about 200 guests, and ask what changes at 175 and at 250.",
       "vendorName": null,
       "vendorUrl": null,
       "cost": null
@@ -216,7 +217,7 @@
     },
     {
       "status": "todo",
-      "notes": "The reception venue may include tables and chairs. Still price linens, china, and the chairs and tables for family at the home tea ceremony, for 175–250 reception guests.",
+      "notes": "Plan about 200 guests as 20 tables of 10. Check 175 and 250 as the low and high. The reception venue may include tables and chairs. Still price linens, china, and the chairs and tables for family at the home tea ceremony.",
       "id": "rentals",
       "title": "Book tables, chairs, linens, and china",
       "category": "Rentals",
@@ -228,7 +229,7 @@
     },
     {
       "status": "todo",
-      "notes": "Do not assume the reception allows bring-your-own alcohol. Price both a BYO bar with a licensed bartender, where the venue allows it, and a venue bar package. Confirm the rule and the insurance in writing.",
+      "notes": "Plan the bar for about 200 guests. Do not assume the reception allows bring-your-own alcohol. Price both a BYO bar with a licensed bartender, where the venue allows it, and a venue bar package. Confirm the rule and the insurance in writing.",
       "id": "bar",
       "title": "Book bartenders and plan the bar",
       "category": "Bar",
@@ -338,7 +339,7 @@
       "phase": "final",
       "due": "2028-01-16",
       "status": "todo",
-      "notes": "Mail invitations in mid-January 2028, about nine weeks before the ideal date of March 18. January 16 is the due date."
+      "notes": "Mail invitations in mid-January 2028, about nine weeks before the ideal date of March 18. January 16 is the due date. Plan on roughly one invitation for every two or three of the 200 guests."
     },
     {
       "status": "todo",
@@ -453,6 +454,7 @@
   "budgetEstimate": {
     "asOf": "2026-11-05",
     "guestCounts": [
+      200,
       175,
       250
     ],
@@ -469,15 +471,15 @@
         "taskId": "venue-reception",
         "group": "wedding",
         "flat": {
-          "low": 3000,
-          "high": 8000
+          "low": 2650,
+          "high": 8500
         },
-        "basis": "Flat rental for the reception only. The tea ceremony is at a family home, so that place costs nothing. The low end is the Brown Estate's published $3,000 reception fee. The high end leaves room for a larger hall, extra hours, and security.",
+        "basis": "Low is the Downtown Event Centre noncommercial all-day rate of $2,250 plus the $400 food-and-beverage access fee on the city sheet effective October 1, 2026. Police security is extra and unpublished. High is Belle Oaks' published Saturday package of $8,500. The tea ceremony adds no hall rental.",
         "priceType": "listed",
         "sources": [
           {
-            "label": "Brown Estate fees (Lamar State College Orange)",
-            "url": "https://lsco.edu/brown-estate/weddings.html"
+            "label": "City of Beaumont rate sheet effective October 1, 2026",
+            "url": "https://beaumonteventstx.com/wp-content/uploads/2026/10/EventServicesRateSheet_effective10.01.26.pdf"
           }
         ]
       },
@@ -501,21 +503,18 @@
         "taskId": "catering",
         "group": "wedding",
         "perGuest": {
-          "low": 40,
-          "high": 85
+          "low": 83,
+          "high": 162
         },
-        "basis": "Per guest, food plus staff, service, and travel if the kitchen is in Houston. A Houston Vietnamese restaurant prices a 10-person family dinner around $30–$37 a head before off-site staffing. The Knot's national wedding-dinner average sits higher, so the high end is $85. The $50k plan uses a family-style banquet near the low end. Estimate.",
-        "priceType": "estimate",
+        "basis": "Kim Sơn publishes presets from $615 to $1,195 plus 25% service and 8.25% tax. These per-guest numbers assume a table of 10. The PDF does not say per table or per person. To confirm. Travel to Beaumont is not included. The wedding-wide 10–15% allowance may count this service and tax a second time.",
+        "priceType": "listed",
         "sources": [
           {
-            "label": "Vinh Hoa (Houston) family dinner menu",
-            "url": "https://www.vinhhoahouston.com/"
-          },
-          {
-            "label": "The Knot 2026 Real Weddings Study, via Walnut",
-            "url": "https://walnutinvest.com/stats/wedding-cost-statistics"
+            "label": "Kim Sơn wedding preset menu PDF",
+            "url": "https://static-content.owner.com/document/33217388-9452-4522-9654-f08dd201d6c4.pdf"
           }
-        ]
+        ],
+        "notes": "If the packages are per person, ignore this line and get another caterer."
       },
       {
         "id": "rentals",
@@ -596,19 +595,15 @@
         "taskId": "photo-dayof",
         "group": "wedding",
         "flat": {
-          "low": 4000,
-          "high": 9000
+          "low": 2700,
+          "high": 5000
         },
-        "basis": "Flat. Coverage starts at the home tea ceremony and runs through the reception, often 10 hours. Houston photo packages run about $2,000–$5,500; video adds about $1,500–$3,500.",
+        "basis": "Photos by Sydney Tx lists $2,700 for 6 hours, $3,500 for 8 hours, and $5,000 for 10 hours with a second photographer. The home tea ceremony plus reception points at 10 hours. Travel beyond 2 hours from Spring is extra. To confirm.",
         "priceType": "listed",
         "sources": [
           {
-            "label": "Photos by Sydney Tx packages (Zola)",
-            "url": "https://www.zola.com/wedding-vendors/wedding-photographers/photos-by-sydney-tx"
-          },
-          {
-            "label": "Nghia Tran Photography packages (Zola)",
-            "url": "https://zola.com/wedding-vendors/wedding-photographers/nghia-tran-photography"
+            "label": "Photos by Sydney Tx pricing",
+            "url": "https://photosbysydneytx.mypixieset.com/pricing/"
           }
         ]
       },
@@ -619,15 +614,15 @@
         "taskId": "music",
         "group": "wedding",
         "flat": {
-          "low": 1200,
-          "high": 3000
+          "low": 1285,
+          "high": 2795
         },
-        "basis": "Flat for a bilingual DJ. A Houston Vietnamese–English DJ lists about $900–$2,500 before travel. A student sax set for cocktail hour can shorten this booking. The $50k plan allocates less than a full-night low for that reason.",
+        "basis": "DJ Houston Texas Pros publishes $1,285, $1,895, and $2,795 in Houston, travel included up to 1.5 hours. Beaumont and Orange need an unpublished travel adder. To confirm.",
         "priceType": "listed",
         "sources": [
           {
-            "label": "DJ Houston TX Pros on GigSalad",
-            "url": "https://gigsalad.com/djhoustontxpros_houston"
+            "label": "DJ Houston Texas Pros packages",
+            "url": "https://houstontxdjpros.com/packages-available/"
           }
         ]
       },
@@ -1007,12 +1002,12 @@
       "id": "hit-50k",
       "label": "Plan to hit $50k",
       "guests": 200,
-      "summary": "One way to aim at $50,000 for about 200 guests: family-style Vietnamese catering, Vietnam-sourced attire and photos, a student sax set, no lion dance, and no rental for the home tea ceremony. The bar is not assumed to be bring-your-own. Both bar options are priced, and the cautious total uses the higher one. Every dollar here is an estimate unless the matching line is marked Listed.",
+      "summary": "One way to aim at $50,000 for about 200 guests using published rates where we have them: the Event Centre noncommercial all-day rental plus the $400 access fee, Kim Sơn Bronze if that preset is per table of 10, Sydney's 10-hour photo package, and the lowest published Houston DJ package. The tea ceremony stays at home. The lion dance stays out until there is a quote. The bar is not assumed to be bring-your-own. Both bar options are priced, and the cautious total uses the higher one. That higher path stays just under $50,000 after 15% only if the Kim Sơn unit is per table, travel is modest, and police security is small. Those are to confirm. Kim Sơn's service and tax are already in the catering number, so the 10–15% allowance may count them twice.",
       "lines": [
         {
           "lineId": "venue",
-          "amount": 3000,
-          "choice": "Low published reception fee. Tea ceremony rental is $0."
+          "amount": 2650,
+          "choice": "Event Centre noncommercial all-day $2,250 plus the $400 access fee. Beaumont PD security is required and not included. To confirm."
         },
         {
           "lineId": "tea-place",
@@ -1021,8 +1016,8 @@
         },
         {
           "lineId": "catering",
-          "amount": 8000,
-          "choice": "Vietnamese family-style banquet near $40 a guest. Estimate."
+          "amount": 16644,
+          "choice": "Kim Sơn Bronze at $615 assumed per table of 10, plus 25% service and 8.25% tax, for 20 tables ($16,644). Unit and travel are to confirm. The global 10–15% may count that service and tax again."
         },
         {
           "lineId": "rentals",
@@ -1036,13 +1031,13 @@
         },
         {
           "lineId": "photo-video",
-          "amount": 4000,
-          "choice": "One team from the home ceremony through the reception. Low end."
+          "amount": 5000,
+          "choice": "Published 10-hour photo package so the day can start at the house. Travel fee to confirm."
         },
         {
           "lineId": "dj",
-          "amount": 900,
-          "choice": "Shorter booking because the sax covers cocktail hour. Below the full-night low on purpose."
+          "amount": 1285,
+          "choice": "Published Houston starting package. Travel to SETX is to confirm and may not be optional."
         },
         {
           "lineId": "sax",
@@ -1148,30 +1143,41 @@
           "basis": "Low end of a $25–$45 a guest venue-bar estimate at 200 guests. Not a published local package."
         }
       ]
-    }
+    },
+    "levers": [
+      "At 200 guests the full high range is still over $50,000. The plan is the cost-saving path, and it is tight once real invoices replace estimates.",
+      "Event Centre security is required and not priced. Commercial classification would be $2,640 before the $400 fee.",
+      "Kim Sơn only stays in range if the preset is per table of 10. Per person would break the budget. Travel is still unknown.",
+      "Reign Hills does not allow bring-your-own alcohol. Belle Oaks does not say that you may bring it.",
+      "The lion dance stays out of the plan until there is a quote. Attire and the pre-wedding shoot stay on the Vietnam trip.",
+      "Kim Sơn's 25% service fee and 8.25% tax are already inside the catering line. The extra 10–15% on the wedding total may count that food tax and service a second time until Kim Sơn confirms what is included.",
+      "Beaumont PD security is required at the Event Centre and the rate is not published, so the plan total does not include it. To confirm."
+    ]
   },
   "vendorOptions": [
     {
       "id": "v-event-centre",
       "category": "Venue",
       "taskId": "venue-reception",
-      "name": "Downtown Event Centre",
-      "url": "https://discoverbeaumont.com/downtown-event-centre-info/",
-      "base": "Beaumont",
-      "pricing": "Wedding-Spot's starter estimate is about $3,900 for 50 guests, food included. Ask the city for the rental-only rate. Rental covers ceremony and reception; security is extra.",
-      "priceType": "quote",
-      "fit": "The city's venue comparison lists about 350 banquet seats, so 250 fits. Wedding Spot says approved outside caterers are allowed, alcohol is BYO only with a licensed bartender, and tables and chairs are included.",
-      "caveat": "No open flames. That restriction applies only if a rite with candles or incense is held at this venue. The tea ceremony is planned at a family home, so the altar there is not under this rule. Music ends by 11 pm. Wedding Spot's roughly $3,900 figure for 50 guests includes food in their starter estimate; ask the city for the rental-only rate.",
+      "name": "Downtown Event Centre (City of Beaumont Events)",
+      "url": "https://beaumonteventstx.com/downtown-event-centre-info/",
+      "base": "Beaumont, TX",
+      "pricing": "City rate sheet effective October 1, 2026: commercial all-day $2,640; noncommercial all-day $2,250; food and beverage access fee $400; after midnight $300/hour. Beaumont PD security is required at the renter's expense. That security rate is not published.",
+      "priceType": "listed",
+      "fit": "Official page: up to 350 banquet seats and 16,000 sq ft. Tables and chairs are included. Inquiries are accepted from 30 days out to 2 years ahead, so March 18, 2028 is inside the window.",
+      "caveat": "Wedding Spot says approved outside caterers, BYO alcohol only with a licensed bartender, and no open flames. Those rules are not on the city rate sheet, so confirm them. Open flames matter only if a rite with candles or incense is at this hall. The tea ceremony is at a family home. Wedding Spot also says music ends at 11 pm, while the rental window runs to midnight. To confirm.",
       "source": {
-        "label": "City of Beaumont venue comparison (350 banquet seats)",
-        "url": "https://beaumonteventstx.com/venue-comparison/"
+        "label": "City of Beaumont rate sheet effective October 1, 2026",
+        "url": "https://beaumonteventstx.com/wp-content/uploads/2026/10/EventServicesRateSheet_effective10.01.26.pdf"
       },
       "byoAlcohol": "bartender",
       "outsideCatering": "approved",
       "policySource": {
-        "label": "Wedding Spot restrictions for Downtown Event Centre",
+        "label": "Wedding Spot restrictions, confirm with the city",
         "url": "https://www.wedding-spot.com/venue/12980/downtown-event-centre/"
-      }
+      },
+      "email": "events@beaumonttexas.gov",
+      "phone": "(409) 838-3435"
     },
     {
       "id": "v-belle-oaks",
@@ -1179,95 +1185,114 @@
       "taskId": "venue-reception",
       "name": "The Venue at Belle Oaks",
       "url": "https://www.thevenueatbelleoaks.com/",
-      "base": "Beaumont (Taylor Bayou)",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "About 6,500 sq ft ballroom, plus an open-air pavilion. The Knot describes a prep kitchen for your own caterer and a full-service bar, with tables and chairs included for a large guest count.",
-      "caveat": "A 2022 sale listing is no longer advertised (off market on Land and Farm; LoopNet says it is no longer advertised). The venue's own site was still taking wedding inquiries when checked in November 2026. Confirm it will host events in 2028. BYO alcohol is not stated; do not assume it.",
+      "base": "Beaumont, TX (Taylor Bayou)",
+      "pricing": "Official packages: Saturday $8,500; Friday and Sunday $5,000; weekend $10,000. Tables and chairs for up to 460 and a full-service bar with TABC bartenders are included.",
+      "priceType": "listed",
+      "fit": "Official packages: 625 guest capacity; tables and chairs for up to 460 (50 x 60-in rounds, 9 x 6-ft rectangles, 8 cocktail tables). 6,500 sq ft ballroom plus covered pavilion.",
+      "caveat": "The site was still publishing packages on November 11, 2026. A 2022 sale listing is off the market. Confirm 2028 dates. BYO alcohol is not stated. Do not assume it.",
       "source": {
-        "label": "Venue site, still booking weddings",
-        "url": "https://www.thevenueatbelleoaks.com/"
+        "label": "Pricing source",
+        "url": "https://www.thevenueatbelleoaks.com/wedding-packages"
       },
       "byoAlcohol": "unknown",
       "outsideCatering": "yes",
       "policySource": {
-        "label": "The Knot: prep kitchen for your caterer and a full-service bar",
-        "url": "https://www.theknot.com/marketplace/the-venue-at-belle-oaks-beaumont-tx-2077445"
-      }
+        "label": "Policy or rate source",
+        "url": "https://www.thevenueatbelleoaks.com/wedding-packages"
+      },
+      "email": "info@thevenueatbelleoaks.com",
+      "phone": "(409) 540-8247"
     },
     {
       "id": "v-botanical",
       "category": "Venue",
       "taskId": "venue-reception",
-      "name": "Beaumont Botanical Garden Center (Tyrrell Park)",
-      "url": "https://www.beaumontcvb.com/listing/beaumont-botanical-garden-center/827/",
-      "base": "Beaumont",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "Indoor center with gardens and a commercial kitchen for caterers.",
-      "caveat": "Holds up to 250, which is tight at the top of your range.",
-      "byoAlcohol": "unknown",
-      "outsideCatering": "yes",
+      "name": "Beaumont Botanical Gardens — Garden Center (Tyrrell Park)",
+      "url": "https://www.bbgtx.org/rental",
+      "base": "Beaumont, TX",
+      "pricing": "Official 2026 Garden Center Venue Pricing: Sunday-Friday $125/hour (3-hour minimum), booking 9 am-10 pm; after hours $200/hour. Saturday $200/hour (3-hour minimum), booking 9 am-midnight. Weekend special $4,000 for Friday 9 am-10 pm AND Saturday 9 am-midnight (guide says a $625 savings). Included: tables and chairs, set-up and cleaning of the building, Garden Patio access (outside furniture not provided), full kitchen for licensed caterer access. Bridal suite and groom's room are $50 add-ons on hourly rentals and…",
+      "priceType": "listed",
+      "fit": "Up to 250 guests (2026 pricing guide). Warren Loose Conservatory is best suited for up to 32 guests (too small for the reception).",
+      "caveat": "Yes, with conditions (official FAQ): alcohol only by a TABC-licensed bartender; licensed security officer required for all events serving alcohol; event insurance with liquor liability required. Licensed and insured caterer required for kitchen access. Self-catering allowed with limits: no stove, oven, or warmers; no open-flame food warmers (electric only); microwave, ice machine, refrigerator, freezer available; no bringing your… No preferred-vendor requirement. Insurance required for alcohol and for events with 100+ guests. Saturday cancellations within 90 days are not refunded; Sunday-Friday within 30 days are not refunded.",
+      "byoAlcohol": "bartender",
+      "outsideCatering": "approved",
       "policySource": {
-        "label": "Beaumont CVB listing",
-        "url": "https://www.beaumontcvb.com/listing/beaumont-botanical-garden-center/827/"
-      }
+        "label": "Policy or rate source",
+        "url": "https://www.bbgtx.org/s/2026-BBG-Garden-Center-Venue-Pricing-1.pdf"
+      },
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.bbgtx.org/s/2026-BBG-Garden-Center-Venue-Pricing-1.pdf"
+      },
+      "email": "info@bbgtx.org",
+      "phone": "(409) 842-3135"
     },
     {
       "id": "v-brown-estate",
       "category": "Venue",
       "taskId": "venue-reception",
       "name": "The Brown Estate of Lamar State College Orange",
-      "url": "https://lsco.edu/brown-estate/weddings.html",
-      "base": "Orange",
-      "pricing": "$3,000 for a reception, or $3,500 for ceremony and reception, with 4 hours of event time. Extra hours are about $750 each.",
+      "url": "https://www.lsco.edu/brown-estate/weddings.html",
+      "base": "Orange, TX",
+      "pricing": "Not published on the official LSCO wedding page (still marked under construction as of Nov 11, 2026). Wedding-Spot venue notes: $3,000 for a reception including 4 hours of event time (excluding set-up/clean-up); ceremony $500 with the reception rental; additional hours $750/hour. Zola lists full wedding starting at $3,000 and a peak-season ceremony site fee starting at $3,500 in one FAQ, which conflicts with Wedding-Spot — confirm current 2028 rates. SETX Weddings: food prices exclusive of rental; estate will serv…",
       "priceType": "listed",
-      "fit": "Closest to Orange. Up to 300 guests, a mansion on 88 acres with a lake, and the fee includes tables, chairs, china and linens.",
-      "caveat": "Catering and bartending are billed on top. Ask whether an outside Vietnamese caterer is allowed. The page was under construction when checked.",
+      "fit": "Official site does not currently publish capacity (wedding page under construction). Wedding-Spot: up to 300 overall; max indoor ceremony 200; max indoor reception 175; outdoor ceremony/reception 300. SETX Weddings similarly lists reception up to 300 and indoor ceremony up to 200. Indoor reception of 175 would be tight for ~200 guests — confirm.",
+      "caveat": "Third-party (Wedding-Spot and SETX Weddings): BYO alcohol; licensed bartender/caterer required (Wedding-Spot); estate serves alcohol and charges bar fees (SETX). Official page does not state the policy. Confirm on a current contract. Unclear / likely restricted. Wedding-Spot: all food and beverage handled by venue; catering provided by venue. SETX describes in-house banquet staff. Official page does not say whether an outside Vietnamese caterer is allowed. This is a pr… Fax 409-330-4969. Official wedding page directs visitors to the Brown Estate Facebook page for current information. Third-party listings include tables, chairs, linens, china, silverware, and glassware. Closest major option to Orange.",
       "source": {
-        "label": "Wedding-Spot listing",
+        "label": "Pricing source",
         "url": "https://www.wedding-spot.com/venue/5579/the-brown-estate-of-lamar-state-college/"
       },
       "byoAlcohol": "unknown",
       "outsideCatering": "unknown",
       "policySource": {
-        "label": "Lamar State College Orange wedding page",
-        "url": "https://lsco.edu/brown-estate/weddings.html"
-      }
+        "label": "Policy or rate source",
+        "url": "https://www.wedding-spot.com/venue/5579/the-brown-estate-of-lamar-state-college/"
+      },
+      "email": "BrownEstate@lsco.edu",
+      "phone": "(409) 883-2939"
     },
     {
       "id": "v-reign-hills",
       "category": "Venue",
       "taskId": "venue-reception",
       "name": "Reign Hills",
-      "url": "https://www.beaumontcvb.com/listing/reign-hills/2911/",
-      "base": "Beaumont outskirts",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "Up to 400 guests, with chandeliers, bride and groom suites, and indoor and outdoor space.",
-      "caveat": "Catering policy not published.",
-      "byoAlcohol": "unknown",
-      "outsideCatering": "unknown",
+      "url": "https://www.reignhills.com/",
+      "base": "Kountze, TX (Beaumont outskirts; about 1.5 hours from Houston)",
+      "pricing": "Official Saturday rates: $5,500 in January and February, $6,000 in March. Alcohol must be purchased through their bartender. No BYOB.",
+      "priceType": "listed",
+      "fit": "400 guests (official FAQ). Includes (28) 72-inch rounds seating 10-12, (5) 8-ft rectangles, (6) cocktail tables, (390) black Chiavari chairs.",
+      "caveat": "No family catering. Licensed and insured caterers only, so a Vietnamese restaurant still needs approval. FAQ says guests are out by 11 pm. To confirm against the Saturday rental window.",
+      "byoAlcohol": "no",
+      "outsideCatering": "approved",
       "policySource": {
-        "label": "Beaumont CVB listing",
-        "url": "https://www.beaumontcvb.com/listing/reign-hills/2911/"
-      }
+        "label": "Policy or rate source",
+        "url": "https://www.reignhills.com/copy-of-amenities"
+      },
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.reignhills.com/copy-of-amenities"
+      },
+      "email": "info@reignhills.com"
     },
     {
       "id": "v-holiday-inn",
       "category": "Venue",
       "taskId": "venue-reception",
       "name": "Holiday Inn & Suites Beaumont Plaza",
-      "url": "https://zola.com/wedding-vendors/wedding-venues/holiday-inn-suites-beaumont-plaza",
-      "base": "Beaumont",
-      "pricing": "From $1,000; in-house catering from $20 a person on off-peak dates.",
+      "url": "https://www.ihg.com/holidayinn/hotels/us/en/beaumont/bptwd/hoteldetail/events-facilities",
+      "base": "Beaumont, TX",
+      "pricing": "Not confirmed from an official hotel page this pass. Prior tracker / Zola: from $1,000; in-house catering from $20 a person on off-peak dates. Treat as a third-party listing until the hotel confirms.",
       "priceType": "listed",
-      "fit": "Up to 600 seated, with rooms on site. Also a candidate for the guest hotel block.",
-      "caveat": "Catering is in-house, so a Vietnamese menu would have to come from their kitchen.",
+      "fit": "Not independently confirmed from the official IHG page this pass.",
+      "caveat": "unknown Likely no / in-house only, based on Zola and prior SETX coverage. A Vietnamese menu would probably have to come from the hotel kitchen. Weak fit if outside Vietnamese catering is required. Lower priority unless the couple is open to hotel in-house catering.",
       "byoAlcohol": "unknown",
       "outsideCatering": "no",
       "policySource": {
-        "label": "Zola listing: in-house catering",
+        "label": "Policy or rate source",
+        "url": "https://zola.com/wedding-vendors/wedding-venues/holiday-inn-suites-beaumont-plaza"
+      },
+      "source": {
+        "label": "Pricing source",
         "url": "https://zola.com/wedding-vendors/wedding-venues/holiday-inn-suites-beaumont-plaza"
       }
     },
@@ -1276,18 +1301,24 @@
       "category": "Venue",
       "taskId": "venue-reception",
       "name": "Kim Sơn Bellaire Ballroom",
-      "url": "https://www.wedding-spot.com/venue/4298/kim-son-bellaire/",
-      "base": "Houston (Chinatown)",
-      "pricing": "$5,250–$14,000 rental for 6 hours of event time.",
+      "url": "https://kimson.com/",
+      "base": "Houston, TX (Chinatown / Alief)",
+      "pricing": "Not re-verified from an official ballroom page this pass. Prior tracker / Wedding-Spot: $5,250-$14,000 rental for 6 hours. In-house catering is the expected model.",
       "priceType": "listed",
-      "fit": "A Houston benchmark for a Vietnamese banquet hall with in-house Vietnamese food, up to 800 guests.",
-      "caveat": "Houston, not Orange or Beaumont. Listed only for comparison or if you move the reception.",
+      "fit": "unknown on official site this pass (Houston comparison option only).",
+      "caveat": "unknown No / in-house (prior Wedding-Spot listing). Houston reception option, not a Beaumont/Orange venue. About 90-110 miles from Beaumont/Orange. Useful only if the couple considers moving the reception to Houston.",
       "byoAlcohol": "unknown",
       "outsideCatering": "no",
       "policySource": {
-        "label": "Wedding Spot: Kim Sơn Bellaire ballroom",
+        "label": "Policy or rate source",
         "url": "https://www.wedding-spot.com/venue/4298/kim-son-bellaire/"
-      }
+      },
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.wedding-spot.com/venue/4298/kim-son-bellaire/"
+      },
+      "email": "info@kimson.com",
+      "phone": "(281) 598-1777"
     },
     {
       "id": "c-kim-son",
@@ -1295,11 +1326,17 @@
       "taskId": "catering",
       "name": "Kim Sơn Catering",
       "url": "https://kimson.com/catering",
-      "base": "Houston (Alief)",
-      "pricing": "Ask for a quote on the wedding menu.",
-      "priceType": "quote",
-      "fit": "Kim Sơn's catering page advertises wedding catering and a build-your-own wedding menu. The restaurant is a Houston benchmark, not a Beaumont kitchen.",
-      "caveat": "About 90–110 miles from Beaumont and Orange. The page does not promise delivery or staffing that far. Ask for the travel fee before treating this as a local option."
+      "base": "Houston, TX (Alief)",
+      "pricing": "Official presets: Bronze $615, Silver $640, Gold $785, Platinum $995, Diamond $1,195, plus 25% service and 8.25% tax. The PDF does not say per table or per person. To confirm. If per table of 10, Bronze is about $83 a guest after service and tax, before travel.",
+      "priceType": "listed",
+      "fit": "Wedding menus are published; a 200-guest banquet is in the typical range, but off-site staffing to Beaumont/Orange is not promised on the catering page. Ask.",
+      "caveat": "Travel and staffing to Beaumont or Orange is unknown. If these prices are per person, they do not fit a $50,000 wedding.",
+      "source": {
+        "label": "Kim Sơn wedding preset menu PDF",
+        "url": "https://static-content.owner.com/document/33217388-9452-4522-9654-f08dd201d6c4.pdf"
+      },
+      "email": "info@kimson.com",
+      "phone": "(281) 598-1777"
     },
     {
       "id": "c-vinh-hoa",
@@ -1307,11 +1344,16 @@
       "taskId": "catering",
       "name": "Vinh Hoa Restaurant",
       "url": "https://www.vinhhoahouston.com/",
-      "base": "Houston",
-      "pricing": "Menu prices a 10-person family dinner at $298–$368.",
+      "base": "Houston, TX",
+      "pricing": "Prior tracker: a 10-person family dinner around $298-$368 ($30-$37/head before off-site staffing). Off-site wedding catering and travel to Beaumont are not confirmed on official pages reviewed this pass.",
       "priceType": "listed",
-      "fit": "Vietnamese and Chinese banquet-style menu. Useful as a per-head benchmark.",
-      "caveat": "Off-site wedding catering not confirmed."
+      "fit": "unknown for off-site weddings of 200.",
+      "caveat": "Treat as a Houston restaurant unless they confirm they will staff a 200-guest off-site banquet in SETX.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.vinhhoahouston.com/"
+      },
+      "phone": "(713) 271-3122"
     },
     {
       "id": "c-rise-bloom",
@@ -1332,34 +1374,44 @@
       "name": "Vina Deli",
       "url": "https://www.weddingwire.com/biz/vina-deli/3b614c7a161d9d09.html",
       "base": "Spring, TX",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "Vietnamese and Chinese wedding and event catering, hot and cold menus.",
-      "caveat": "North Houston, so the drive to Orange is long."
+      "pricing": "Ask for a quote. Official site not independently confirmed this pass.",
+      "priceType": "listed",
+      "fit": "unknown",
+      "caveat": "North Houston; long drive to Orange. Limited official information this pass.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.weddingwire.com/biz/vina-deli/3b614c7a161d9d09.html"
+      }
     },
     {
       "id": "c-cafe-natalie",
       "category": "Catering",
       "taskId": "catering",
       "name": "Café Natalie Catering",
-      "url": "https://theweddingdossier.com/wedding-caterers/houston-tx",
-      "base": "Houston",
-      "pricing": "Pricing on request.",
-      "priceType": "quote",
-      "fit": "Full-service caterer that lists Vietnamese among its cuisines, with plated, buffet and family-style service and a bar.",
-      "caveat": "Confirm how authentic the Vietnamese menu is at a tasting."
+      "url": "https://cafenataliecatering.com/",
+      "base": "Houston, TX",
+      "pricing": "Pricing on request. No package prices found on official pages reviewed this pass.",
+      "priceType": "listed",
+      "fit": "Luxury Houston wedding catering including Vietnamese menus. No published max headcount. Official article: BYO-friendly at many venues that permit external catering; also has preferred-vendor partnerships at select venues.",
+      "caveat": "Good cultural fit; likely a higher-end Houston caterer. Travel fee to Beaumont/Orange is unknown and may be significant.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://cafenataliecatering.com/vietnamese-wedding-catering-houston/"
+      },
+      "phone": "(832) 203-8157"
     },
     {
       "id": "c-uyens",
       "category": "Catering",
       "taskId": "catering",
       "name": "Uyen's Restaurant",
-      "url": "https://visitportarthurtx.com/dine/restaurant/uyens-restaurant",
-      "base": "Port Arthur",
-      "pricing": "Ask.",
+      "url": "https://visitportarthurtx.com/dine/restaurant/uyens-restaurant/",
+      "base": "Port Arthur, TX",
+      "pricing": "unknown",
       "priceType": "quote",
-      "fit": "Local Vietnamese restaurant in Port Arthur's Vietnamese community. Worth asking about large-party trays for the tea ceremony or a backup.",
-      "caveat": "Wedding-scale catering not confirmed."
+      "fit": "Wedding-scale catering not confirmed. Closest Vietnamese restaurant found in the immediate Port Arthur area.",
+      "caveat": "Phone from Visit Port Arthur / restaurant directories. Ask whether they cater a 200-guest wedding off-site. No official restaurant website with a catering menu was confirmed this pass.",
+      "phone": "(409) 982-5191"
     },
     {
       "id": "c-wow",
@@ -1367,11 +1419,11 @@
       "taskId": "catering",
       "name": "WOW Food Concepts",
       "url": "https://m.weddingwire.com/biz/wow-food-concepts-catering-beaumont/bafdb604ec47cdc7",
-      "base": "Beaumont",
+      "base": "Beaumont, TX",
       "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "Caters weddings for hundreds out of the Beaumont Country Club kitchen, and is the Event Centre's in-house option.",
-      "caveat": "Not a Vietnamese caterer. Useful for staffing, American dishes or a dessert table."
+      "priceType": "listed",
+      "fit": "unknown",
+      "caveat": "Not a Vietnamese caterer. Previously noted as useful for staffing or an American/dessert table. Confirm if they are still an approved Downtown Event Centre caterer."
     },
     {
       "id": "b-naborly",
@@ -1414,12 +1466,18 @@
       "category": "Photo & video",
       "taskId": "photo-dayof",
       "name": "Min Photography Studio",
-      "url": "https://www.weddingwire.com/biz/min-photography-studio/a3472b56107358f7.html",
-      "base": "Houston",
-      "pricing": "From $1,200.",
+      "url": "https://www.minphotographystudio.com/contact/",
+      "base": "Houston, TX",
+      "pricing": "Prior WeddingWire listing: from $1,200. Current package prices were not published on the contact page reviewed this pass. Ask for a tea-ceremony + reception quote and the travel fee to Orange/Beaumont.",
       "priceType": "listed",
-      "fit": "Fluent in English and Vietnamese, and covers tea ceremonies and Vietnamese–American receptions.",
-      "caveat": "Ask the travel fee to Orange or Beaumont, and whether video is included."
+      "fit": "n/a",
+      "caveat": "Houston Chinatown-area studio; Vietnamese wedding vendor directories have listed them as serving Vietnamese/multicultural weddings and communicating in Vietnamese. Official contact asks for a reply within 24 hours, otherwise call/text.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.weddingwire.com/biz/min-photography-studio/a3472b56107358f7.html"
+      },
+      "email": "minphotographystudio@gmail.com",
+      "phone": "(832) 738-9036; also (346) 266-5035"
     },
     {
       "id": "ph-tnt",
@@ -1437,50 +1495,68 @@
       "category": "Photo & video",
       "taskId": "photo-dayof",
       "name": "Nghia Tran Photography",
-      "url": "https://zola.com/wedding-vendors/wedding-photographers/nghia-tran-photography",
-      "base": "Houston",
-      "pricing": "From $2,000; a larger package is $3,600.",
+      "url": "https://nghia-tran.com/",
+      "base": "Houston, TX",
+      "pricing": "Official site currently emphasizes elopement packages (Let's Elope from $800, Day Hikers from $3,600, Adventurers from $4,000, Backpackers from $8,000). Prior Zola wedding listing (from $2,000; larger package $3,600) may be outdated. Confirm whether they still book full Vietnamese tea + reception days in SETX.",
       "priceType": "listed",
-      "fit": "Houston photographer with published packages."
+      "fit": "n/a",
+      "caveat": "Confirm scope before treating as a primary wedding photographer.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://nghia-tran.com/elopement-pricing-guide"
+      },
+      "email": "n.tranphoto@gmail.com",
+      "phone": "(832) 283-0393"
     },
     {
       "id": "ph-sydney",
       "category": "Photo & video",
       "taskId": "photo-dayof",
       "name": "Photos by Sydney Tx",
-      "url": "https://www.zola.com/wedding-vendors/wedding-photographers/photos-by-sydney-tx",
-      "base": "Houston",
-      "pricing": "Off-peak: 6 h $2,700–$3,000; 8 h $3,500–$4,000; 10 h $5,000–$5,500.",
+      "url": "https://photosbysydneytx.mypixieset.com/",
+      "base": "Spring / Houston, TX",
+      "pricing": "Official pricing: Package 01 $2,700 (6 hours, 300+ images, one complimentary session). Package 02 $3,500 (8 hours, 400+ images). Package 03 $5,000 (10 hours, 600+ images, second photographer). Elopement $950 (2 hours). $400 deposit to lock a wedding date. Travel fees apply if the location exceeds 2 hours from Spring, Texas. Orange is at or near that edge — ask.",
       "priceType": "listed",
-      "fit": "Clear hourly packages. The prices shown are off-peak; ask whether a February or March date counts.",
-      "caveat": "Travel is free only within 2 hours of Houston. Orange is right at that edge."
+      "fit": "n/a",
+      "caveat": "Vietnamese wedding experience is not claimed on the pricing page reviewed this pass.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://photosbysydneytx.mypixieset.com/pricing/"
+      }
     },
     {
       "id": "dj-pros",
       "category": "Music & MC",
       "taskId": "music",
-      "name": "DJ Houston TX Pros",
-      "url": "https://www.weddingwire.com/biz/djhoustontxpros/10a0eef84e661cac.html",
-      "base": "Houston",
-      "pricing": "$900–$2,500 on GigSalad.",
+      "name": "DJ Houston Texas Pros",
+      "url": "https://houstontxdjpros.com/",
+      "base": "Houston, TX",
+      "pricing": "Official packages (in Houston): Love is in the Air $1,285 (DJ/MC, bilingual available, unlimited time until midnight, travel up to 1.5 hours, standard dance lighting, ceremony and reception music, wireless mics). Timeless Moments $1,895. Fairytale Story $2,795. Out-of-city prices differ to include travel. Add-ons: cold spark $450, dancing with clouds $450, video+karaoke $350, additional DJ hour $250. Orange/Beaumont is beyond 1.5 hours from Houston — expect a travel adder. Coordinate with Tuan as MC so roles do no…",
       "priceType": "listed",
-      "fit": "Vietnamese wedding DJs with English, Vietnamese and Spanish MCs. They know tea ceremony flow and Vietnamese bolero, and can bundle photo and video.",
-      "caveat": "Work out handoffs with Tuấn as MC.",
+      "fit": "n/a",
+      "caveat": "Replies in 24-48 hours. Event Centre music-end rule may be 11 pm; package language says until midnight — flag the venue curfew.",
       "source": {
-        "label": "GigSalad profile",
-        "url": "https://gigsalad.com/djhoustontxpros_houston"
-      }
+        "label": "Pricing source",
+        "url": "https://houstontxdjpros.com/packages-available/"
+      },
+      "email": "djcookiesandcream22@gmail.com",
+      "phone": "Company (346) 327-4705; cell (832) 528-3212"
     },
     {
       "id": "hmu-glowee",
       "category": "Beauty",
       "taskId": "hmu",
       "name": "Glowee by Huong",
-      "url": "https://www.weddingwire.com/biz/glowee-by-huong/6c28d6cd9bb267b8.html",
-      "base": "Houston",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "Reviews single out her Asian bridal looks. She has a team for the bridal party and mothers, and lists no travel restrictions."
+      "url": "https://www.gloweebyhuong.com/",
+      "base": "Houston, TX",
+      "pricing": "Ask for a quote. Site advertises a Luxe Bridal Party — Bride + 5 service page. Travel to Orange is unknown. Official contact: reply within 2-3 business days. Service area: Houston and nearby cities.",
+      "priceType": "listed",
+      "fit": "n/a",
+      "caveat": "Bilingual English/Vietnamese is reported on third-party listings. Use the official contact form as the first channel.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.gloweebyhuong.com/"
+      }
     },
     {
       "id": "hmu-beautymark",
@@ -1500,21 +1576,32 @@
       "name": "Makeup by Vicki",
       "url": "https://m.weddingwire.com/biz/makeup-by-vicki-spring/43cfa2e903dcbef6",
       "base": "Spring, TX",
-      "pricing": "Packages from $425.",
+      "pricing": "Prior WeddingWire listing: packages from $425. Confirm current rates and travel fee to Orange.",
       "priceType": "listed",
-      "fit": "Any party size, and the Dream Bridal package includes a trial.",
-      "caveat": "Ask the travel fee to Orange."
+      "fit": "n/a",
+      "caveat": "Official studio site not independently confirmed this pass.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://m.weddingwire.com/biz/makeup-by-vicki-spring/43cfa2e903dcbef6"
+      }
     },
     {
       "id": "f-azalea",
       "category": "Flowers & decor",
       "taskId": "florist",
       "name": "Azalea Flower Co.",
-      "url": "https://m.weddingwire.com/biz/azalea-flower-co/882f56d5819fa18e.html",
-      "base": "Beaumont",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "Local wedding florist with clean, elegant designs."
+      "url": "https://azaleaflowerco.wixsite.com/azalea",
+      "base": "Beaumont, TX",
+      "pricing": "Quote within a week via the official contact form. No public wedding package prices found this pass. Confirm email/phone from their reply if needed.",
+      "priceType": "listed",
+      "fit": "n/a",
+      "caveat": "Local Beaumont florist; good first ask for reception florals and home tea-ceremony decor (gia tien altar, trays).",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://azaleaflowerco.wixsite.com/azalea/contact-2"
+      },
+      "email": "azaleaflowerco@gmail.com",
+      "phone": "(734) 502-3421"
     },
     {
       "id": "f-kyrissia",
@@ -1554,55 +1641,82 @@
       "category": "Cake",
       "taskId": "cake",
       "name": "Sweet Joy Bites",
-      "url": "https://zola.com/wedding-vendors/search/beaumont-tx--wedding-cakes-desserts--bakers-dietary-nut-free",
-      "base": "Serves Beaumont",
-      "pricing": "From $450.",
-      "priceType": "listed",
-      "fit": "Wedding desserts, including brigadeiros, with strong reviews."
+      "base": "Serves Beaumont (location not independently confirmed)",
+      "pricing": "Prior Zola directory: from $450. Official site not found this pass.",
+      "priceType": "quote",
+      "fit": "n/a",
+      "caveat": "Needs a primary-source contact before an inquiry email is sent."
     },
     {
       "id": "cake-alchemy",
       "category": "Cake",
       "taskId": "cake",
       "name": "Alchemy Bake Lab",
-      "url": "https://zola.com/wedding-vendors/search/beaumont-tx--wedding-cakes-desserts?page=33",
-      "base": "Beaumont",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "Zola lists it among the most popular cake vendors in Beaumont."
+      "url": "https://www.alchemybakelab.com/",
+      "base": "Katy",
+      "pricing": "Quote via the official weddings and events form. No public cake-price list extracted this pass.",
+      "priceType": "listed",
+      "fit": "n/a",
+      "caveat": "Correction: Alchemy Bake Lab is in Katy, not Beaumont. Ask about travel before counting it as a local bakery.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.alchemybakelab.com/dessertcatering"
+      },
+      "email": "kady@alchemybakelab.com",
+      "phone": "(401) 569-9690"
     },
     {
       "id": "r-a1",
       "category": "Rentals",
       "taskId": "rentals",
       "name": "A-1 Rentals of Beaumont",
-      "url": "https://threebestrated.com/rental-companies-in-beaumont-tx",
-      "base": "Beaumont",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "In business since 1962: tents, dance floors, china, flatware, linens, tables and chairs."
+      "url": "https://www.a1rentalsbmt.com/",
+      "base": "Beaumont, TX",
+      "pricing": "No public price list on official pages reviewed. Official policy: charges are for time equipment is out, not time used; party equipment is typically an event rental Friday-Monday; 50% deposit required; cancellation three weeks prior required to refund the deposit. Delivery available for a fee in their regular area; call for other areas. Set-up/take-down available if arranged in advance. Fax (409) 833-7182.",
+      "priceType": "listed",
+      "fit": "n/a (tents, dance floors, china, flatware, linens, tables, chairs — good fit for a home tea ceremony plus any reception gaps).",
+      "caveat": "First call for tea-ceremony tent, tables, chairs, linens, and china.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.a1rentalsbmt.com/"
+      },
+      "phone": "(409) 833-6464"
     },
     {
       "id": "r-aaa",
       "category": "Rentals",
       "taskId": "rentals",
       "name": "AAA Rentals",
-      "url": "https://threebestrated.com/rental-companies-in-beaumont-tx",
-      "base": "Beaumont",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "Since 1985: tables, tents, chairs, china, linens. Also offers day-of coordination."
+      "url": "https://aaarentals-bmt.com/",
+      "base": "Beaumont, TX",
+      "pricing": "No public price list on the official homepage. Ask for a quote. Office hours on the site include Mon, Tue, Thu 9:00 am-2:00 pm; confirm remaining days by phone.",
+      "priceType": "listed",
+      "fit": "n/a (tables, tents, chairs, china, linens).",
+      "caveat": "Official email and phone confirmed on the company's own site.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://aaarentals-bmt.com/"
+      },
+      "email": "aaarentals@yahoo.com",
+      "phone": "(409) 838-9102"
     },
     {
       "id": "r-ags",
       "category": "Rentals",
       "taskId": "rentals",
       "name": "AGS Party and Tent Rentals",
-      "url": "https://threebestrated.com/rental-companies-in-beaumont-tx",
-      "base": "Beaumont",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "Tents, tables and chairs, and wedding setups."
+      "url": "https://www.agspartyrental.com/",
+      "base": "Beaumont, TX",
+      "pricing": "No public price list extracted this pass. Ask for a tea-ceremony tent and furniture quote. Hours on the official contact page: Mon, Tue, Thu, Fri 8:00 am-4:30 pm; Sat 8:00 am-12:00 pm; Sun closed (Wednesday hours were not clearly listed).",
+      "priceType": "listed",
+      "fit": "n/a (tents, tables, chairs, wedding setups).",
+      "caveat": "Strong local tent specialist for a home tea ceremony if weather coverage is needed.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://agspartyrental.com/contact-us"
+      },
+      "email": "agsrentals@yahoo.com",
+      "phone": "(409) 892-9298"
     },
     {
       "id": "b-blt",
@@ -1633,33 +1747,53 @@
       "category": "Ceremony",
       "taskId": "lion",
       "name": "Houston Lion Kings",
-      "url": "https://www.houstoniamag.com/articles/houston-art-of-lion-dancing",
-      "base": "Houston (Alief)",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "Nationally competing troupe that also does the high-pole jong routines."
+      "url": "https://www.houstonlionkings.com/",
+      "base": "Houston, TX",
+      "pricing": "Ask for a quote. No public performance price list found on the official site this pass.",
+      "priceType": "listed",
+      "fit": "n/a",
+      "caveat": "Official site: 501(c)(3); performs at weddings; has performed around Texas and in Louisiana, Oklahoma, and Alabama. Ask travel fee to Beaumont/Orange and wedding package (lions, drum, duration).",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.houstonlionkings.com/"
+      },
+      "email": "info@houstonlionkings.com",
+      "phone": "(713) 510-3502"
     },
     {
       "id": "ld-lees",
       "category": "Ceremony",
       "taskId": "lion",
       "name": "Lee's Golden Dragon",
-      "url": "https://lessons.com/tx/houston/dance-classes/lee-s-golden-dragon-lion---dragon-dance-association-8Q3H4v-Xl",
-      "base": "Houston",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "Houston's oldest lion dance troupe, founded in 1974."
+      "url": "https://www.leesgoldendragon.com/",
+      "base": "Houston, TX",
+      "pricing": "Ask for a quote. No public price list found on the official site.",
+      "priceType": "listed",
+      "fit": "n/a",
+      "caveat": "Official site: founded 1974; serves weddings in Texas, Louisiana, and across the U.S. Prefer the official header phone (281) 773-7749 over older directory numbers.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.leesgoldendragon.com/"
+      },
+      "phone": "(281) 773-7749"
     },
     {
       "id": "ld-unity",
       "category": "Ceremony",
       "taskId": "lion",
       "name": "Unity Dragon and Lion Dance Troupe",
-      "url": "https://www.houstoniamag.com/articles/houston-art-of-lion-dancing",
-      "base": "Houston",
-      "pricing": "Ask for a quote.",
-      "priceType": "quote",
-      "fit": "Performs at events across the city."
+      "url": "https://www.unityliondance.org/",
+      "base": "Houston, TX",
+      "pricing": "Ask for a quote. No public price list found on the official booking page.",
+      "priceType": "listed",
+      "fit": "n/a",
+      "caveat": "Vietnamese-language phone line is useful for family. Ask travel fee to Beaumont/Orange.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.unityliondance.org/book-us"
+      },
+      "email": "unity@unityliondance.org",
+      "phone": "(281) 857-1484 (English/Chinese); (832) 273-5977 (English/Vietnamese)"
     },
     {
       "id": "vn-nicole",
@@ -1771,6 +1905,227 @@
         "label": "Fash: bachelorette party costs",
         "url": "https://fash.com/costs/average-bachelorette-party-cost"
       }
+    },
+    {
+      "id": "v-434-fannin",
+      "name": "434 Fannin",
+      "category": "Venue",
+      "taskId": "venue-reception",
+      "url": "https://434fannin.com/",
+      "base": "Beaumont, TX",
+      "pricing": "Official site: Saturday rentals begin at $3,500 and include venue access from 9:00 a.m. until midnight, table setup, and cleanup. Linens and chairs are rented separately. Weekday/Friday/Sunday rates not published on the homepage.",
+      "priceType": "listed",
+      "fit": "Official site: as small as 75; seating up to 296 at maximum. Nearly 4,000 sq ft; renovated 2019.",
+      "caveat": "Strong downtown addition for ~200 guests (296 max). Need chair/linen costs, alcohol policy, deposit, and 2028 Saturday availability. Email/phone were reported on SETX Wedding Venues and Beaumont CVB; official site has a contact form. unknown — official homepage does not state an alcohol policy. Yes. Official site: food must be prepared offsite and delivered by the caterer of your choice.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://434fannin.com/"
+      },
+      "byoAlcohol": "unknown",
+      "outsideCatering": "yes",
+      "email": "info@434fannin.com",
+      "phone": "(409) 832-1621"
+    },
+    {
+      "id": "v-broussard-farm",
+      "name": "Broussard Farm and Sevenne Hall",
+      "category": "Venue",
+      "taskId": "venue-reception",
+      "url": "https://new.broussardfarm.com/",
+      "base": "Beaumont (Fannett), TX",
+      "pricing": "Not published on official pages reviewed. Eventective (third-party) lists ceremony-and-reception $4,300; reception only $3,800; rehearsal dinner $1,000. Confirm current 2028 rates.",
+      "priceType": "listed",
+      "fit": "Third-party Eventective / SETX listings: up to 300 guests. Not clearly restated on the official homepage fetch — confirm.",
+      "caveat": "Official contact form aims to reply within 24 hours. Use new.broussardfarm.com as the current official site. unknown unknown (official site mentions food service options; whether outside Vietnamese catering is allowed is not stated).",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.eventective.com/beaumont-tx/broussard-farm-and-sevenne-hall-580003.html"
+      },
+      "byoAlcohol": "unknown",
+      "outsideCatering": "unknown",
+      "email": "info@broussardfarm.com",
+      "phone": "(409) 937-4026"
+    },
+    {
+      "id": "v-acadian",
+      "name": "Acadian Event Services (Acadian Ranch)",
+      "category": "Venue",
+      "taskId": "venue-reception",
+      "url": "https://acadianeventservices.com/",
+      "base": "Buna, TX",
+      "pricing": "Official wedding pricing: Full Bloom $6,000 + $10/person for up to 200 guests, exclusive access 8:00 am-11:00 pm, rehearsal the night before, tables/chairs for 200, linens, set-up and clean-up (excluding kitchen), security up to 6 hours (extra hours billed to client), full kitchen for you or your caterer. True Hearts $5,500 DIY with day-before access 12 pm-8 pm. Simply Yours $4,000 DIY, 8 am-11 pm, client does set-up/clean-up. Raise Your Glass reception/banquet $3,000 for 12 hours (8 am-11 pm), tables/chairs for 200. Homepage currently markets 2026-2027 weddings — ask explicitly about 2028.",
+      "priceType": "listed",
+      "fit": "Official About page: up to 200 guests. Tight if the headcount runs over 200.",
+      "caveat": "Damage/cleaning deposit due 30 days prior; refundable, generally within 10 days. Capacity cap of 200 is the main risk for a '200 or so' guest count. Appears allowed with conditions. FAQ forbids glass beer bottles; Little Bloom package says security is required if alcohol is brought in. Bartender requirement was pointed to a FAQ link not fully captured — confirm. Yes. Official packages: full kitchen for you or your caterer; BBQ pit or crawfish boil option. Caterer must bring pots, pans, and utensils. Kitchen must be cleaned.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://acadianeventservices.com/wedding-pricing"
+      },
+      "byoAlcohol": "unknown",
+      "outsideCatering": "yes"
+    },
+    {
+      "id": "v-max-bowl",
+      "name": "The Venue at Max Bowl",
+      "category": "Venue",
+      "taskId": "venue-reception",
+      "url": "https://visitportarthurtx.com/meeting-professionals-sports/the-venue-at-max-bowl/",
+      "base": "Port Arthur, TX",
+      "pricing": "Visit Port Arthur listing (city tourism site, not a venue-owned domain): 4-hour rental morning/afternoon $400; evening $500; all-day $900. One hour set-up and one hour teardown included; extra $50/hour. Included: rectangular tables and chairs, black tablecloths, stage, parking, coordinator and one staff member, ice, Wi-Fi. Full-service bar package can be added with licensed bartenders. Confirm rates are current and whether wedding weekends have premiums not shown.",
+      "priceType": "listed",
+      "fit": "Visit Port Arthur listing: 8,266 sq ft; classroom 456; theatre 484; banquet seating 410.",
+      "caveat": "Contact uses a 651 area code and a tripleshift.com email, which may be a management company — confirm the right wedding contact. Very low published rental; budget for extras. Strong value candidate if rates hold and the bowling-center setting is acceptable. unknown. Listing says a full-service bar package can be added with licensed bartenders; it does not say whether BYO is allowed. Yes, per Visit Port Arthur: any licensed, full-service caterer, plus a staging area.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://visitportarthurtx.com/meeting-professionals-sports/the-venue-at-max-bowl/"
+      },
+      "byoAlcohol": "unknown",
+      "outsideCatering": "approved",
+      "email": "carla.fay@tripleshift.com",
+      "phone": "(651) 571-0124"
+    },
+    {
+      "id": "v-civic-center",
+      "name": "Beaumont Civic Center (City of Beaumont Events)",
+      "category": "Venue",
+      "taskId": "venue-reception",
+      "url": "https://beaumonteventstx.com/",
+      "base": "Beaumont, TX",
+      "pricing": "Official rate sheet effective Oct 1, 2026: commercial all-day (8:00 am-12:00 am) $2,900; commercial move-in/out $1,450; noncommercial all-day $2,250; noncommercial move-in/out $1,125. Food and Beverage Access Fee $800 (higher than the Event Centre's $400). After hours $300/hour. Security required at lessee's expense via Beaumont PD.",
+      "priceType": "listed",
+      "fit": "Larger civic hall than the Event Centre; exact banquet capacity not extracted from a dedicated FAQ this pass. Confirm on https://beaumonteventstx.com/venue-comparison/",
+      "caveat": "Same booking team and 2-year inquiry window as the Downtown Event Centre. Backup if the Event Centre date is taken. unknown (same city events department as the Event Centre; confirm). unknown (F&B access fee implies outside F&B is contemplated; confirm).",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://beaumonteventstx.com/wp-content/uploads/2026/10/EventServicesRateSheet_effective10.01.26.pdf"
+      },
+      "byoAlcohol": "unknown",
+      "outsideCatering": "unknown",
+      "email": "events@beaumonttexas.gov",
+      "phone": "(409) 838-3435"
+    },
+    {
+      "id": "c-wildflower",
+      "name": "Wildflower Catering",
+      "category": "Catering",
+      "taskId": "catering",
+      "url": "https://wildflowerhou.com/",
+      "base": "Houston, TX",
+      "pricing": "Tray example on the official site: pork eggrolls 50 ct $59.00. Full wedding banquet pricing is quote-only. Please order at least 2 days ahead; shorter notice by phone.",
+      "priceType": "listed",
+      "fit": "Wedding catering is advertised; a guest review on the official site says they catered a wedding. Maximum headcount and Beaumont travel are not published. Delivery pricing is based on distance and order size.",
+      "caveat": "Strong Houston Vietnamese caterer addition with official contact and wedding reviews on their own site. Service area described as throughout Houston. Travel to Beaumont/Orange must be asked.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://wildflowerhou.com/"
+      },
+      "email": "orders@wildflowerhou.com",
+      "phone": "(281) 725-4664"
+    },
+    {
+      "id": "c-miss-saigon",
+      "name": "Miss Saigon Cafe",
+      "category": "Catering",
+      "taskId": "catering",
+      "url": "https://misssaigonmontrose.com/catering",
+      "base": "Houston, TX (Montrose)",
+      "pricing": "Custom menus and online packages offered; specific wedding banquet prices not extracted. FAQ: 24 hours' notice; plates/napkins/cutlery not included with a catering order.",
+      "priceType": "listed",
+      "fit": "Official catering page: from an office lunch for 20 to a wedding for 200. Stated service area: Houston, Southside Place, and Macgregor. Beaumont/Orange travel is not mentioned.",
+      "caveat": "Useful Houston option if they will travel. The published 200-guest wedding claim is helpful.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://misssaigonmontrose.com/catering"
+      },
+      "email": "homai78@gmail.com",
+      "phone": "(713) 942-0108"
+    },
+    {
+      "id": "c-pho-home",
+      "name": "Pho Home",
+      "category": "Catering",
+      "taskId": "catering",
+      "url": "https://phohome.com/catering",
+      "base": "Lafayette, LA",
+      "pricing": "Not published. FAQ: 24 hours' notice; plates/cutlery not provided with a catering order.",
+      "priceType": "listed",
+      "fit": "Catering form is offered (guest-count field tops out at 50+ in the UI). Ability to staff a 200-guest wedding in Beaumont/Orange is unknown. Lafayette is a long drive to Orange/Beaumont.",
+      "caveat": "Added because the couple is open to Lafayette caterers. Travel fee and wedding-scale service are the open questions.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://phohome.com/catering"
+      },
+      "email": "phohomelafayette@gmail.com",
+      "phone": "(337) 412-6195"
+    },
+    {
+      "id": "ph-tee-tran",
+      "name": "Tee Tran Studios",
+      "category": "Photo & video",
+      "taskId": "photo-dayof",
+      "url": "https://teetranstudios.com/",
+      "base": "Houston, TX",
+      "pricing": "Third-party summaries of the studio price list: photography with Tee from $3,499; associate packages from $2,899. Confirm on a current pricelist (a 2024 price-list page exists and may need updating for 2028).",
+      "priceType": "listed",
+      "fit": "n/a",
+      "caveat": "Houston photographer/videographer addition; commonly covers Vietnamese and Gulf Coast weddings. Ask travel to Orange/Beaumont and tea-ceremony coverage.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://teetranstudios.com/2024-wedding-price-list"
+      },
+      "email": "hello@teetranstudios.com"
+    },
+    {
+      "id": "cake-champagne",
+      "name": "Champagne's Specialty Cakes and Bakery",
+      "category": "Cake",
+      "taskId": "cake",
+      "url": "https://www.champagnesbakery.net/",
+      "base": "Nederland, TX (near Port Arthur)",
+      "pricing": "No public per-slice wedding cake prices on the official site. Call or email for a custom quote.",
+      "priceType": "listed",
+      "fit": "n/a (custom wedding cakes since 1997; 200-slice capacity not stated).",
+      "caveat": "Closest confirmed custom wedding bakery to Orange/Beaumont/Port Arthur with an official site. Not a Vietnamese bakery. Hours: Tue-Fri 7:30 am-4:30 pm, Sat 8:00 am-12:00 pm, closed Sun-Mon.",
+      "source": {
+        "label": "Pricing source",
+        "url": "https://www.champagnesbakery.net/"
+      },
+      "email": "champagnesbakery@sbcglobal.net",
+      "phone": "(409) 729-2288"
+    },
+    {
+      "id": "cake-thiem-hung",
+      "name": "Thiem Hung Bakery",
+      "category": "Cake",
+      "taskId": "cake",
+      "base": "Houston, TX",
+      "pricing": "unknown. Houston Vietnamese bakery; wedding-cake capability was not confirmed on an official bakery website this pass.",
+      "priceType": "quote",
+      "fit": "n/a",
+      "caveat": "Added as a Vietnamese bakery lead only. No official website with a wedding-cake menu was verified. Do not treat as a confirmed wedding vendor yet.",
+      "phone": "(346) 773-4418 (directories also list (281) 495-8636)"
     }
-  ]
+  ],
+  "guestPlan": {
+    "target": 200,
+    "tableSize": 10,
+    "sides": [
+      {
+        "id": "victor",
+        "label": "Victor's side",
+        "estimate": 80
+      },
+      {
+        "id": "mit",
+        "label": "Mít's side",
+        "estimate": 80
+      },
+      {
+        "id": "friends",
+        "label": "Friends",
+        "estimate": 40
+      }
+    ],
+    "households": []
+  }
 }
