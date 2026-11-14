@@ -157,7 +157,12 @@ test("tasks cover the booking sequence and phases", () => {
   }
   assert.equal(model.tasks.find((task) => task.id === "mc").vendorName, "Tuấn");
   assert.equal(model.tasks.find((task) => task.id === "sax").status, "researching");
-  assert.ok(model.tasks.filter((task) => task.id !== "sax").every((task) => task.status === "todo"));
+  const planner = model.tasks.find((task) => task.id === "planner");
+  assert.equal(planner.status, "researching");
+  assert.equal(planner.title, "Book a day-of coordinator");
+  assert.equal(planner.vendorName, "Charlize Thuy Cao (Do Bridal Wedding)");
+  assert.equal(planner.cost, 800);
+  assert.ok(model.tasks.filter((task) => task.id !== "sax" && task.id !== "planner").every((task) => task.status === "todo"));
   const groups = groupByPhase(model.tasks, model.phases);
   assert.deepEqual(groups.map((group) => group.tasks.length), [5, 6, 6, 3, 4, 10]);
   assert.equal(model.tasks.find((task) => task.id === "invitations-mail").phase, "final");
@@ -294,8 +299,8 @@ test("local edits layer over the file and feed progress, costs, and the issue", 
   assert.equal(view.find((task) => task.id === "guest-count").status, "done");
   const stats = progressStats(view, (task) => task.status);
   assert.equal(stats.done, 2);
-  assert.equal(stats.inProgress, 2);
-  assert.equal(knownCostTotal(view).total, 12800);
+  assert.equal(stats.inProgress, 3);
+  assert.equal(knownCostTotal(view).total, 13600);
   assert.equal(nextOpenTarget(view, today).task.id, "pick-date");
 
   const payload = buildUpdatePayload(model.tasks, edits, "2026-11-03", "USD", model.phases);
@@ -331,7 +336,7 @@ test("local edits layer over the file and feed progress, costs, and the issue", 
 test("vendor total sums only known numbers", () => {
   const rows = model.tasks.filter((task) => task.vendorTracked);
   assert.equal(rows.length, 22);
-  assert.deepEqual(knownCostTotal(model.tasks), { total: 0, known: 0, tracked: 22 });
+  assert.deepEqual(knownCostTotal(model.tasks), { total: 800, known: 1, tracked: 22 });
   const withCosts = rows.map((task, index) => ({ ...task, cost: index === 0 ? 1200 : index === 1 ? 45.5 : null }));
   assert.equal(knownCostTotal(withCosts).total, 1245.5);
   assert.equal(knownCostTotal(withCosts).known, 2);
@@ -439,6 +444,18 @@ test("vendor shortlist covers the bookings and states venue alcohol rules", () =
   assert.equal(belle.byoAlcohol, "unknown");
   assert.equal(belle.outsideCatering, "yes");
   assert.doesNotMatch(belle.caveat, /for sale/i);
+  const planners = vendors.filter((vendor) => vendor.category === "Planner");
+  assert.deepEqual(planners.slice(0, 6).map((vendor) => vendor.id), [
+    "p-charlize",
+    "p-harmonized",
+    "p-huyen-chime",
+    "p-irresistible",
+    "p-mcmorris",
+    "p-access",
+  ]);
+  assert.equal(planners[0].priceType, "listed");
+  assert.match(planners[0].pricing, /\$800/);
+  assert.match(planners[0].fit, /PREFERRED/);
   assert.ok(vendors.some((vendor) => vendor.taskId === "bachelor"));
   assert.ok(vendors.some((vendor) => vendor.taskId === "sax") === false);
   assert.equal(model.tasks.find((task) => task.id === "sax").status, "researching");
