@@ -112,15 +112,16 @@
     },
     {
       "id": "planner",
-      "title": "Find a planner or day-of coordinator",
+      "title": "Book a day-of coordinator",
       "category": "Planner",
       "phase": "early-2027",
       "dueMonth": "2027-03",
-      "status": "todo",
-      "notes": "No planner is hired yet. Look for someone who has run Vietnamese or Vietnamese–American weddings, including a tea ceremony and a reception.",
-      "vendorName": null,
-      "vendorUrl": null,
-      "cost": null
+      "status": "researching",
+      "notes": "Preferred - inquiry not sent yet. Day-of coordination only (we are doing the planning ourselves). Ask about travel fee to Beaumont/Orange. Email dobridalwedding@gmail.com. Full planning listed at $4,500. Backups: Harmonized Collective, Huyen Chime, Irresistible Events.",
+      "vendorName": "Charlize Thuy Cao (Do Bridal Wedding)",
+      "vendorUrl": "https://www.dobridalwedding.com/",
+      "vendorPhone": "(832) 602-0702",
+      "cost": 800
     },
     {
       "id": "photo-dayof",
@@ -1453,6 +1454,52 @@
       "priceType": "quote",
       "fit": "Boutique caterer that Zola lists among the most popular in Beaumont. A local option for American dishes, appetizers or a late-night bite next to the Vietnamese dinner.",
       "caveat": "Not a Vietnamese caterer."
+    },
+    {
+      "id": "p-charlize",
+      "category": "Planner",
+      "taskId": "planner",
+      "name": "Charlize Thuy Cao / Do Bridal Wedding",
+      "url": "https://www.dobridalwedding.com/",
+      "base": "Houston",
+      "pricing": "Day-of fee $800 before travel. Full planning $4,500.",
+      "priceType": "listed",
+      "fit": "PREFERRED. Vietnamese-American, Linh Nga bridal rep. Day-of coordination only.",
+      "caveat": "Inquiry not sent yet. Travel fee to Beaumont or Orange is unknown.",
+      "email": "dobridalwedding@gmail.com",
+      "phone": "(832) 602-0702"
+    },
+    {
+      "id": "p-harmonized",
+      "category": "Planner",
+      "taskId": "planner",
+      "name": "The Harmonized Collective",
+      "url": "https://www.theharmonizedcollective.com/",
+      "base": "Lake Charles",
+      "pricing": "Day-of coordination from $750. Planning from $3,000.",
+      "priceType": "listed",
+      "fit": "Backup. Serves SE Texas."
+    },
+    {
+      "id": "p-huyen-chime",
+      "category": "Planner",
+      "taskId": "planner",
+      "name": "Huyen Chime Events",
+      "url": "https://www.huyenchimeeventplanning.com/",
+      "pricing": "Day-of $2,250. Partial planning $3,500. Full planning $5,000.",
+      "priceType": "listed",
+      "fit": "Backup. Vietnamese specialty.",
+      "caveat": "Travel fee to Beaumont is unknown."
+    },
+    {
+      "id": "p-irresistible",
+      "category": "Planner",
+      "taskId": "planner",
+      "name": "Irresistible Events & Services",
+      "url": "https://www.irresistibleeventsandservices.net/weddings",
+      "pricing": "Day-of coordination from $2,500, including 12 hours and 2 assistants. Full planning from $8,000.",
+      "priceType": "listed",
+      "fit": "Backup. Mentions Beaumont and tea ceremonies."
     },
     {
       "id": "p-mcmorris",
