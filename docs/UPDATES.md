@@ -62,6 +62,16 @@ Empty string `""` on `due` or `dueMonth` clears that field. You may delete the k
 
 `vendorTracked: true` means it is a booking. Make sure `vendorName`, `vendorUrl`, and `cost` exist, using `null` when this change does not give a value. Apply any vendor fields included in the same object.
 
+## Vendor cards
+
+`vendors` is the card list the Vendors page renders. `vendorOptions` is the older shortlist and can stay in the file. When an update includes vendor cards, merge them like this:
+
+1. Match a card by `id`. If that id already exists, replace the card with the new object.
+2. If the id is new, append the card. Do not reorder the other cards.
+3. Treat `log` as an append-only history. Keep every log entry already on the card, then add entries from the update that are not already present. Two entries are the same when `date`, `direction`, `channel`, and `summary` all match. Leave the log oldest-first.
+4. Do not invent a photo. Copy `photo` only when the update includes it, and keep `photo.src` pointed at `assets/vendors/`. A missing photo stays `null`.
+5. Do not put a personal email, a home address, or a private phone number on a card. A vendor’s business contact is fine. The string `victorvuong` does not belong in this file.
+
 ## Fields
 
 | Key | Value |

@@ -53,6 +53,7 @@ const HASH_TO_SECTION = {
 /**
  * Pick the view for a URL hash. Empty and unknown hashes open the first section.
  * #tasks is the older timeline anchor and opens the same section as #timeline.
+ * #vendor/<id> opens the vendors section with that card's detail.
  */
 export function viewFromHash(hash) {
   const id = String(hash ?? "")
@@ -60,7 +61,20 @@ export function viewFromHash(hash) {
     .trim()
     .toLowerCase();
   if (id === "all") return "all";
+  if (id.startsWith("vendor/")) return "vendors";
   return HASH_TO_SECTION[id] || "overview";
+}
+
+/** Vendor id from `#vendor/<id>`, or "" when the hash is not a card link. */
+export function vendorIdFromHash(hash) {
+  const raw = String(hash ?? "").replace(/^#/, "").trim();
+  const match = /^vendor\/([^/?#]+)$/i.exec(raw);
+  if (!match) return "";
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
+  }
 }
 
 export function startOfToday(now = new Date()) {
@@ -793,6 +807,427 @@ export function perGuestCeiling(target, guests) {
   return Math.floor(target / guests);
 }
 
+/** Card categories, in the order the filters and the builder show them. */
+export const VENDOR_CATEGORY_ORDER = [
+  "venue",
+  "caterer",
+  "planner",
+  "photo",
+  "decor",
+  "music",
+  "beauty",
+  "cake",
+  "rentals",
+  "bar",
+  "transportation",
+  "ceremony",
+  "attire",
+  "parties",
+];
+
+export const VENDOR_CATEGORY_LABELS = {
+  venue: "Venue",
+  caterer: "Caterer",
+  planner: "Day-of coordinator",
+  photo: "Photography",
+  decor: "Flowers & decor",
+  music: "Music",
+  beauty: "Hair & makeup",
+  cake: "Cake",
+  rentals: "Rentals",
+  bar: "Bar",
+  transportation: "Transportation",
+  ceremony: "Ceremony",
+  attire: "Attire",
+  parties: "Parties",
+};
+
+/** Active conversations first, then cooler research, with dropped last. Booked sits with the live threads. */
+export const VENDOR_STATUS_SORT = [
+  "booked",
+  "replied",
+  "quoted",
+  "contacted",
+  "drafted",
+  "researching",
+  "on-hold",
+  "shortlist",
+  "dropped",
+];
+
+export const DEFAULT_VENDOR_STATUSES = [
+  { id: "shortlist", label: "Shortlist", meaning: "Researched, not contacted" },
+  { id: "researching", label: "Researching", meaning: "Actively being researched this week" },
+  { id: "drafted", label: "Draft ready", meaning: "Inquiry written, waiting on Victor to send" },
+  { id: "contacted", label: "Contacted", meaning: "Inquiry sent, no reply yet" },
+  { id: "replied", label: "In talks", meaning: "Vendor replied, conversation open" },
+  { id: "quoted", label: "Quoted", meaning: "Has a price for our date and size" },
+  { id: "on-hold", label: "On hold", meaning: "Paused by us, may revisit" },
+  { id: "dropped", label: "Dropped", meaning: "Ruled out" },
+  { id: "booked", label: "Booked", meaning: "Contract or deposit done" },
+];
+
+const LOG_DIRECTIONS = new Set(["sent", "received", "call", "note"]);
+
+const LEGACY_CATEGORY_IDS = {
+  Venue: "venue",
+  Catering: "caterer",
+  Planner: "planner",
+  "Photo & video": "photo",
+  "Music & MC": "music",
+  Beauty: "beauty",
+  "Flowers & decor": "decor",
+  Cake: "cake",
+  Rentals: "rentals",
+  Bar: "bar",
+  Transportation: "transportation",
+  Ceremony: "ceremony",
+  Attire: "attire",
+  Parties: "parties",
+  Invitations: "attire",
+};
+
+export function vendorCategoryLabel(category) {
+  return VENDOR_CATEGORY_LABELS[category] || textOr(category, "Vendor");
+}
+
+/** City from the end of a contact address. A ZIP and a parenthetical are left off. */
+export function vendorCity(address) {
+  const text = cleanString(address).replace(/\s+\d{5}(?:-\d{4})?(?=\s|$)/g, "").trim();
+  if (!text) return "";
+  const parts = text.split(",").map((part) => part.trim()).filter(Boolean);
+  if (parts.length >= 2) {
+    const tidy = (part) => part.replace(/\s*\([^)]*\)\s*/g, " ").replace(/\s+/g, " ").trim();
+    const last = tidy(parts[parts.length - 1]);
+    const prev = tidy(parts[parts.length - 2]);
+    if (/^[A-Za-z]{2}$/.test(last)) return `${prev}, ${last.toUpperCase()}`;
+    if (prev && last) return `${prev}, ${last}`;
+  }
+  return text;
+}
+
+/** Drafts, and next steps that start with Victor, Reply, or Fill, are waiting on the couple. */
+export function waitingOnCouple(vendor) {
+  if (!vendor) return false;
+  if (vendor.status === "drafted") return true;
+  return /^(Victor|Reply|Fill)\b/.test(cleanString(vendor.nextStep));
+}
+
+/** Replied or quoted: the vendor has engaged and the thread is open. */
+export function vendorInTalks(vendor) {
+  return vendor?.status === "replied" || vendor?.status === "quoted";
+}
+
+export function vendorInCategory(vendor, category) {
+  if (!category || category === "all") return true;
+  if (vendor?.category === category) return true;
+  return Array.isArray(vendor?.alsoCategories) && vendor.alsoCategories.includes(category);
+}
+
+/** Lowest and highest numeric prices on a card. Null when every amount is unpublished. */
+export function vendorPriceRange(vendor) {
+  const amounts = (vendor?.pricing || [])
+    .map((item) => item?.amount)
+    .filter((amount) => typeof amount === "number" && Number.isFinite(amount) && amount >= 0);
+  if (!amounts.length) return null;
+  return { low: Math.min(...amounts), high: Math.max(...amounts) };
+}
+
+/** First priced line, or the first note when nothing is numeric. */
+export function headlinePrice(vendor) {
+  const pricing = Array.isArray(vendor?.pricing) ? vendor.pricing : [];
+  const priced = pricing.find((item) => typeof item?.amount === "number" && Number.isFinite(item.amount));
+  if (priced) {
+    return { kind: "amount", amount: priced.amount, unit: cleanString(priced.unit), item: cleanString(priced.item) };
+  }
+  const noted = pricing.find((item) => cleanString(item?.note) || cleanString(item?.unit));
+  if (!noted) return null;
+  return { kind: "note", text: cleanString(noted.note) || cleanString(noted.unit) };
+}
+
+export function sortVendorCards(vendors) {
+  const rank = new Map(VENDOR_STATUS_SORT.map((id, index) => [id, index]));
+  return [...(vendors || [])].sort((a, b) => {
+    const byStatus = (rank.get(a.status) ?? 50) - (rank.get(b.status) ?? 50);
+    if (byStatus) return byStatus;
+    const byPriority = (a.priority ?? 99) - (b.priority ?? 99);
+    if (byPriority) return byPriority;
+    const byActivity = cleanString(b.lastActivity).localeCompare(cleanString(a.lastActivity));
+    if (byActivity) return byActivity;
+    return cleanString(a.name).localeCompare(cleanString(b.name));
+  });
+}
+
+/**
+ * Sum one pick per category. A card with no numeric price is TBD and is left out of the sum.
+ * The same vendor picked twice is counted once.
+ */
+export function selectionEstimate(vendors, picks) {
+  const lines = [];
+  const counted = new Set();
+  let low = 0;
+  let high = 0;
+  let priced = 0;
+  let tbd = 0;
+  const source = Array.isArray(vendors) ? vendors : [];
+  for (const category of VENDOR_CATEGORY_ORDER) {
+    const id = picks?.[category];
+    if (!id) continue;
+    const vendor = source.find((item) => item.id === id);
+    if (!vendor) continue;
+    const duplicate = counted.has(vendor.id);
+    const range = duplicate ? null : vendorPriceRange(vendor);
+    if (!duplicate) counted.add(vendor.id);
+    if (duplicate) {
+      lines.push({ category, id: vendor.id, name: vendor.name, range: null, duplicate: true });
+      continue;
+    }
+    if (range) {
+      low += range.low;
+      high += range.high;
+      priced += 1;
+    } else {
+      tbd += 1;
+    }
+    lines.push({ category, id: vendor.id, name: vendor.name, range, duplicate: false });
+  }
+  return { low, high, priced, tbd, lines };
+}
+
+function parseVendorStatuses(raw) {
+  const statuses = [];
+  const seen = new Set();
+  for (const item of Array.isArray(raw) ? raw : []) {
+    const id = cleanString(item?.id);
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    statuses.push({
+      id,
+      label: textOr(item?.label, id),
+      meaning: textOr(item?.meaning, ""),
+    });
+  }
+  if (!statuses.length) return DEFAULT_VENDOR_STATUSES.map((item) => ({ ...item }));
+  if (!seen.has("shortlist")) statuses.push({ id: "shortlist", label: "Shortlist", meaning: "" });
+  return statuses;
+}
+
+function coerceAmount(value) {
+  if (value == null || value === "") return null;
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  if (typeof value === "string") {
+    const cleaned = value.trim().replace(/[$,\s]/g, "");
+    if (!cleaned) return null;
+    if (!/^-?\d+(\.\d+)?$/.test(cleaned)) return null;
+    const amount = Number(cleaned);
+    return Number.isFinite(amount) ? amount : null;
+  }
+  return null;
+}
+
+function safePhotoSrc(value) {
+  const text = cleanString(value);
+  if (!text || text.includes("..") || text.startsWith("/") || /^[a-z][a-z0-9+.-]*:/i.test(text)) return "";
+  return text;
+}
+
+function parseUrlFields(raw) {
+  const out = {};
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return out;
+  for (const [key, value] of Object.entries(raw)) {
+    const url = safeHttpUrl(value);
+    if (url) out[key] = url;
+  }
+  return out;
+}
+
+function parsePhoto(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const src = safePhotoSrc(raw.src);
+  if (!src) return null;
+  return {
+    src,
+    origin: safeHttpUrl(raw.origin),
+    from: safeHttpUrl(raw.from),
+  };
+}
+
+function parsePricing(raw, name, warnings) {
+  const items = [];
+  for (const item of Array.isArray(raw) ? raw : []) {
+    if (!item || typeof item !== "object") continue;
+    const amount = coerceAmount(item.amount);
+    if (item.amount != null && item.amount !== "" && amount == null) {
+      warnings.push(`Vendor “${name}” has a price that is not a number.`);
+    }
+    const source = item.source ? parseSources([item.source])[0] || null : null;
+    items.push({
+      item: cleanString(item.item),
+      amount,
+      unit: cleanString(item.unit),
+      note: cleanString(item.note),
+      source,
+    });
+  }
+  return items;
+}
+
+function parseLog(raw, name, warnings) {
+  const entries = [];
+  for (const [index, item] of (Array.isArray(raw) ? raw : []).entries()) {
+    const date = parseISODate(item?.date) ? cleanString(item.date) : "";
+    const direction = cleanString(item?.direction);
+    if (!date || !LOG_DIRECTIONS.has(direction)) {
+      warnings.push(`Vendor “${name}” log entry ${index + 1} needs a real date and a direction of sent, received, call, or note.`);
+      continue;
+    }
+    const timeMatch = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(cleanString(item?.time));
+    entries.push({
+      date,
+      time: timeMatch ? timeMatch[0] : "",
+      direction,
+      channel: cleanString(item?.channel),
+      summary: cleanString(item?.summary),
+    });
+  }
+  entries.sort((a, b) => `${a.date}T${a.time || "00:00"}`.localeCompare(`${b.date}T${b.time || "00:00"}`));
+  return entries;
+}
+
+function parseVenuePolicy(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  return {
+    byoAlcohol: normalizeAlcohol(raw.byoAlcohol),
+    outsideCatering: normalizeCatering(raw.outsideCatering),
+  };
+}
+
+function stringList(raw) {
+  return (Array.isArray(raw) ? raw : []).map((item) => cleanString(item)).filter(Boolean);
+}
+
+function categoryId(value) {
+  const text = cleanString(value);
+  if (VENDOR_CATEGORY_LABELS[text]) return text;
+  return LEGACY_CATEGORY_IDS[text] || text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "venue";
+}
+
+/**
+ * Normalize vendor cards. Status falls back to shortlist. Links are http(s) only.
+ * Pricing amounts are finite numbers or null. Log entries keep a real date and one of four directions, oldest first.
+ */
+export function parseVendors(raw, taskIds, statuses, warnings) {
+  const allowed = new Set((statuses || []).map((status) => status.id));
+  allowed.add("shortlist");
+  const seen = new Set();
+  const vendors = [];
+  for (const [index, item] of (Array.isArray(raw) ? raw : []).entries()) {
+    const name = textOr(item?.name, "");
+    if (!name) {
+      warnings.push(`Vendor ${index + 1} is missing a name.`);
+      continue;
+    }
+    const id = textOr(item?.id, `vendor-${index + 1}`);
+    if (seen.has(id)) warnings.push(`Vendor “${name}” repeats the id “${id}”.`);
+    seen.add(id);
+    const taskId = textOr(item?.taskId, "");
+    if (taskId && taskIds && !taskIds.has(taskId)) {
+      warnings.push(`Vendor “${name}” points at task “${taskId}”, which does not exist.`);
+    }
+    let status = textOr(item?.status, "shortlist");
+    if (!allowed.has(status)) {
+      warnings.push(`Vendor “${name}” has an unknown status “${status}”. Using shortlist.`);
+      status = "shortlist";
+    }
+    if (item?.website && !safeHttpUrl(item.website)) {
+      warnings.push(`Vendor “${name}” has a website that is not http or https.`);
+    }
+    const category = categoryId(item?.category);
+    const alsoCategories = stringList(item?.alsoCategories).map(categoryId).filter((value) => value && value !== category);
+    const photo = parsePhoto(item?.photo);
+    if (item?.photo && !photo) warnings.push(`Vendor “${name}” has a photo path that was skipped.`);
+    const lastActivity = parseISODate(item?.lastActivity) ? cleanString(item.lastActivity) : "";
+    const updatedOn = parseISODate(item?.updatedOn) ? cleanString(item.updatedOn) : "";
+    vendors.push({
+      id,
+      name,
+      category,
+      legacyCategory: textOr(item?.legacyCategory, vendorCategoryLabel(category)),
+      alsoCategories,
+      taskId,
+      status,
+      preferred: Boolean(item?.preferred),
+      priority: finite(item?.priority) ? item.priority : 99,
+      photo,
+      website: safeHttpUrl(item?.website),
+      social: parseUrlFields(item?.social),
+      links: parseUrlFields(item?.links),
+      contact: {
+        name: textOr(item?.contact?.name, ""),
+        phone: textOr(item?.contact?.phone, ""),
+        email: textOr(item?.contact?.email, ""),
+        address: textOr(item?.contact?.address, ""),
+        office: textOr(item?.contact?.office, ""),
+      },
+      summary: textOr(item?.summary, ""),
+      pricing: parsePricing(item?.pricing, name, warnings),
+      priceType: ["listed", "estimate", "quote"].includes(item?.priceType) ? item.priceType : "quote",
+      keyTerms: stringList(item?.keyTerms),
+      venuePolicy: parseVenuePolicy(item?.venuePolicy),
+      questions: stringList(item?.questions),
+      nextStep: textOr(item?.nextStep, ""),
+      log: parseLog(item?.log, name, warnings),
+      lastActivity,
+      updatedOn,
+    });
+  }
+  return vendors;
+}
+
+/** Older files only have vendorOptions. Treat each one as a shortlist card so the grid still renders. */
+export function vendorsFromOptions(options) {
+  return (options || []).map((option) => {
+    const category = categoryId(option.category);
+    const policy = option.byoAlcohol || option.outsideCatering
+      ? { byoAlcohol: normalizeAlcohol(option.byoAlcohol), outsideCatering: normalizeCatering(option.outsideCatering) }
+      : null;
+    return {
+      id: option.id,
+      name: option.name,
+      category,
+      legacyCategory: option.category || vendorCategoryLabel(category),
+      alsoCategories: [],
+      taskId: option.taskId || "",
+      status: "shortlist",
+      preferred: /preferred/i.test(option.fit || ""),
+      priority: 99,
+      photo: null,
+      website: option.url || "",
+      social: {},
+      links: {},
+      contact: {
+        name: "",
+        phone: option.phone || "",
+        email: option.email || "",
+        address: option.base || "",
+        office: "",
+      },
+      summary: [option.fit, option.caveat].filter(Boolean).join(" "),
+      pricing: option.pricing
+        ? [{ item: "Pricing", amount: null, unit: "", note: option.pricing, source: option.source || null }]
+        : [],
+      priceType: ["listed", "estimate", "quote"].includes(option.priceType) ? option.priceType : "quote",
+      keyTerms: [],
+      venuePolicy: category === "venue" ? policy : null,
+      questions: [],
+      nextStep: "",
+      log: [],
+      lastActivity: "",
+      updatedOn: "",
+    };
+  });
+}
+
 function parseVendorOptions(raw, taskIds, warnings) {
   const seen = new Set();
   const vendors = [];
@@ -971,10 +1406,26 @@ export function buildModel(data) {
   const taskIds = new Set(tasks.map((task) => task.id));
   const budget = parseBudget(data.budgetEstimate, taskIds, warnings);
   const vendorOptions = parseVendorOptions(data.vendorOptions, taskIds, warnings);
+  const vendorStatuses = parseVendorStatuses(data.vendorStatuses);
+  const vendors = Array.isArray(data.vendors)
+    ? parseVendors(data.vendors, taskIds, vendorStatuses, warnings)
+    : vendorsFromOptions(vendorOptions);
   const weddingParty = parseWeddingParty(data.weddingParty);
   const nextActions = parseNextActions(data.nextActions, warnings);
 
-  return { settings, phases, tasks, warnings, budget, vendorOptions, weddingParty, nextActions };
+  return {
+    settings,
+    phases,
+    tasks,
+    warnings,
+    budget,
+    vendorOptions,
+    vendors,
+    vendorStatuses,
+    vendorsUpdatedOn: textOr(data.vendorsUpdatedOn, ""),
+    weddingParty,
+    nextActions,
+  };
 }
 
 function parseNextActions(raw, warnings) {
