@@ -438,7 +438,7 @@ test("vendor shortlist covers the bookings and states venue alcohol rules", () =
   for (const vendor of vendors) {
     assert.ok(!ids.has(vendor.id), vendor.id);
     ids.add(vendor.id);
-    if (vendor.url) assert.match(vendor.url, /^https:\/\//, vendor.name);
+    if (vendor.url) assert.match(vendor.url, /^https?:\/\//, vendor.name);
     else assert.match(`${vendor.pricing} ${vendor.caveat}`, /confirm|unknown|not found/i, vendor.name);
     assert.ok(model.tasks.some((task) => task.id === vendor.taskId), vendor.name);
     assert.ok(vendor.fit, vendor.name);
@@ -472,8 +472,8 @@ test("vendor shortlist covers the bookings and states venue alcohol rules", () =
   assert.equal(raw.includes("2028-03-04"), false);
 });
 
-test("vendor cards have a valid status, https links, and logs in order", () => {
-  assert.equal(model.vendors.length, 71);
+test("vendor cards have a valid status, http(s) links, and logs in order", () => {
+  assert.equal(model.vendors.length, 72);
   const allowed = new Set(model.vendorStatuses.map((status) => status.id));
   const directions = new Set(["sent", "received", "call", "note"]);
   for (const vendor of model.vendors) {
@@ -485,7 +485,7 @@ test("vendor cards have a valid status, https links, and logs in order", () => {
       ...vendor.pricing.map((item) => item.source?.url || ""),
       vendor.photo?.from || "",
     ].filter(Boolean);
-    for (const url of urls) assert.match(url, /^https:\/\//, `${vendor.id} ${url}`);
+    for (const url of urls) assert.match(url, /^https?:\/\//, `${vendor.id} ${url}`);
     const stamps = vendor.log.map((entry) => `${entry.date}T${entry.time || "00:00"}`);
     assert.deepEqual(stamps, [...stamps].sort(), vendor.id);
     for (const entry of vendor.log) assert.ok(directions.has(entry.direction), `${vendor.id} ${entry.direction}`);
@@ -493,6 +493,14 @@ test("vendor cards have a valid status, https links, and logs in order", () => {
   assert.equal(model.vendors.find((vendor) => vendor.id === "v-event-centre").status, "on-hold");
   assert.equal(model.vendors.find((vendor) => vendor.id === "c-kim-son").status, "dropped");
   assert.equal(model.vendors.find((vendor) => vendor.id === "p-charlize").preferred, true);
+  const baMien = model.vendors.find((vendor) => vendor.id === "c-ba-mien");
+  assert.equal(baMien.name, "Ba Mien Restaurant");
+  assert.equal(baMien.category, "caterer");
+  assert.equal(baMien.status, "researching");
+  assert.equal(baMien.photo, null);
+  assert.equal(baMien.website, "http://www.bamien.com/");
+  assert.equal(model.vendorOptions.find((vendor) => vendor.id === "c-ba-mien").name, "Ba Mien Restaurant");
+  assert.equal(model.vendorOptions.filter((vendor) => vendor.id === "c-ba-mien").length, 1);
   assert.equal(/victorvuong/i.test(raw), false);
   const quoted = quotesByTask(model.vendors, normalizeQuotes({ "c-kim-son": { amount: 12000, quotedOn: "2026-11-12", notes: "Per table" } }));
   assert.deepEqual(quoted.catering, { low: 12000, high: 12000, count: 1 });
