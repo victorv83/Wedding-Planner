@@ -30,7 +30,7 @@ The HTML, CSS, scripts, and `data/wedding.json` load once. After that, the secti
 | Tea | `#ceremony` | Home tea-ceremony guide |
 | Guests | `#guests` | Side counts around 200, RSVPs, and 20 tables |
 | Drafts | `#outreach` | Vendor questions and labeled inquiry drafts to copy. Nothing is sent |
-| Vendors | `#vendors` | Bookings, the shortlist, tray carriers, and the budget, including the $50,000 plan |
+| Vendors | `#vendors` | Vendor cards, a build-your-wedding total, bookings, tray carriers, and the budget, including the $50,000 plan. `#vendor/<id>` opens one card |
 
 **View all sections**, the control directly under the nav, stacks every section the way the long page used to, and sets `#all`. In that mode that control is the one marked current. Otherwise the open section’s nav link is marked current (`aria-current="page"`).
 
@@ -149,7 +149,9 @@ Within a phase, tasks stay in the order they appear in the file. To reorder, mov
 
 `target` is `50000`. The page compares the 175- and 250-guest totals with that target and shows the per-guest ceiling at 175, 200, and 250. `plan` is the **Plan to hit $50k** column for about 200 guests. It prices the bar twice — bring-your-own alcohol with a licensed bartender, and a venue bar package — and the cautious total is the higher one. A line is marked over the allocation when the researched range does not fit that choice.
 
-`vendorOptions` is the shortlist, not a booking. Venue candidates include `byoAlcohol` (`yes`, `bartender`, `no`, or `unknown`) and `outsideCatering` (`yes`, `approved`, `no`, or `unknown`), plus `policySource` when a page states the rule. The same two fields are on venue tasks, so the timeline editor can change them. `weddingParty` is 4 bridesmaids and 4 groomsmen, and the extra carriers needed for 5 or 7 mâm quả trays.
+`vendors` is the card list on the Vendors page. Each card has a status, a short summary, prices with sources, open questions, a next step, and a correspondence log. `#vendor/<id>` opens that card. Photos, when we have one, live in `assets/vendors/`. The page can also remember one pick per category in this browser and add the low and high listed prices toward the $50,000 target. A card with no number stays TBD.
+
+`vendorOptions` is the older shortlist kept alongside the cards. Venue candidates include `byoAlcohol` (`yes`, `bartender`, `no`, or `unknown`) and `outsideCatering` (`yes`, `approved`, `no`, or `unknown`), plus `policySource` when a page states the rule. The same two fields are on venue tasks, so the timeline editor can change them. `weddingParty` is 4 bridesmaids and 4 groomsmen, and the extra carriers needed for 5 or 7 mâm quả trays.
 
 The tea ceremony is at a family home, so that place is `$0`. Decor, rentals, flowers, and the photographer still have lines. The student sax task is an estimate for about an hour.
 

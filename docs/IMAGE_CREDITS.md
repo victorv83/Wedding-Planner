@@ -2,7 +2,7 @@
 
 Every photo in `assets/img/` was downloaded from Wikimedia Commons and compressed for this site. Captions on the page name the same author and license. These are reference pictures, not photos of this couple or of the shortlisted venues.
 
-Venue and vendor photos are not stored here. The shortlist links to each business’s own site.
+Vendor photos in `assets/vendors/` come from each business’s own site, or from the city page for the Bob Bowers Civic Center. The card records `photo.from` (the page) and `photo.origin` (the image file). The detail view credits `photo.from`. Cards without a photo use a monogram, not a stock picture.
 
 | File | Source | Author | License |
 | --- | --- | --- | --- |

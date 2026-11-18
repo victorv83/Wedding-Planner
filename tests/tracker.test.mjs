@@ -37,6 +37,7 @@ import {
   safeHttpUrl,
   snapshotFromDraft,
   statusAfterMarkDone,
+  vendorIdFromHash,
   viewFromHash,
 } from "../logic.js";
 
@@ -74,6 +75,12 @@ test("the hash opens one section, all sections, or overview by default", () => {
   assert.equal(viewFromHash("#all"), "all");
   assert.equal(viewFromHash("#ALL"), "all");
   assert.equal(viewFromHash("#somewhere-else"), "overview");
+  assert.equal(viewFromHash("#vendor/v-434-fannin"), "vendors");
+  assert.equal(viewFromHash("#vendor/"), "vendors");
+  assert.equal(vendorIdFromHash("#vendor/v-434-fannin"), "v-434-fannin");
+  assert.equal(vendorIdFromHash("#VENDOR/p-charlize"), "p-charlize");
+  assert.equal(vendorIdFromHash("#vendors"), "");
+  assert.equal(vendorIdFromHash(""), "");
 });
 
 test("candidate Saturdays and Tết are real dates", () => {
@@ -463,6 +470,37 @@ test("vendor shortlist covers the bookings and states venue alcohol rules", () =
   assert.match(model.tasks.find((task) => task.id === "bachelor").due, /^2028-01-1/);
   assert.equal(raw.includes("Lagayette"), false);
   assert.equal(raw.includes("2028-03-04"), false);
+});
+
+test("vendor cards have a valid status, https links, and logs in order", () => {
+  assert.equal(model.vendors.length, 71);
+  const allowed = new Set(model.vendorStatuses.map((status) => status.id));
+  const directions = new Set(["sent", "received", "call", "note"]);
+  for (const vendor of model.vendors) {
+    assert.ok(allowed.has(vendor.status), vendor.id);
+    const urls = [
+      vendor.website,
+      ...Object.values(vendor.social),
+      ...Object.values(vendor.links),
+      ...vendor.pricing.map((item) => item.source?.url || ""),
+      vendor.photo?.from || "",
+    ].filter(Boolean);
+    for (const url of urls) assert.match(url, /^https:\/\//, `${vendor.id} ${url}`);
+    const stamps = vendor.log.map((entry) => `${entry.date}T${entry.time || "00:00"}`);
+    assert.deepEqual(stamps, [...stamps].sort(), vendor.id);
+    for (const entry of vendor.log) assert.ok(directions.has(entry.direction), `${vendor.id} ${entry.direction}`);
+  }
+  assert.equal(model.vendors.find((vendor) => vendor.id === "v-event-centre").status, "on-hold");
+  assert.equal(model.vendors.find((vendor) => vendor.id === "c-kim-son").status, "dropped");
+  assert.equal(model.vendors.find((vendor) => vendor.id === "p-charlize").preferred, true);
+  assert.equal(/victorvuong/i.test(raw), false);
+  const quoted = quotesByTask(model.vendors, normalizeQuotes({ "c-kim-son": { amount: 12000, quotedOn: "2026-11-12", notes: "Per table" } }));
+  assert.deepEqual(quoted.catering, { low: 12000, high: 12000, count: 1 });
+  const { vendors: _cards, vendorStatuses: _statuses, ...legacyFile } = data;
+  const legacy = buildModel(legacyFile);
+  assert.equal(legacy.vendors.length, model.vendorOptions.length);
+  assert.ok(legacy.vendors.every((vendor) => vendor.status === "shortlist"));
+  assert.equal(legacy.warnings.length, 0);
 });
 
 test("bad budget and vendor entries warn instead of breaking the page", () => {

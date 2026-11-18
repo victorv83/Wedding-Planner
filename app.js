@@ -28,7 +28,7 @@ import {
   formatNumber,
   githubIssueUrl,
   groupByPhase,
-  groupVendorOptions,
+  headlinePrice,
   isCompleteStatus,
   isOverdue,
   isUnderwayStatus,
@@ -44,18 +44,28 @@ import {
   roughSpan,
   safeHttpUrl,
   serializeAdd,
+  selectionEstimate,
   settingText,
   slugTaskId,
   snapshotFromDraft,
+  sortVendorCards,
   startOfToday,
   statusAfterMarkDone,
   taskSnapshot,
+  vendorCategoryLabel,
+  vendorCity,
+  vendorIdFromHash,
+  vendorInCategory,
+  vendorInTalks,
+  vendorPriceRange,
   viewFromHash,
+  waitingOnCouple,
   fitReport,
   lineCost,
   normalizeQuotes,
   parseMoneyInput,
   quotesByTask,
+  VENDOR_CATEGORY_ORDER,
 } from "./logic.js";
 import {
   applyGuestEdits,
@@ -74,6 +84,7 @@ const LEGACY_STORAGE_KEY = "weddingPlanner.previewStatus.v1";
 const QUOTE_KEY = "weddingPlanner.quotes.v1";
 const ACTION_KEY = "weddingPlanner.nextActions.v1";
 const UNIT_KEY = "weddingPlanner.cateringUnit.v1";
+const PICK_KEY = "weddingPlanner.vendorPicks.v1";
 const NEW_ITEM = "__new__";
 
 const state = {
@@ -92,6 +103,11 @@ const state = {
   cateringUnit: "per-table",
   openQuoteId: null,
   quoteError: null,
+  vendorCategory: "all",
+  vendorStatus: "all",
+  vendorQuery: "",
+  showDropped: false,
+  picks: {},
 };
 
 const $ = (id) => document.getElementById(id);
@@ -180,7 +196,8 @@ function savedQuotes() {
 }
 
 function currentQuoteMap() {
-  return quotesByTask(state.model?.vendorOptions, savedQuotes());
+  const vendors = state.model?.vendors?.length ? state.model.vendors : state.model?.vendorOptions;
+  return quotesByTask(vendors, savedQuotes());
 }
 
 function currentScenario() {
@@ -440,6 +457,7 @@ function renderOverview() {
 
   const section = el("section", { class: "section", id: "overview", "aria-labelledby": "overview-heading" }, [
     renderNextActions(),
+    renderVendorQueues(),
     el("h2", { id: "overview-heading", text: "Countdown" }),
     el("div", { class: "panel" }, [
       countdownBlock,
@@ -973,15 +991,19 @@ function detailList(task) {
     if (task.byoAlcohol) rows.push(["Alcohol", ALCOHOL_POLICIES[task.byoAlcohol] || task.byoAlcohol]);
     if (task.outsideCatering) rows.push(["Catering", CATERING_POLICIES[task.outsideCatering] || task.outsideCatering]);
   }
-  const shortlist = (state.model.vendorOptions || []).filter((vendor) => vendor.taskId === task.id);
+  const pool = state.model.vendors?.length ? state.model.vendors : (state.model.vendorOptions || []);
+  const shortlist = pool.filter((vendor) => vendor.taskId === task.id);
   if (shortlist.length) {
     const shown = shortlist.slice(0, 3);
     const more = shortlist.length - shown.length;
     rows.push(["Shortlist", el("span", {}, [
-      ...shown.flatMap((vendor, index) => [
-        index ? ", " : "",
-        vendor.url ? externalLink(vendor.url, vendor.name) : vendor.name,
-      ]),
+      ...shown.flatMap((vendor, index) => {
+        const href = safeHttpUrl(vendor.website || vendor.url || "");
+        return [
+          index ? ", " : "",
+          href ? externalLink(href, vendor.name) : vendor.name,
+        ];
+      }),
       more ? ` +${more} more` : "",
     ])]);
   }
@@ -1236,11 +1258,11 @@ function renderVendors() {
 
   const section = el("section", { class: "section", id: "vendors", "aria-labelledby": "vendors-heading" }, [
     el("h2", { id: "vendors-heading", text: "Vendors" }),
+    renderVendorBoard(),
     el("h3", { class: "subhead", text: "Bookings" }),
     el("div", { class: "table-scroll" }, [table]),
     renderWeddingParty(),
     renderBudget(),
-    renderShortlist(),
   ]);
   $("mount-vendors").replaceChildren(section);
 }
@@ -1261,10 +1283,11 @@ function moneyRange(range) {
 }
 
 function policyBadges(vendor) {
-  if (!vendor.byoAlcohol && !vendor.outsideCatering) return null;
+  const policy = vendor?.venuePolicy || vendor;
+  if (!policy?.byoAlcohol && !policy?.outsideCatering) return null;
   const bits = [];
-  if (vendor.byoAlcohol) bits.push(el("span", { class: `pill pill-policy pill-${vendor.byoAlcohol}`, text: ALCOHOL_POLICIES[vendor.byoAlcohol] }));
-  if (vendor.outsideCatering) bits.push(el("span", { class: `pill pill-policy pill-${vendor.outsideCatering}`, text: CATERING_POLICIES[vendor.outsideCatering] }));
+  if (policy.byoAlcohol) bits.push(el("span", { class: `pill pill-policy pill-${policy.byoAlcohol}`, text: ALCOHOL_POLICIES[policy.byoAlcohol] }));
+  if (policy.outsideCatering) bits.push(el("span", { class: `pill pill-policy pill-${policy.outsideCatering}`, text: CATERING_POLICIES[policy.outsideCatering] }));
   return el("p", { class: "policy-badges" }, bits.flatMap((node, index) => [index ? " " : "", node]));
 }
 
@@ -1640,48 +1663,619 @@ function labeled(text, control) {
   ]);
 }
 
-function renderShortlist() {
-  const vendors = state.model.vendorOptions;
-  if (!vendors?.length) return null;
-  const titles = new Map(state.model.tasks.map((task) => [task.id, task.title]));
-  const groups = groupVendorOptions(vendors);
-  const blocks = groups.map((group) => el("details", {
-    class: "shortlist-group",
-    id: `shortlist-${group.category.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`,
-    open: group.vendors.some((vendor) => vendor.id === state.openQuoteId),
-  }, [
-    el("summary", {}, [
-      el("span", { text: group.category }),
-      el("span", { class: "count", text: String(group.vendors.length) }),
+const LOG_META = {
+  sent: { icon: "↗", label: "Sent" },
+  received: { icon: "↙", label: "Received" },
+  call: { icon: "☎", label: "Call" },
+  note: { icon: "✎", label: "Note" },
+};
+
+const LINK_LABELS = {
+  tourBooking: "Book a tour",
+  inquiryForm: "Inquiry form",
+  virtualTour: "Virtual tour",
+  consultBooking: "Book a consult",
+  cityPage: "City page",
+};
+
+const SOCIAL_LABELS = {
+  facebook: "Facebook",
+  instagram: "Instagram",
+  ezcater: "ezCater",
+};
+
+const CATEGORY_ICON = {
+  venue: "M4 11 12-8 12 8M6 10.5V20h12v-9.5M10 20v-6h4v6",
+  caterer: "M6 10h12M7 10c.4 4.2 2.2 7 5 7s4.6-2.8 5-7M9 17.2V20h6v-2.8",
+  planner: "M8 4h8v3H8zM7 7h10v13H7zM10 12h4M10 15h4",
+  photo: "M4 8h3l1.5-2h7L17 8h3v11H4zM12 16.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",
+  decor: "M12 13c2.5-3 6-3.2 6-6.2A2.8 2.8 0 0 0 12 6a2.8 2.8 0 0 0-6 1c0 3 3.5 3.2 6 6zM12 13v7",
+  music: "M9 18V6l10-2v12M9 18a2.5 2.5 0 1 1-2.5-2.5A2.5 2.5 0 0 1 9 18zm10-2a2.5 2.5 0 1 1-2.5-2.5A2.5 2.5 0 0 1 19 16z",
+  beauty: "M12 3l1.2 4.2L17.5 8.5 13.2 9.8 12 14l-1.2-4.2L6.5 8.5l4.3-1.3zM6 16l.6 2 .4-2 .4 2 .6-2M16 15l.7 2.2.5-2.2.5 2.2.7-2.2",
+  cake: "M6 13h12v6H6zM7 13c.4-2 1.6-3 2.5-3S12 11 12 13c0-2 1.2-3 2.5-3s2.1 1 2.5 3M8 16h8M9 8V6M12 8V5M15 8V6",
+  rentals: "M6 11h12v8H6zM8 11V8h8v3M9 15h2",
+  bar: "M6 4h12l-4.2 6.2c.8.5 1.2 1.3 1.2 2.2 0 1.7-1.4 3-3 3s-3-1.3-3-3c0-.9.4-1.7 1.2-2.2zM12 15.5V20M9 20h6",
+  transportation: "M4 15h16M6 15l1.2-5h9.6L18 15M7 18.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm10 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM8 10h2M14 10h2",
+  ceremony: "M9 21h6M12 21V11M8 11h8l-1-5H9zM10 6V4h4v2",
+  attire: "M12 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM8 21l1-9 3-2 3 2 1 9M9 12 6 9M15 12l3-3",
+  parties: "M5 20c2-6 4-8 7-8s5 2 7 8M8 10c0-2 1.6-4 4-4s4 2 4 4",
+};
+
+function categoryIcon(category) {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("class", "cat-icon");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("width", "28");
+  svg.setAttribute("height", "28");
+  svg.setAttribute("aria-hidden", "true");
+  const path = document.createElementNS(ns, "path");
+  path.setAttribute("d", CATEGORY_ICON[category] || CATEGORY_ICON.venue);
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke", "currentColor");
+  path.setAttribute("stroke-width", "1.5");
+  path.setAttribute("stroke-linecap", "round");
+  path.setAttribute("stroke-linejoin", "round");
+  svg.append(path);
+  return svg;
+}
+
+function vendorInitials(name) {
+  const skip = new Set(["at", "of", "the", "and", "by", "a", "for", "in"]);
+  const words = String(name || "")
+    .split(/[\s/—–-]+/)
+    .map((word) => word.trim())
+    .filter((word) => word && !skip.has(word.toLowerCase()) && /[\p{L}\p{N}]/u.test(word));
+  const source = words.length ? words : [name || "?"];
+  return source.slice(0, 2).map((word) => [...word][0]).join("").toLocaleUpperCase("en-US");
+}
+
+function vendorStatusMeta(status) {
+  return state.model.vendorStatuses?.find((item) => item.id === status) || { id: status, label: status, meaning: "" };
+}
+
+function formatShortDate(iso) {
+  const date = parseISODate(iso);
+  if (!date) return "";
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(date);
+}
+
+function formatLogTime(time) {
+  const match = /^(\d{2}):(\d{2})$/.exec(time || "");
+  if (!match) return "";
+  const date = new Date(2026, 0, 1, Number(match[1]), Number(match[2]));
+  return `${new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" }).format(date)} CT`;
+}
+
+function hostLabel(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "source";
+  }
+}
+
+function telHref(phone) {
+  const digits = String(phone || "").replace(/[^\d+]/g, "");
+  return digits.replace(/\D/g, "").length >= 7 ? `tel:${digits}` : "";
+}
+
+function pricePhrase(vendor) {
+  const headline = headlinePrice(vendor);
+  if (!headline) return null;
+  if (headline.kind === "amount") {
+    const money = formatMoney(headline.amount, currency());
+    return { text: headline.unit ? `${money} ${headline.unit}` : money, note: false, label: headline.item };
+  }
+  return { text: headline.text, note: true, label: "" };
+}
+
+function loadPicks() {
+  const stored = readJsonStorage(PICK_KEY);
+  if (!stored) return {};
+  const picks = {};
+  for (const category of VENDOR_CATEGORY_ORDER) {
+    const id = stored[category];
+    if (typeof id === "string" && id) picks[category] = id;
+  }
+  return picks;
+}
+
+function savePicks(picks) {
+  writeJsonStorage(PICK_KEY, Object.keys(picks).length ? picks : null);
+}
+
+function chooseVendor(vendor) {
+  const picks = { ...state.picks };
+  if (picks[vendor.category] === vendor.id) delete picks[vendor.category];
+  else picks[vendor.category] = vendor.id;
+  state.picks = picks;
+  savePicks(picks);
+}
+
+function vendorHaystack(vendor) {
+  return [
+    vendor.name,
+    vendorCategoryLabel(vendor.category),
+    vendor.legacyCategory,
+    vendor.summary,
+    vendorCity(vendor.contact?.address),
+    vendor.contact?.name,
+    vendor.nextStep,
+    ...(vendor.questions || []),
+    vendorStatusMeta(vendor.status).label,
+  ].join("\n").toLowerCase();
+}
+
+function visibleVendors() {
+  const vendors = state.model.vendors || [];
+  const query = state.vendorQuery.trim().toLowerCase();
+  return sortVendorCards(vendors).filter((vendor) => {
+    const dropped = vendor.status === "dropped";
+    if (dropped && !state.showDropped && state.vendorStatus !== "dropped") return false;
+    if (state.vendorStatus !== "all" && vendor.status !== state.vendorStatus) return false;
+    if (!vendorInCategory(vendor, state.vendorCategory)) return false;
+    if (query && !vendorHaystack(vendor).includes(query)) return false;
+    return true;
+  });
+}
+
+function photoFallback(vendor) {
+  return [
+    categoryIcon(vendor.category),
+    el("span", { class: "vcard-initials", text: vendorInitials(vendor.name) }),
+    el("span", { class: "vcard-photo-label", text: vendorCategoryLabel(vendor.category) }),
+  ];
+}
+
+function photoFrame(vendor) {
+  const frame = el("div", { class: vendor.photo?.src ? "vcard-photo" : "vcard-photo vcard-photo-empty" });
+  if (!vendor.photo?.src) frame.dataset.category = vendor.category;
+  if (vendor.photo?.src) {
+    const img = el("img", { src: vendor.photo.src, alt: "", loading: "lazy", decoding: "async" });
+    img.addEventListener("error", () => {
+      frame.classList.add("vcard-photo-empty");
+      frame.dataset.category = vendor.category;
+      const ribbon = frame.querySelector(".vcard-ribbon");
+      frame.replaceChildren(...photoFallback(vendor));
+      if (ribbon) frame.append(ribbon);
+    });
+    frame.append(img);
+  } else {
+    frame.append(...photoFallback(vendor));
+  }
+  if (vendor.preferred) frame.append(el("span", { class: "vcard-ribbon", text: "★ Preferred" }));
+  return frame;
+}
+
+function renderVendorQueues() {
+  const vendors = state.model.vendors || [];
+  if (!vendors.length) return null;
+  const onUs = sortVendorCards(vendors.filter(waitingOnCouple));
+  const onThem = sortVendorCards(vendors.filter((vendor) => vendor.status === "contacted"));
+  const list = (items, empty) => (items.length
+    ? el("ul", { class: "queue-list" }, items.map((vendor) => el("li", {}, [
+      el("a", { href: `#vendor/${encodeURIComponent(vendor.id)}` }, [
+        el("span", { class: `status-badge status-${vendor.status}`, text: vendorStatusMeta(vendor.status).label }),
+        el("span", { class: "queue-name", text: vendor.name }),
+      ]),
+      vendor.nextStep ? el("span", { class: "queue-step", text: vendor.nextStep }) : null,
+    ])))
+    : el("p", { class: "hint", text: empty }));
+  return el("div", { class: "panel queue-panel" }, [
+    el("h3", { class: "subhead", text: "Who owes the next reply" }),
+    el("div", { class: "queue-grid" }, [
+      el("div", {}, [
+        el("h4", { class: "queue-heading", text: "Waiting on Victor" }),
+        list(onUs, "Nothing is waiting on you."),
+      ]),
+      el("div", {}, [
+        el("h4", { class: "queue-heading", text: "Waiting on a vendor" }),
+        list(onThem, "No one is overdue on a reply."),
+      ]),
     ]),
-    el("ul", { class: "shortlist" }, group.vendors.map((vendor) => el("li", { class: "vendor-card", id: `vendor-option-${vendor.id}` }, [
-      el("p", { class: "vendor-name" }, [
-        vendor.url ? externalLink(vendor.url, vendor.name) : vendor.name,
-        vendor.base ? el("span", { class: "vendor-base", text: vendor.base }) : null,
-      ]),
-      policyBadges(vendor),
-      vendor.pricing ? el("p", { class: "vendor-price" }, [
-        el("span", { class: `pill pill-${vendor.priceType === "listed" ? "listed" : "estimate"}`, text: { listed: "Listed", estimate: "Estimate", quote: "Quote" }[vendor.priceType] || "Quote" }),
-        " ",
-        vendor.pricing,
-      ]) : null,
-      vendor.fit ? el("p", {}, richText(vendor.fit)) : null,
-      vendor.caveat ? el("p", { class: "vendor-caveat" }, [el("strong", { text: "Check: " }), ...richText(vendor.caveat)]) : null,
-      el("p", { class: "vendor-meta" }, [
-        vendor.taskId && titles.has(vendor.taskId) ? `For: ${titles.get(vendor.taskId)}` : "",
-        vendor.policySource ? el("span", { class: "line-note" }, [sourceList([vendor.policySource])]) : null,
-        vendor.source ? el("span", { class: "line-note" }, [sourceList([vendor.source])]) : null,
-        vendor.email ? el("span", { class: "line-note", text: `Email: ${vendor.email}` }) : null,
-        vendor.phone ? el("span", { class: "line-note", text: `Phone: ${vendor.phone}` }) : null,
-      ]),
-      renderQuoteEditor(vendor),
-    ]))),
-  ]));
-  return el("div", { class: "shortlist-block", id: "vendor-shortlist" }, [
-    el("h3", { class: "subhead", text: "Vendor shortlist" }),
-    el("p", { class: "hint", text: `${vendors.length} candidates to contact. They are not bookings and they are not in Known costs. Venue cards show alcohol and outside-catering rules when a source states them.` }),
-    ...blocks,
   ]);
+}
+
+function renderVendorCard(vendor) {
+  const city = vendorCity(vendor.contact?.address);
+  const price = pricePhrase(vendor);
+  const questions = vendor.questions || [];
+  const shown = questions.slice(0, 3);
+  const extra = questions.length - shown.length;
+  const last = vendor.log?.length ? vendor.log[vendor.log.length - 1].date : vendor.lastActivity;
+  const chosen = state.picks[vendor.category] === vendor.id;
+  const pick = el("button", {
+    type: "button",
+    class: chosen ? "vcard-pick is-chosen" : "vcard-pick",
+    id: `pick-${vendor.id}`,
+    text: chosen ? `Chosen · ${vendorCategoryLabel(vendor.category)}` : `Choose as ${vendorCategoryLabel(vendor.category).toLowerCase()}`,
+  });
+  pick.addEventListener("click", () => {
+    chooseVendor(vendor);
+    render({ focusId: pick.id });
+  });
+  return el("article", { class: chosen ? "vcard is-chosen" : "vcard", id: `vendor-card-${vendor.id}` }, [
+    el("a", { class: "vcard-link", href: `#vendor/${encodeURIComponent(vendor.id)}` }, [
+      photoFrame(vendor),
+      el("div", { class: "vcard-body" }, [
+        el("p", { class: "vcard-kicker" }, [
+          el("span", { text: vendorCategoryLabel(vendor.category) }),
+          city ? el("span", { text: city }) : null,
+        ]),
+        el("div", { class: "vcard-title" }, [
+          el("h3", { class: "vcard-name", text: vendor.name }),
+          el("span", { class: `status-badge status-${vendor.status}`, text: vendorStatusMeta(vendor.status).label }),
+        ]),
+        vendor.summary ? el("p", { class: "vcard-summary", text: vendor.summary }) : null,
+        price ? el("p", { class: price.note ? "vcard-price is-note" : "vcard-price", title: price.label || undefined }, [
+          price.note ? null : el("span", { class: "sr-only", text: "Key price " }),
+          price.text,
+        ]) : null,
+        shown.length ? el("ul", { class: "vcard-questions" }, [
+          ...shown.map((question) => el("li", { text: question })),
+          extra > 0 ? el("li", { class: "more", text: `+${extra} more` }) : null,
+        ]) : null,
+        vendor.nextStep ? el("p", { class: "vcard-next" }, [el("strong", { text: vendor.nextStep })]) : null,
+        last ? el("p", { class: "vcard-last", text: `Last: ${formatShortDate(last)}` }) : null,
+      ]),
+    ]),
+    pick,
+  ]);
+}
+
+function chipRow(group, label, chips, current, onPick) {
+  return el("div", { class: "chip-row", role: "toolbar", "aria-label": label }, chips.map((chip) => {
+    const id = `chip-${group}-${chip.id}`;
+    const button = el("button", {
+      type: "button",
+      id,
+      class: chip.id === current ? "chip is-on" : "chip",
+      "aria-pressed": chip.id === current ? "true" : "false",
+      text: chip.count != null ? `${chip.label} ${chip.count}` : chip.label,
+    });
+    button.addEventListener("click", () => onPick(chip.id, id));
+    return button;
+  }));
+}
+
+function renderVendorGrid() {
+  const vendors = state.model.vendors || [];
+  if (!vendors.length) return null;
+  const working = vendors.filter((vendor) => state.showDropped || vendor.status !== "dropped");
+  const visible = visibleVendors();
+  const inTalks = working.filter(vendorInTalks).length;
+  const waiting = working.filter(waitingOnCouple).length;
+  const countLine = visible.length === working.length
+    ? `${visible.length} vendors · ${inTalks} in talks · ${waiting} waiting on us`
+    : `Showing ${visible.length} of ${working.length} · ${inTalks} in talks · ${waiting} waiting on us`;
+
+  const categories = VENDOR_CATEGORY_ORDER.filter((category) => vendors.some((vendor) => vendorInCategory(vendor, category)));
+  const categoryChips = [
+    { id: "all", label: "All", count: working.length },
+    ...categories.map((category) => ({
+      id: category,
+      label: vendorCategoryLabel(category),
+      count: working.filter((vendor) => vendorInCategory(vendor, category)).length,
+    })),
+  ];
+  const statuses = (state.model.vendorStatuses || []).filter((status) => {
+    if (status.id === "dropped" && !state.showDropped && state.vendorStatus !== "dropped") return false;
+    const count = vendors.filter((vendor) => vendor.status === status.id).length;
+    return count > 0 || state.vendorStatus === status.id;
+  });
+  const statusChips = [
+    { id: "all", label: "Any status" },
+    ...statuses.map((status) => ({
+      id: status.id,
+      label: status.label,
+      count: vendors.filter((vendor) => vendor.status === status.id).length,
+    })),
+  ];
+
+  const search = el("input", {
+    type: "search",
+    id: "vendor-search",
+    placeholder: "Search vendors",
+    "aria-label": "Search vendors",
+    autocomplete: "off",
+  });
+  search.value = state.vendorQuery;
+  search.addEventListener("input", () => {
+    const caret = search.selectionStart;
+    state.vendorQuery = search.value;
+    render({ focusId: "vendor-search" });
+    const node = document.getElementById("vendor-search");
+    try {
+      if (node && caret != null) node.setSelectionRange(caret, caret);
+    } catch {
+      /* A search field can refuse a caret. The text is still kept. */
+    }
+  });
+
+  const dropped = el("input", { type: "checkbox", id: "show-dropped" });
+  dropped.checked = state.showDropped;
+  dropped.addEventListener("change", () => {
+    state.showDropped = dropped.checked;
+    if (!state.showDropped && state.vendorStatus === "dropped") state.vendorStatus = "all";
+    render({ focusId: "show-dropped" });
+  });
+
+  const updated = state.model.vendorsUpdatedOn ? ` Cards updated ${formatShortDate(state.model.vendorsUpdatedOn)}.` : "";
+
+  return el("div", { class: "vendor-board", id: "vendor-board" }, [
+    el("div", { class: "vendor-board-head" }, [
+      el("h3", { class: "subhead", id: "vendor-cards-heading", text: "Vendor cards" }),
+      el("p", { class: "vendor-counts", text: countLine }),
+      el("p", { class: "hint", text: `A card is what we know so far, not a booking.${updated} Dropped vendors stay hidden until you ask for them.` }),
+    ]),
+    el("div", { class: "vendor-tools" }, [
+      chipRow("category", "Category", categoryChips, state.vendorCategory, (id, focusId) => {
+        state.vendorCategory = id;
+        render({ focusId });
+      }),
+      chipRow("status", "Status", statusChips, state.vendorStatus, (id, focusId) => {
+        state.vendorStatus = id;
+        if (id === "dropped") state.showDropped = true;
+        render({ focusId });
+      }),
+      el("div", { class: "vendor-search-row" }, [
+        search,
+        el("label", { class: "check-label dropped-toggle", for: "show-dropped" }, [dropped, el("span", { text: "Show dropped" })]),
+      ]),
+    ]),
+    visible.length
+      ? el("div", { class: "vcard-grid" }, visible.map(renderVendorCard))
+      : el("p", { class: "empty", text: "No vendors match these filters." }),
+    renderWeddingBuilder(),
+  ]);
+}
+
+function vendorRoot() {
+  let root = document.getElementById("vendor-root");
+  if (!root) {
+    root = document.createElement("div");
+    root.id = "vendor-root";
+    document.body.append(root);
+  }
+  return root;
+}
+
+function renderVendorDetail(id) {
+  if (!id) return null;
+  const vendor = (state.model.vendors || []).find((item) => item.id === id);
+  const close = el("button", { type: "button", class: "text-button", id: "close-vendor", text: "Close" });
+  close.addEventListener("click", () => closeVendorDetail());
+  if (!vendor) {
+    const dialog = el("div", {
+      class: "dialog vendor-dialog",
+      role: "dialog",
+      "aria-modal": "true",
+      "aria-labelledby": "vendor-detail-title",
+      tabIndex: "-1",
+    }, [
+      el("div", { class: "dialog-head" }, [
+        el("h2", { id: "vendor-detail-title", text: "Vendor not found" }),
+        close,
+      ]),
+      el("p", { text: "That card is not in the plan." }),
+    ]);
+    dialog.addEventListener("keydown", trapTab);
+    return el("div", { class: "dialog-backdrop vendor-backdrop" }, [dialog]);
+  }
+
+  const city = vendorCity(vendor.contact?.address);
+  const contact = vendor.contact || {};
+  const contactRows = [];
+  if (contact.name) contactRows.push(["Contact", contact.name]);
+  if (contact.phone) {
+    const href = telHref(contact.phone);
+    contactRows.push(["Phone", href ? el("a", { href, text: contact.phone }) : contact.phone]);
+  }
+  if (contact.office && contact.office !== contact.phone) {
+    const href = telHref(contact.office);
+    contactRows.push(["Office", href ? el("a", { href, text: contact.office }) : contact.office]);
+  }
+  if (contact.email) contactRows.push(["Email", el("a", { href: `mailto:${contact.email}`, text: contact.email })]);
+  if (contact.address) contactRows.push(["Address", contact.address]);
+
+  const linkButtons = [];
+  if (vendor.website) linkButtons.push(externalLink(vendor.website, "Website"));
+  for (const [key, url] of Object.entries(vendor.links || {})) {
+    linkButtons.push(externalLink(url, LINK_LABELS[key] || key));
+  }
+  for (const [key, url] of Object.entries(vendor.social || {})) {
+    linkButtons.push(externalLink(url, SOCIAL_LABELS[key] || key));
+  }
+
+  const priceRows = (vendor.pricing || []).map((item) => el("tr", {}, [
+    el("td", { "data-label": "Item", text: item.item || "Price" }),
+    el("td", { class: "num", "data-label": "Amount", text: typeof item.amount === "number" ? formatMoney(item.amount, currency()) : "—" }),
+    el("td", { "data-label": "Details", text: [item.unit, item.note].filter(Boolean).join(" · ") || "—" }),
+    el("td", { "data-label": "Source" }, [item.source?.url ? externalLink(item.source.url, item.source.label || "Source") : "—"]),
+  ]));
+
+  const log = [...(vendor.log || [])].reverse();
+  const chosen = state.picks[vendor.category] === vendor.id;
+  const use = el("button", {
+    type: "button",
+    class: chosen ? "vcard-pick is-chosen" : "primary",
+    id: "vendor-use",
+    text: chosen ? `Chosen as ${vendorCategoryLabel(vendor.category).toLowerCase()}` : `Use as ${vendorCategoryLabel(vendor.category).toLowerCase()}`,
+  });
+  use.addEventListener("click", () => {
+    chooseVendor(vendor);
+    render({ focusId: "vendor-use" });
+  });
+
+  const dialog = el("div", {
+    class: "dialog vendor-dialog",
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-labelledby": "vendor-detail-title",
+    tabIndex: "-1",
+    id: "vendor-detail",
+  }, [
+    el("div", { class: "dialog-head" }, [
+      el("div", {}, [
+        el("p", { class: "vcard-kicker" }, [
+          el("span", { text: vendorCategoryLabel(vendor.category) }),
+          city ? el("span", { text: city }) : null,
+        ]),
+        el("h2", { id: "vendor-detail-title", text: vendor.name }),
+      ]),
+      close,
+    ]),
+    el("div", { class: "detail-badges" }, [
+      el("span", { class: `status-badge status-${vendor.status}`, text: vendorStatusMeta(vendor.status).label }),
+      vendor.preferred ? el("span", { class: "status-badge status-preferred", text: "★ Preferred" }) : null,
+      el("span", { class: `pill pill-${vendor.priceType === "listed" ? "listed" : vendor.priceType === "estimate" ? "estimate" : "quote"}`, text: { listed: "Listed", estimate: "Estimate", quote: "Quote" }[vendor.priceType] || "Quote" }),
+    ]),
+    photoFrame(vendor),
+    vendor.photo?.from ? el("p", { class: "photo-credit" }, ["Photo from ", externalLink(vendor.photo.from, hostLabel(vendor.photo.from))]) : null,
+    vendor.summary ? el("p", { class: "detail-summary", text: vendor.summary }) : null,
+    linkButtons.length ? el("div", { class: "link-row" }, linkButtons) : null,
+    contactRows.length ? el("dl", { class: "details detail-contact" }, contactRows.flatMap(([label, value]) => [
+      el("dt", { text: label }),
+      el("dd", {}, [value]),
+    ])) : null,
+    priceRows.length ? el("div", { class: "detail-block" }, [
+      el("h3", { class: "subhead", text: "Pricing" }),
+      el("div", { class: "table-scroll detail-table" }, [
+        el("table", {}, [
+          el("caption", { text: `Prices published or reported for ${vendor.name}.` }),
+          el("thead", {}, [el("tr", {}, [
+            el("th", { scope: "col", text: "Item" }),
+            el("th", { scope: "col", class: "num", text: "Amount" }),
+            el("th", { scope: "col", text: "Details" }),
+            el("th", { scope: "col", text: "Source" }),
+          ])]),
+          el("tbody", {}, priceRows),
+        ]),
+      ]),
+    ]) : null,
+    vendor.keyTerms?.length ? el("div", { class: "detail-block" }, [
+      el("h3", { class: "subhead", text: "Key terms" }),
+      el("ul", { class: "guide-list" }, vendor.keyTerms.map((term) => el("li", { text: term }))),
+    ]) : null,
+    vendor.venuePolicy ? el("div", { class: "detail-block" }, [
+      el("h3", { class: "subhead", text: "Venue policy" }),
+      policyBadges({ venuePolicy: vendor.venuePolicy }),
+    ]) : null,
+    vendor.questions?.length ? el("div", { class: "detail-block" }, [
+      el("h3", { class: "subhead", text: "Open questions" }),
+      el("ul", { class: "guide-list" }, vendor.questions.map((question) => el("li", { text: question }))),
+    ]) : null,
+    vendor.nextStep ? el("p", { class: "detail-next" }, [
+      el("span", { class: "next-kicker", text: "Next step" }),
+      el("strong", { text: vendor.nextStep }),
+    ]) : null,
+    el("div", { class: "detail-block" }, [
+      el("h3", { class: "subhead", text: "Correspondence" }),
+      log.length ? el("ol", { class: "vlog" }, log.map((entry) => {
+        const meta = LOG_META[entry.direction] || LOG_META.note;
+        return el("li", { class: `vlog-${entry.direction}` }, [
+          el("p", { class: "vlog-meta" }, [
+            el("span", { class: "vlog-icon", "aria-hidden": "true", text: meta.icon }),
+            el("span", { class: "sr-only", text: meta.label }),
+            el("time", { datetime: entry.time ? `${entry.date}T${entry.time}` : entry.date, text: formatShortDate(entry.date) }),
+            entry.time ? el("span", { text: formatLogTime(entry.time) }) : null,
+            entry.channel ? el("span", { class: "vlog-channel", text: entry.channel }) : null,
+          ]),
+          entry.summary ? el("p", { class: "vlog-summary", text: entry.summary }) : null,
+        ]);
+      })) : el("p", { class: "hint", text: "No correspondence logged yet." }),
+    ]),
+    el("div", { class: "detail-actions" }, [use]),
+    renderQuoteEditor(vendor),
+  ]);
+  dialog.addEventListener("keydown", trapTab);
+  return el("div", { class: "dialog-backdrop vendor-backdrop" }, [dialog]);
+}
+
+function closeVendorDetail(focusId = "vendor-cards-heading") {
+  if (location.hash.toLowerCase().startsWith("#vendor/")) {
+    history.pushState(null, "", "#vendors");
+  }
+  render({ focusId, scroll: false });
+}
+
+function renderWeddingBuilder() {
+  const vendors = state.model.vendors || [];
+  if (!vendors.length) return null;
+  const categories = VENDOR_CATEGORY_ORDER.filter((category) => vendors.some((vendor) => vendor.category === category));
+  const estimate = selectionEstimate(vendors, state.picks);
+  const target = state.model.settings?.budget;
+  const rows = categories.map((category) => {
+    const options = sortVendorCards(vendors.filter((vendor) => vendor.category === category && (vendor.status !== "dropped" || state.picks[category] === vendor.id)));
+    const select = el("select", { id: `build-${category}`, "aria-label": vendorCategoryLabel(category) }, [
+      el("option", { value: "", text: "Not chosen" }),
+      ...options.map((vendor) => {
+        const price = pricePhrase(vendor);
+        const suffix = price ? ` · ${price.note ? "TBD" : price.text}` : "";
+        return el("option", { value: vendor.id, text: `${vendor.name}${suffix}` });
+      }),
+    ]);
+    select.value = options.some((vendor) => vendor.id === state.picks[category]) ? state.picks[category] : "";
+    select.addEventListener("change", () => {
+      const picks = { ...state.picks };
+      if (select.value) picks[category] = select.value;
+      else delete picks[category];
+      state.picks = picks;
+      savePicks(picks);
+      render({ focusId: select.id });
+    });
+    const picked = options.find((vendor) => vendor.id === state.picks[category]) || null;
+    const range = picked ? vendorPriceRange(picked) : null;
+    const line = !picked
+      ? "—"
+      : range
+        ? (range.low === range.high ? formatMoney(range.low, currency()) : `${formatMoney(range.low, currency())} – ${formatMoney(range.high, currency())}`)
+        : "TBD";
+    return el("div", { class: picked ? "build-row is-set" : "build-row" }, [
+      el("label", { class: "build-label", for: select.id, text: vendorCategoryLabel(category) }),
+      select,
+      el("p", { class: "build-line", text: line }),
+    ]);
+  });
+
+  let verdict = "Choose a vendor in each category. The total uses the low and high numbers printed on the cards.";
+  let tone = "";
+  if (typeof target === "number" && estimate.priced) {
+    const money = estimate.low === estimate.high
+      ? formatMoney(estimate.low, currency())
+      : `${formatMoney(estimate.low, currency())} – ${formatMoney(estimate.high, currency())}`;
+    const gap = estimate.high < target
+      ? `${formatMoney(target - estimate.high, currency())} under the ${formatMoney(target, currency())} budget.`
+      : estimate.low > target
+        ? `${formatMoney(estimate.low - target, currency())} over the ${formatMoney(target, currency())} budget.`
+        : `This range crosses the ${formatMoney(target, currency())} budget.`;
+    const pending = estimate.tbd ? ` ${estimate.tbd} selected ${estimate.tbd === 1 ? "card is" : "cards are"} still TBD and not in the sum.` : "";
+    verdict = `${money}. ${gap}${pending}`;
+    tone = estimate.low > target ? "over" : estimate.high < target ? "under" : "spans";
+  } else if (estimate.tbd && !estimate.priced) {
+    verdict = "Every vendor you’ve chosen is still TBD, so there is no number to compare with the $50,000 budget.";
+    tone = "spans";
+  }
+
+  const clear = el("button", { type: "button", class: "text-button", id: "clear-picks", text: "Clear picks" });
+  clear.addEventListener("click", () => {
+    state.picks = {};
+    savePicks(state.picks);
+    render({ focusId: "clear-picks" });
+  });
+
+  return el("div", { class: "builder", id: "build-wedding" }, [
+    el("h3", { class: "subhead", text: "Build your wedding" }),
+    el("p", { class: "hint", text: "Pick one vendor per category from the menu, or use Choose on a card. The total adds the lowest and highest listed number on each card. Per-hour and per-guest figures are not multiplied out. A card with no number stays TBD. Picks stay in this browser." }),
+    el("div", { class: "builder-grid" }, rows),
+    el("p", { class: tone ? `builder-total is-${tone}` : "builder-total", text: verdict }),
+    estimate.lines.length ? clear : null,
+  ]);
+}
+
+function renderVendorBoard() {
+  return renderVendorGrid();
 }
 
 function renderSendMount() {
@@ -1786,10 +2380,8 @@ function renderIssue() {
   const issue = state.issue;
   if (!issue) {
     root.replaceChildren();
-    document.body.classList.remove("dialog-open");
     return;
   }
-  document.body.classList.add("dialog-open");
 
   const close = el("button", { type: "button", class: "text-button", id: "close-issue", text: "Close" });
   close.addEventListener("click", () => closeIssue());
@@ -1917,6 +2509,9 @@ function render(options = {}) {
   renderProgress();
   renderTasks();
   renderVendors();
+  const detail = state.model ? renderVendorDetail(vendorIdFromHash(location.hash)) : null;
+  if (detail) vendorRoot().replaceChildren(detail);
+  else vendorRoot().replaceChildren();
   renderGuideMounts();
   renderSendMount();
   renderIssue();
@@ -1929,6 +2524,11 @@ function render(options = {}) {
     }
   }
   if (!options.scroll && !options.reveal) window.scrollTo(0, y);
+  const modalOpen = Boolean(state.issue) || Boolean(vendorIdFromHash(location.hash));
+  document.body.classList.toggle("dialog-open", modalOpen);
+  for (const node of [document.querySelector(".site-header"), document.querySelector("main"), document.querySelector(".site-footer")]) {
+    if (node) node.inert = modalOpen;
+  }
 }
 
 function renderFatal(error) {
@@ -1973,16 +2573,19 @@ async function init() {
   const storedUnit = readJsonStorage(UNIT_KEY);
   state.cateringUnit = storedUnit?.id === "per-person" ? "per-person" : "per-table";
   state.edits = pruneEdits(state.model.tasks, loadEdits());
+  state.picks = loadPicks();
   saveEdits(state.edits);
   $("app-status").hidden = true;
   const hash = location.hash.replace(/^#/, "").trim();
-  render({ scroll: hash !== "" });
+  const openedVendor = vendorIdFromHash(location.hash);
+  render({ scroll: hash !== "" && !openedVendor, focusId: openedVendor ? "close-vendor" : undefined });
 }
 
 function navigateTo(hash, { scroll = true } = {}) {
   const next = hash.startsWith("#") ? hash : `#${hash}`;
   if (location.hash !== next) history.pushState(null, "", next);
-  applyView({ scroll });
+  const vendorId = vendorIdFromHash(location.hash);
+  render({ scroll: scroll && !vendorId, focusId: vendorId ? "close-vendor" : undefined });
 }
 
 function bindChrome() {
@@ -2018,6 +2621,10 @@ function bindChrome() {
       closeIssue();
       return;
     }
+    if (vendorIdFromHash(location.hash)) {
+      closeVendorDetail();
+      return;
+    }
     if (state.editingId) {
       const focusId = state.editingId !== NEW_ITEM ? `edit-${state.editingId}` : "add-item";
       state.editingId = null;
@@ -2033,7 +2640,8 @@ function bindChrome() {
     queued = true;
     queueMicrotask(() => {
       queued = false;
-      applyView({ scroll: true });
+      const vendorId = vendorIdFromHash(location.hash);
+      render({ scroll: !vendorId, focusId: vendorId ? "close-vendor" : undefined });
     });
   };
   window.addEventListener("hashchange", onHistory);
