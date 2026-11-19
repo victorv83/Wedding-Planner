@@ -2107,8 +2107,8 @@ tfoot th {
 .status-contacted,
 .status-drafted { background: var(--progress-bg); color: var(--progress); }
 .status-researching,
-.status-on-hold,
 .status-shortlist { background: var(--todo-bg); color: var(--ink-soft); }
+.status-on-hold { background: #f4eadc; color: var(--gold-text); }
 .status-dropped { background: #f3eee6; color: #8a817a; }
 .status-preferred { background: var(--lacquer); color: var(--paper); }
 
