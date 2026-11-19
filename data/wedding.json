@@ -2327,7 +2327,7 @@
   "nextActions": [
     {
       "id": "bbg-tour",
-      "label": "Reply to Colleen and book a Botanical Gardens tour (Fri Nov 20 or Tue Nov 24)"
+      "label": "Botanical Gardens is on hold; may reach back out to Colleen later"
     },
     {
       "id": "fannin-form",
@@ -2338,8 +2338,12 @@
       "label": "Get a written itemized quote from Viet Alley"
     },
     {
-      "id": "wildflower-nudge",
-      "label": "Nudge Wildflower Catering around Nov 20"
+      "id": "wildflower-await",
+      "label": "Await Wildflower's reply to the Nov 18 follow-up"
+    },
+    {
+      "id": "ba-mien-contact",
+      "label": "Call Ba Mien at (504) 255-0500 or message facebook.com/bamien for a working email (mai@bamien.com bounced)"
     },
     {
       "id": "send-charlize",
@@ -2347,7 +2351,7 @@
     },
     {
       "id": "min-consult",
-      "label": "Answer Min Photography and book the consult call"
+      "label": "Revisit Min Photography if we want to book a consult or move forward"
     },
     {
       "id": "tea-decor",
@@ -2355,7 +2359,7 @@
     },
     {
       "id": "civic-centers",
-      "label": "Decide whether to ask about the Beaumont or Bob Bowers civic centers"
+      "label": "Follow up on the Beaumont Event Services auto-reply (confirm which venue; form or 409-838-3435) and decide about Bob Bowers"
     },
     {
       "id": "start-guest-list",
@@ -2464,7 +2468,7 @@
         "Can setup fit in the $1,470 evening block (6 pm–midnight), or do we need all day plus a move-in day?",
         "Exact officer count for 200 guests with BYO alcohol"
       ],
-      "nextStep": "Paused. Victor declined the hold on Nov 17. Revisit after touring Botanical Gardens and 434 Fannin and comparing the civic centers.",
+      "nextStep": "Paused. Kirby acknowledged the declined hold on Nov 18 and said to reach out if Victor wants to look at dates later. Revisit after touring other venues and comparing the civic centers.",
       "docs": [
         "vendor-docs/downtown-event-centre/EventServicesRateSheet_effective10.01.26.pdf",
         "vendor-docs/downtown-event-centre/Certificate of Insurance Information Sheet.pdf"
@@ -2501,11 +2505,18 @@
           "channel": "email",
           "summary": "Victor declined the hold for now while evaluating options, and may reach back out.",
           "time": "22:42"
+        },
+        {
+          "date": "2026-11-18",
+          "time": "08:07",
+          "direction": "received",
+          "channel": "email",
+          "summary": "Kirby Gasaway acknowledged Victor's decline of the hold: if there are any dates he would like to look at in the future, please feel free to reach out."
         }
       ],
-      "updatedOn": "2026-11-17",
+      "updatedOn": "2026-11-18",
       "alsoCategories": [],
-      "lastActivity": "2026-11-17"
+      "lastActivity": "2026-11-18"
     },
     {
       "id": "v-belle-oaks",
@@ -2564,7 +2575,7 @@
       "category": "venue",
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
-      "status": "replied",
+      "status": "on-hold",
       "preferred": false,
       "priority": 1,
       "photo": {
@@ -2581,7 +2592,7 @@
         "email": "info@bbgtx.org",
         "address": "Garden Center, Tyrrell Park, Beaumont, TX"
       },
-      "summary": "Garden Center at Tyrrell Park that holds up to 250, with tables, chairs and a full kitchen for licensed caterers. March 18, 2028 is open. Tours are offered Fri Nov 20 and Tue Nov 24.",
+      "summary": "Garden Center at Tyrrell Park that holds up to 250, with tables, chairs and a full kitchen for licensed caterers. March 18, 2028 is open. Victor declined a tour for now (Colleen had offered Fri Nov 20 or Tue Nov 24) while evaluating options, and may reach back out.",
       "pricing": [
         {
           "item": "Saturday hourly",
@@ -2634,10 +2645,9 @@
       },
       "questions": [
         "Flat price for a full Saturday (9 am–midnight) on Mar 18, 2028?",
-        "Is the weekend special worth it versus the full Saturday?",
-        "Can we tour Tue Nov 24 at 10 am?"
+        "Is the weekend special worth it versus the full Saturday?"
       ],
-      "nextStep": "Reply to Colleen to book a tour (Fri Nov 20 10–3 or Tue Nov 24 9:30–12) and get the full-Saturday price. The reply is drafted but not sent.",
+      "nextStep": "Paused. Victor declined a tour on Nov 18 and said they may reach back out later. If revisited, book a tour and confirm the full-Saturday price.",
       "docs": [
         "sources/2026-BBG-Garden-Center-Venue-Pricing-1.pdf"
       ],
@@ -2659,11 +2669,18 @@
           "direction": "note",
           "channel": "draft",
           "summary": "Reply drafted asking for a Tue Nov 24 10 am tour and the full-Saturday price. Not sent."
+        },
+        {
+          "date": "2026-11-18",
+          "time": "22:44",
+          "direction": "sent",
+          "channel": "email",
+          "summary": "Victor to Colleen (info@bbgtx.org): declined a tour for now while evaluating options, and may reach back out in the future."
         }
       ],
-      "updatedOn": "2026-11-17",
+      "updatedOn": "2026-11-18",
       "alsoCategories": [],
-      "lastActivity": "2026-11-15"
+      "lastActivity": "2026-11-18"
     },
     {
       "id": "v-brown-estate",
@@ -3648,7 +3665,7 @@
         "What video style do we want? (They asked. Victor likes a cinematic highlight film)",
         "Is the two-day package better if the tea ceremony is a separate day?"
       ],
-      "nextStep": "Reply with the video style (cinematic highlight) and book a consultation call. The reply is drafted but not sent.",
+      "nextStep": "No reply needed. Victor told Min on Nov 18 that he will consider the offer but has not settled on a photographer and is still exploring options. Revisit if we want to book a consult or move forward.",
       "docs": [],
       "log": [
         {
@@ -3668,11 +3685,25 @@
           "direction": "note",
           "channel": "draft",
           "summary": "Reply drafted: one-day plus 2nd shooter, cinematic highlight video, will book a call. Not sent."
+        },
+        {
+          "date": "2026-11-18",
+          "time": "09:15",
+          "direction": "received",
+          "channel": "email",
+          "summary": "Check-in: Mar 18, 2028 is still open. Offered help by email or a 15–20 minute call (Pixieset consult link). Quote unchanged: $3,200/8 hr, $850 second shooter, $200 travel, 25% retainer."
+        },
+        {
+          "date": "2026-11-18",
+          "time": "22:47",
+          "direction": "sent",
+          "channel": "email",
+          "summary": "Victor to minphotographystudio@gmail.com: will consider the offer, but is not set on a photographer yet and is still exploring options."
         }
       ],
-      "updatedOn": "2026-11-17",
+      "updatedOn": "2026-11-18",
       "alsoCategories": [],
-      "lastActivity": "2026-11-15"
+      "lastActivity": "2026-11-18"
     },
     {
       "id": "ph-tnt",
@@ -5219,7 +5250,7 @@
       "category": "venue",
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
-      "status": "researching",
+      "status": "contacted",
       "preferred": false,
       "priority": 3,
       "photo": null,
@@ -5313,13 +5344,14 @@
         "outsideCatering": "approved"
       },
       "questions": [
+        "Which Beaumont Event Services venue was the Nov 18 rental-only inquiry for? (auto-reply did not name one)",
         "Can the upper level or part of the arena be rented alone for a 200-guest banquet, and at what rate?",
         "Is Mar 18, 2028 open?",
         "Deposit refundable at 90+ days or not?",
         "Parking fee for private events?",
         "Can a caterer use a mobile kitchen truck?"
       ],
-      "nextStep": "If Victor wants it, ask Event Services about a smaller room and Mar 18 availability (same office as Kirby).",
+      "nextStep": "The original outgoing inquiry is not in Yahoo Sent. Confirm which venue it was for, then fill out the Event Services inquiry form or call 409-838-3435 about a smaller room and Mar 18 availability.",
       "docs": [
         "venues-civic-centers.md",
         "vendor-docs/civic-centers/beaumont-civic-center-sample-contract-2026.pdf"
@@ -5330,11 +5362,18 @@
           "direction": "note",
           "channel": "research",
           "summary": "Researched from the rate sheet, venue page and a public 2025 city contract. Details are in venues-civic-centers.md. Not contacted."
+        },
+        {
+          "date": "2026-11-18",
+          "time": "12:40",
+          "direction": "received",
+          "channel": "email",
+          "summary": "Auto-reply from events@beaumonttexas.gov to an inquiry titled \"Availability and rental-only quote — Saturday, March 18, 2028 (200 guests)\", also sent to 1 other recipient. It points to the venue inquiry form or 409-838-3435 (beaumonteventstx.com). No prices. The original outgoing email is not in Victor's Yahoo Sent folder, so it may have gone out from another account. The subject did not name a specific venue; this was attached here because the from-address and phone match City of Beaumont Event Services / Civic Center, not Kirby's Event Centre thread."
         }
       ],
-      "updatedOn": "2026-11-17",
+      "updatedOn": "2026-11-18",
       "alsoCategories": [],
-      "lastActivity": "2026-11-17"
+      "lastActivity": "2026-11-18"
     },
     {
       "id": "c-wildflower",
@@ -5361,7 +5400,7 @@
         "email": "orders@wildflowerhou.com",
         "address": "3730 S Gessner Rd, Suite 3730-B, Houston, TX 77063"
       },
-      "summary": "Houston Vietnamese caterer that advertises weddings, with tray menus and custom event menus. Victor emailed on Nov 13 and hasn't heard back.",
+      "summary": "Houston Vietnamese caterer that advertises weddings, with tray menus and custom event menus. Victor emailed on Nov 13 and followed up on Nov 18. Still awaiting a reply.",
       "pricing": [
         {
           "item": "Pork egg rolls, 50 ct",
@@ -5389,7 +5428,7 @@
         "Itemized price including travel, servers, warmers, tax and service?",
         "Family style or buffet?"
       ],
-      "nextStep": "Follow up around Nov 20 (no reply since Nov 13).",
+      "nextStep": "Awaiting a reply to the Nov 18 follow-up of the Nov 13 inquiry.",
       "docs": [],
       "log": [
         {
@@ -5403,11 +5442,18 @@
           "direction": "note",
           "channel": "inbox check",
           "summary": "Still no reply."
+        },
+        {
+          "date": "2026-11-18",
+          "time": "22:48",
+          "direction": "sent",
+          "channel": "email",
+          "summary": "Victor follow-up to orders@wildflowerhou.com on the Nov 13 catering inquiry: asking again about availability and pricing/menu for ~200 guests on Sat Mar 18, 2028 in the Beaumont/Orange area."
         }
       ],
-      "updatedOn": "2026-11-17",
+      "updatedOn": "2026-11-18",
       "alsoCategories": [],
-      "lastActivity": "2026-11-17"
+      "lastActivity": "2026-11-18"
     },
     {
       "id": "c-miss-saigon",
@@ -6168,7 +6214,7 @@
         "email": "mai@bamien.com",
         "address": "13235 Chef Menteur Hwy, Suite C, New Orleans, LA 70129"
       },
-      "summary": "Authentic three-region Vietnamese restaurant in New Orleans East (Village de l'Est), not Gretna/Westbank. Owner-chef Mai Nguyen. Official site advertises customized family-style catering for weddings and has an adjacent BM Reception Hall seating up to 550. A published catering menu lists banquet dishes but no prices. Two Reddit commenters said Ba Mien catered their or a cousin's wedding. Travel to Beaumont (~4.5 hours, out of state) is unconfirmed and is the main open question.",
+      "summary": "Authentic three-region Vietnamese restaurant in New Orleans East (Village de l'Est), not Gretna/Westbank. Owner-chef Mai Nguyen. Official site advertises customized family-style catering for weddings and has an adjacent BM Reception Hall seating up to 550. Victor says they catered a friend's wedding near him a few years ago. A Nov 18 inquiry to mai@bamien.com bounced: Yahoo reported MXRecord host unresolvable, and bamien.com's Microsoft 365 mail server no longer exists, so any @bamien.com address will fail.",
       "pricing": [
         {
           "item": "200-guest catering",
@@ -6184,6 +6230,7 @@
       ],
       "venuePolicy": null,
       "questions": [
+        "What is a working email? (mai@bamien.com bounced; call (504) 255-0500 or message Facebook facebook.com/bamien)",
         "Will they cater off-site in Beaumont, TX, about a 4.5-hour drive, for Sat Mar 18, 2028, ~200 guests?",
         "Itemized written price, including travel, servers, warmers, tableware, tax, and service charge?",
         "Family style, buffet, or drop-off off-site?",
@@ -6192,7 +6239,7 @@
         "Tasting, deposit, payment schedule, and date hold?",
         "Sample 200-guest menu, including vegetarian options?"
       ],
-      "nextStep": "Not contacted. Inquire only if Victor wants to ask whether they will travel to Beaumont for March 18, 2028.",
+      "nextStep": "The Nov 18 email to mai@bamien.com bounced, so they have not been reached. Call (504) 255-0500 or message Facebook (facebook.com/bamien) for a working email, then resend the inquiry.",
       "docs": [],
       "log": [
         {
@@ -6200,6 +6247,20 @@
           "direction": "note",
           "channel": "research",
           "summary": "Public web research added after Victor asked to look into Ba Mien in NOLA as a food vendor. Not contacted."
+        },
+        {
+          "date": "2026-11-18",
+          "time": "22:46",
+          "direction": "sent",
+          "channel": "email",
+          "summary": "Victor to mai@bamien.com: catering inquiry for Sat Mar 18, 2028, ~200 guests in Beaumont. Mentioned Ba Mien catered a friend's wedding near him a few years ago. Asked availability and travel, family-style and buffet pricing including travel, servers, warmers, tableware, tax and service, a sample menu including vegetarian options, deposit/terms, and tastings."
+        },
+        {
+          "date": "2026-11-18",
+          "time": "22:46",
+          "direction": "received",
+          "channel": "email",
+          "summary": "Yahoo failure notice: the email to mai@bamien.com bounced (MXRecord host unresolvable). bamien.com's Microsoft 365 mail server no longer exists, so any @bamien.com address will fail. The inquiry did not reach them."
         }
       ],
       "updatedOn": "2026-11-18",

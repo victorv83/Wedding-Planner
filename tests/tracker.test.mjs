@@ -490,8 +490,12 @@ test("vendor cards have a valid status, http(s) links, and logs in order", () =>
     assert.deepEqual(stamps, [...stamps].sort(), vendor.id);
     for (const entry of vendor.log) assert.ok(directions.has(entry.direction), `${vendor.id} ${entry.direction}`);
   }
+  assert.equal(model.vendorStatuses.find((status) => status.id === "on-hold").label, "On hold");
   assert.equal(model.vendors.find((vendor) => vendor.id === "v-event-centre").status, "on-hold");
+  assert.equal(model.vendors.find((vendor) => vendor.id === "v-botanical").status, "on-hold");
+  assert.equal(model.vendors.find((vendor) => vendor.id === "v-civic-center").status, "contacted");
   assert.equal(model.vendors.find((vendor) => vendor.id === "c-kim-son").status, "dropped");
+  assert.ok(model.nextActions.some((action) => action.id === "ba-mien-contact"));
   assert.equal(model.vendors.find((vendor) => vendor.id === "p-charlize").preferred, true);
   const baMien = model.vendors.find((vendor) => vendor.id === "c-ba-mien");
   assert.equal(baMien.name, "Ba Mien Restaurant");
