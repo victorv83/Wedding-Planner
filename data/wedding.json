@@ -2342,10 +2342,6 @@
       "label": "Await Wildflower's reply to the Nov 18 follow-up"
     },
     {
-      "id": "ba-mien-contact",
-      "label": "Call Ba Mien at (504) 255-0500 or message facebook.com/bamien for a working email (mai@bamien.com bounced)"
-    },
-    {
       "id": "send-charlize",
       "label": "Send the Charlize inquiry from Yahoo Drafts"
     },
@@ -6196,9 +6192,9 @@
       "category": "caterer",
       "legacyCategory": "Catering",
       "taskId": "catering",
-      "status": "researching",
+      "status": "dropped",
       "preferred": false,
-      "priority": 2,
+      "priority": 3,
       "photo": null,
       "website": "http://www.bamien.com/",
       "social": {
@@ -6214,7 +6210,7 @@
         "email": "mai@bamien.com",
         "address": "13235 Chef Menteur Hwy, Suite C, New Orleans, LA 70129"
       },
-      "summary": "Authentic three-region Vietnamese restaurant in New Orleans East (Village de l'Est), not Gretna/Westbank. Owner-chef Mai Nguyen. Official site advertises customized family-style catering for weddings and has an adjacent BM Reception Hall seating up to 550. Victor says they catered a friend's wedding near him a few years ago. A Nov 18 inquiry to mai@bamien.com bounced: Yahoo reported MXRecord host unresolvable, and bamien.com's Microsoft 365 mail server no longer exists, so any @bamien.com address will fail.",
+      "summary": "Authentic three-region Vietnamese restaurant in New Orleans East (Village de l'Est), not Gretna/Westbank. Owner-chef Mai Nguyen. Official site advertises customized family-style catering for weddings and has an adjacent BM Reception Hall seating up to 550. Victor says they catered a friend's wedding near him a few years ago. A Nov 18 inquiry to mai@bamien.com bounced: Yahoo reported MXRecord host unresolvable, and bamien.com's Microsoft 365 mail server no longer exists, so any @bamien.com address will fail. Nov 19: Victor learned Ba Mien only caters in Beaumont for 400+ guests because of the distance, so they are ruled out for this ~200-guest wedding.",
       "pricing": [
         {
           "item": "200-guest catering",
@@ -6223,23 +6219,15 @@
         }
       ],
       "keyTerms": [
+        "Beaumont catering requires 400+ guests (distance), per Victor Nov 19",
         "No published prices",
         "Travel to Beaumont unconfirmed; New Orleans–Beaumont is about 261–263 miles / 4 hours 20 minutes city to city, typically ~4.5 hours from New Orleans East, farther than Kim Sơn's $3,000 Houston trip",
         "Official hours conflict across their own pages; some directories list Saturday closed",
         "Not the Houston restaurant named Ba Mien Bistro"
       ],
       "venuePolicy": null,
-      "questions": [
-        "What is a working email? (mai@bamien.com bounced; call (504) 255-0500 or message Facebook facebook.com/bamien)",
-        "Will they cater off-site in Beaumont, TX, about a 4.5-hour drive, for Sat Mar 18, 2028, ~200 guests?",
-        "Itemized written price, including travel, servers, warmers, tableware, tax, and service charge?",
-        "Family style, buffet, or drop-off off-site?",
-        "Can they work in a prep-only kitchen with no stove, and what do they need?",
-        "Licensed and insured for the Event Centre's general-liability requirement?",
-        "Tasting, deposit, payment schedule, and date hold?",
-        "Sample 200-guest menu, including vegetarian options?"
-      ],
-      "nextStep": "The Nov 18 email to mai@bamien.com bounced, so they have not been reached. Call (504) 255-0500 or message Facebook (facebook.com/bamien) for a working email, then resend the inquiry.",
+      "questions": [],
+      "nextStep": "None. Ruled out: they need 400+ guests to travel to Beaumont.",
       "docs": [],
       "log": [
         {
@@ -6261,11 +6249,17 @@
           "direction": "received",
           "channel": "email",
           "summary": "Yahoo failure notice: the email to mai@bamien.com bounced (MXRecord host unresolvable). bamien.com's Microsoft 365 mail server no longer exists, so any @bamien.com address will fail. The inquiry did not reach them."
+        },
+        {
+          "date": "2026-11-19",
+          "direction": "received",
+          "channel": "phone",
+          "summary": "Victor learned Ba Mien will only cater in Beaumont for 400+ guests because of the distance. Ruled out for ~200 guests."
         }
       ],
-      "updatedOn": "2026-11-18",
+      "updatedOn": "2026-11-19",
       "alsoCategories": [],
-      "lastActivity": "2026-11-18"
+      "lastActivity": "2026-11-19"
     }
   ],
   "vendorStatuses": [
@@ -6315,5 +6309,5 @@
       "meaning": "Contract or deposit done"
     }
   ],
-  "vendorsUpdatedOn": "2026-11-18"
+  "vendorsUpdatedOn": "2026-11-19"
 }

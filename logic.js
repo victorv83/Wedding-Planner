@@ -945,6 +945,18 @@ export function headlinePrice(vendor) {
   return { kind: "note", text: cleanString(noted.note) || cleanString(noted.unit) };
 }
 
+/**
+ * Vendors offered for one category in Build your wedding.
+ * Dropped cards stay out unless that vendor is already the saved pick.
+ */
+export function builderVendors(vendors, category, pickedId = "") {
+  return (vendors || []).filter((vendor) => {
+    if (vendor?.category !== category) return false;
+    if (vendor.status === "dropped" && vendor.id !== pickedId) return false;
+    return true;
+  });
+}
+
 export function sortVendorCards(vendors) {
   const rank = new Map(VENDOR_STATUS_SORT.map((id, index) => [id, index]));
   return [...(vendors || [])].sort((a, b) => {
