@@ -4,6 +4,7 @@ import test from "node:test";
 
 import {
   applyEdits,
+  builderVendors,
   budgetTotals,
   fitReport,
   guestSideTotal,
@@ -495,14 +496,22 @@ test("vendor cards have a valid status, http(s) links, and logs in order", () =>
   assert.equal(model.vendors.find((vendor) => vendor.id === "v-botanical").status, "on-hold");
   assert.equal(model.vendors.find((vendor) => vendor.id === "v-civic-center").status, "contacted");
   assert.equal(model.vendors.find((vendor) => vendor.id === "c-kim-son").status, "dropped");
-  assert.ok(model.nextActions.some((action) => action.id === "ba-mien-contact"));
+  assert.equal(model.nextActions.some((action) => action.id === "ba-mien-contact"), false);
+  assert.equal(model.vendorsUpdatedOn, "2026-11-19");
   assert.equal(model.vendors.find((vendor) => vendor.id === "p-charlize").preferred, true);
   const baMien = model.vendors.find((vendor) => vendor.id === "c-ba-mien");
   assert.equal(baMien.name, "Ba Mien Restaurant");
   assert.equal(baMien.category, "caterer");
-  assert.equal(baMien.status, "researching");
+  assert.equal(baMien.status, "dropped");
+  assert.deepEqual(baMien.questions, []);
+  assert.match(baMien.nextStep, /400\+/);
+  assert.equal(baMien.log.at(-1).date, "2026-11-19");
   assert.equal(baMien.photo, null);
   assert.equal(baMien.website, "http://www.bamien.com/");
+  const caterers = builderVendors(model.vendors, "caterer");
+  assert.equal(caterers.some((vendor) => vendor.id === "c-ba-mien"), false);
+  assert.equal(caterers.some((vendor) => vendor.id === "c-kim-son"), false);
+  assert.equal(builderVendors(model.vendors, "caterer", "c-ba-mien").some((vendor) => vendor.id === "c-ba-mien"), true);
   assert.equal(model.vendorOptions.find((vendor) => vendor.id === "c-ba-mien").name, "Ba Mien Restaurant");
   assert.equal(model.vendorOptions.filter((vendor) => vendor.id === "c-ba-mien").length, 1);
   assert.equal(/victorvuong/i.test(raw), false);

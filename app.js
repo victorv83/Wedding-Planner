@@ -44,6 +44,7 @@ import {
   roughSpan,
   safeHttpUrl,
   serializeAdd,
+  builderVendors,
   selectionEstimate,
   settingText,
   slugTaskId,
@@ -2207,7 +2208,7 @@ function renderWeddingBuilder() {
   const estimate = selectionEstimate(vendors, state.picks);
   const target = state.model.settings?.budget;
   const rows = categories.map((category) => {
-    const options = sortVendorCards(vendors.filter((vendor) => vendor.category === category && (vendor.status !== "dropped" || state.picks[category] === vendor.id)));
+    const options = sortVendorCards(builderVendors(vendors, category, state.picks[category]));
     const select = el("select", { id: `build-${category}`, "aria-label": vendorCategoryLabel(category) }, [
       el("option", { value: "", text: "Not chosen" }),
       ...options.map((vendor) => {
