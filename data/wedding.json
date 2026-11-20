@@ -2324,6 +2324,10 @@
   },
   "nextActions": [
     {
+      "id": "venue-tours",
+      "label": "Book venue tours for Nov 25 – Dec 2 (avoid Thanksgiving Nov 26–27)"
+    },
+    {
       "id": "bbg-tour",
       "label": "Botanical Gardens is on hold; may reach back out to Colleen later"
     },
@@ -2358,6 +2362,69 @@
     {
       "id": "start-guest-list",
       "label": "Start the guest list by household"
+    }
+  ],
+  "schedule": [
+    {
+      "date": "2026-11-25",
+      "endDate": "2026-12-02",
+      "title": "Venue tours",
+      "detail": "Tour venues while Iris is off. Thanksgiving is Thu Nov 26, so many venues may be closed Nov 26–27.",
+      "kind": "planning"
+    },
+    {
+      "date": "2026-11-26",
+      "title": "Thanksgiving",
+      "detail": "Expect venue offices to be closed or short-staffed Nov 26–27.",
+      "kind": "holiday"
+    },
+    {
+      "date": "2026-12-13",
+      "title": "Kim Sơn quote expires",
+      "detail": "The 30-day quote from Nov 13 lapses (likely dropped as too expensive).",
+      "kind": "deadline"
+    },
+    {
+      "date": "2027-01-31",
+      "title": "Target: venue and caterer booked",
+      "detail": "End of the 'Now – January 2027' phase.",
+      "kind": "milestone",
+      "approximate": true
+    },
+    {
+      "date": "2027-09-01",
+      "endDate": "2027-09-30",
+      "title": "Vietnam trip",
+      "detail": "Fittings for dress, áo dài and suit, pre-wedding photos, printed invitations.",
+      "kind": "trip",
+      "approximate": true
+    },
+    {
+      "date": "2028-01-15",
+      "title": "Mail invitations",
+      "detail": "Mid-January 2028.",
+      "kind": "milestone",
+      "approximate": true
+    },
+    {
+      "date": "2028-01-26",
+      "title": "Tết Nguyên Đán",
+      "detail": "Lunar New Year 2028.",
+      "kind": "holiday"
+    },
+    {
+      "date": "2028-03-18",
+      "title": "Wedding day",
+      "detail": "Tea ceremony (lễ gia tiên) at a family home and evening reception near Orange/Beaumont, TX. About 200 guests.",
+      "kind": "wedding"
+    },
+    {
+      "date": "2028-04-15",
+      "endDate": "2028-04-30",
+      "title": "Honeymoon in Japan",
+      "detail": "Preferred about a month after the wedding. Dates not set yet.",
+      "kind": "trip",
+      "approximate": true
     }
   ],
   "vendors": [
