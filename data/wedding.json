@@ -2435,6 +2435,9 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "on-hold",
+      "tour": {
+        "status": "not-requested"
+      },
       "preferred": false,
       "priority": 2,
       "photo": null,
@@ -2511,6 +2514,11 @@
         }
       ],
       "priceType": "listed",
+      "priceVerified": {
+        "date": "2026-11-17",
+        "source": "Phone call and Kirby's rate-sheet email",
+        "note": "$2,250 all day, $1,470 evening"
+      },
       "keyTerms": [
         "Max 350 guests. 60-inch rounds and 6/8 ft rectangles provided",
         "Tables, chairs, AV (DJ can plug in by XLR) and 4 portable bars included. No linens except black spandex bar covers",
@@ -2586,6 +2594,9 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "shortlist",
+      "tour": {
+        "status": "not-requested"
+      },
       "preferred": false,
       "priority": 5,
       "photo": {
@@ -2637,6 +2648,9 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "on-hold",
+      "tour": {
+        "status": "not-requested"
+      },
       "preferred": false,
       "priority": 1,
       "photo": {
@@ -2692,6 +2706,11 @@
         }
       ],
       "priceType": "listed",
+      "priceVerified": {
+        "date": "2026-11-13",
+        "source": "Colleen's email and the 2026 Garden Center pricing PDF",
+        "note": "Saturday $200 per hour; police $60 per officer per hour"
+      },
       "keyTerms": [
         "Up to 250 guests",
         "Any licensed and insured caterer may use the full kitchen",
@@ -2750,6 +2769,9 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "shortlist",
+      "tour": {
+        "status": "not-requested"
+      },
       "preferred": false,
       "priority": 5,
       "photo": {
@@ -2801,6 +2823,9 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "shortlist",
+      "tour": {
+        "status": "not-requested"
+      },
       "preferred": false,
       "priority": 5,
       "photo": {
@@ -2852,6 +2877,9 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "shortlist",
+      "tour": {
+        "status": "not-requested"
+      },
       "preferred": false,
       "priority": 5,
       "photo": null,
@@ -2899,6 +2927,9 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "shortlist",
+      "tour": {
+        "status": "not-requested"
+      },
       "preferred": false,
       "priority": 5,
       "photo": null,
@@ -3006,6 +3037,11 @@
         }
       ],
       "priceType": "listed",
+      "priceVerified": {
+        "date": "2026-11-13",
+        "source": "Written quote by email",
+        "note": "Quote $30,136.80, valid about 30 days"
+      },
       "keyTerms": [
         "$4,000 deposit, applied to the final bill. Date hold lasts 3 days",
         "50% of the balance due 30 days out, the rest 14 days out. No personal checks",
@@ -3716,6 +3752,11 @@
         }
       ],
       "priceType": "listed",
+      "priceVerified": {
+        "date": "2026-11-14",
+        "source": "Email quote",
+        "note": "$3,200 for 8 hours, $850 second shooter, $200 travel"
+      },
       "keyTerms": [
         "25% non-refundable retainer holds the date. Monthly payments, balance 14 days before",
         "Free engagement session with 8+ hr packages",
@@ -5072,6 +5113,10 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "replied",
+      "tour": {
+        "status": "not-requested",
+        "notes": "Fill out the 434fannin.com form to get the brochure and book a tour"
+      },
       "preferred": false,
       "priority": 1,
       "photo": {
@@ -5119,6 +5164,11 @@
         }
       ],
       "priceType": "listed",
+      "priceVerified": {
+        "date": "2026-11-14",
+        "source": "Chloe's email",
+        "note": "Saturday from $3,500"
+      },
       "keyTerms": [
         "Seats 220 (fire code 296)",
         "Any caterer, but no kitchen on site. Food is prepared off-site",
@@ -5170,6 +5220,9 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "shortlist",
+      "tour": {
+        "status": "not-requested"
+      },
       "preferred": false,
       "priority": 5,
       "photo": null,
@@ -5217,6 +5270,9 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "shortlist",
+      "tour": {
+        "status": "not-requested"
+      },
       "preferred": false,
       "priority": 5,
       "photo": {
@@ -5268,6 +5324,9 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "shortlist",
+      "tour": {
+        "status": "not-requested"
+      },
       "preferred": false,
       "priority": 5,
       "photo": {
@@ -5319,6 +5378,9 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "contacted",
+      "tour": {
+        "status": "not-requested"
+      },
       "preferred": false,
       "priority": 3,
       "photo": null,
@@ -5750,6 +5812,9 @@
       "legacyCategory": "Venue",
       "taskId": "venue-reception",
       "status": "researching",
+      "tour": {
+        "status": "not-requested"
+      },
       "preferred": false,
       "priority": 3,
       "photo": {
@@ -5904,7 +5969,8 @@
       ],
       "updatedOn": "2026-11-17",
       "alsoCategories": [],
-      "lastActivity": "2026-11-17"
+      "lastActivity": "2026-11-17",
+      "priceEstimateOnly": true
     },
     {
       "id": "d-gani79",

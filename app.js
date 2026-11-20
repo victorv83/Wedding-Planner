@@ -68,7 +68,13 @@ import {
   normalizeQuotes,
   parseMoneyInput,
   quotesByTask,
+  replyWait,
+  sortTourVenues,
+  tourWindowLabel,
+  TOUR_STATUS_LABELS,
   VENDOR_CATEGORY_ORDER,
+  waitLabel,
+  waitTone,
 } from "./logic.js";
 import {
   applyGuestEdits,
@@ -111,6 +117,7 @@ const state = {
   vendorQuery: "",
   showDropped: false,
   picks: {},
+  tourPrint: false,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -519,8 +526,112 @@ function renderSchedule() {
     el("h2", { id: "schedule-heading", text: "Schedule" }),
     el("p", { class: "hint", text: "Important dates, earliest first. A range is one stretch of days. Past dates are quiet, and the next one is marked." }),
     list,
+    renderTourPanel(),
   ]);
   $("mount-schedule")?.replaceChildren(section);
+}
+
+const TOUR_QUESTIONS = [
+  "Guest capacity seated, with a dance floor",
+  "Saturday, March 18, 2028 availability and hold policy",
+  "Full-day price and what is included (tables, chairs, linens, AV)",
+  "Setup and move-in time, and the hard end time",
+  "Kitchen: stove, or warming only? Outside-caterer rules",
+  "Alcohol and bartender (TABC) rules, and bring-your-own",
+  "Security or police requirements, and the cost",
+  "Insurance requirements",
+  "Deposit, payment schedule, and cancellation",
+  "Parking",
+  "Bridal and groom rooms",
+  "Decor rules (candles, tape, confetti)",
+  "Noise and music limits",
+  "Rain or weather backup",
+  "Vendor load-in",
+  "Accessibility",
+];
+
+function renderTourPanel() {
+  const venues = sortTourVenues((state.model.vendors || []).filter((vendor) => vendor.category === "venue" && vendor.status !== "dropped"));
+  if (!venues.length) return null;
+  const windowLabel = tourWindowLabel(state.model.schedule);
+  const print = el("button", { type: "button", class: "tour-print", id: "print-tour-checklist", text: "Print checklist" });
+  print.addEventListener("click", () => {
+    state.tourPrint = true;
+    render({ focusId: "print-checklist-now" });
+  });
+  return el("div", { class: "tour-panel", id: "venue-tours-panel" }, [
+    el("div", { class: "tour-head" }, [
+      el("h3", { class: "subhead", text: "Venue tours" }),
+      print,
+    ]),
+    windowLabel ? el("p", { class: "tour-window", text: windowLabel }) : null,
+    el("p", { class: "hint", text: "Venues still in the running. On hold stays on the list, quieter, in case you pick the tour back up." }),
+    el("ul", { class: "tour-list" }, venues.map((vendor) => {
+      const held = vendor.status === "on-hold";
+      const tour = vendor.tour || { status: "not-requested" };
+      const when = [tour.date ? formatShortDate(tour.date) : "", tour.time].filter(Boolean).join(" · ");
+      const phone = vendor.contact?.phone;
+      const tel = phone ? telHref(phone) : "";
+      return el("li", { class: held ? "tour-row is-held" : "tour-row" }, [
+        el("div", { class: "tour-identity" }, [
+          el("a", { class: "tour-name", href: `#vendor/${encodeURIComponent(vendor.id)}`, text: vendor.name }),
+          held ? el("span", { class: "status-badge status-on-hold", text: "On hold" }) : null,
+        ]),
+        phone ? (tel ? el("a", { href: tel, text: phone }) : el("span", { text: phone })) : el("span", { class: "hint", text: "No phone" }),
+        el("span", { class: `tour-status tour-${tour.status}`, text: TOUR_STATUS_LABELS[tour.status] || tour.status }),
+        when ? el("span", { class: "tour-when", text: when }) : null,
+        tour.notes ? el("span", { class: "tour-notes", text: tour.notes }) : null,
+      ]);
+    })),
+  ]);
+}
+
+function renderTourChecklist() {
+  const rootId = "tour-checklist-root";
+  let root = document.getElementById(rootId);
+  if (!root) {
+    root = document.createElement("div");
+    root.id = rootId;
+    document.body.append(root);
+  }
+  if (!state.tourPrint) {
+    root.replaceChildren();
+    document.body.classList.remove("checklist-open");
+    return;
+  }
+  document.body.classList.add("checklist-open");
+  const close = el("button", { type: "button", class: "text-button", id: "close-tour-print", text: "Close" });
+  close.addEventListener("click", () => {
+    state.tourPrint = false;
+    render({ focusId: "print-tour-checklist" });
+  });
+  const print = el("button", { type: "button", class: "primary", id: "print-checklist-now", text: "Print" });
+  print.addEventListener("click", () => {
+    document.body.classList.add("checklist-print");
+    const done = () => {
+      document.body.classList.remove("checklist-print");
+      window.removeEventListener("afterprint", done);
+    };
+    window.addEventListener("afterprint", done);
+    window.print();
+  });
+  const sheet = el("section", { class: "tour-checklist", id: "tour-checklist", "aria-labelledby": "tour-checklist-title" }, [
+    el("div", { class: "tour-checklist-actions" }, [print, close]),
+    el("p", { class: "eyebrow", text: "Victor & Mít" }),
+    el("h2", { id: "tour-checklist-title", text: "Venue tour checklist" }),
+    el("p", { class: "tour-window", text: tourWindowLabel(state.model?.schedule) || "Tour questions" }),
+    el("p", { class: "checklist-venue-line" }, [
+      "Venue ",
+      el("span", { class: "checklist-blank", text: "" }),
+    ]),
+    el("ol", { class: "checklist-questions" }, TOUR_QUESTIONS.map((question) => el("li", {}, [
+      el("p", { class: "checklist-q", text: question }),
+      el("p", { class: "checklist-notes", "aria-label": `Notes for ${question}` }, [
+        el("span", { class: "checklist-notes-label", text: "Notes" }),
+      ]),
+    ]))),
+  ]);
+  root.replaceChildren(sheet);
 }
 
 function sendButton(id) {
@@ -1857,14 +1968,41 @@ function vendorHaystack(vendor) {
 function visibleVendors() {
   const vendors = state.model.vendors || [];
   const query = state.vendorQuery.trim().toLowerCase();
-  return sortVendorCards(vendors).filter((vendor) => {
+  const filtered = sortVendorCards(vendors).filter((vendor) => {
     const dropped = vendor.status === "dropped";
-    if (dropped && !state.showDropped && state.vendorStatus !== "dropped") return false;
-    if (state.vendorStatus !== "all" && vendor.status !== state.vendorStatus) return false;
+    if (dropped && !state.showDropped && state.vendorStatus !== "dropped" && state.vendorStatus !== "waiting-reply") return false;
+    if (state.vendorStatus === "waiting-reply") {
+      if (!replyWait(vendor, startOfToday())) return false;
+    } else if (state.vendorStatus !== "all" && vendor.status !== state.vendorStatus) return false;
     if (!vendorInCategory(vendor, state.vendorCategory)) return false;
     if (query && !vendorHaystack(vendor).includes(query)) return false;
     return true;
   });
+  if (state.vendorStatus !== "waiting-reply") return filtered;
+  return filtered.sort((a, b) => {
+    const byDays = replyWait(b, startOfToday()).days - replyWait(a, startOfToday()).days;
+    if (byDays) return byDays;
+    return a.name.localeCompare(b.name);
+  });
+}
+
+function vendorMarks(vendor) {
+  const marks = [];
+  const wait = replyWait(vendor, startOfToday());
+  if (wait) {
+    marks.push(el("span", { class: `reply-tag is-${waitTone(wait.days)}`, text: waitLabel(wait.days) }));
+  }
+  if (vendor.priceVerified) {
+    const when = formatShortDate(vendor.priceVerified.date);
+    const tip = [vendor.priceVerified.source, when, vendor.priceVerified.note].filter(Boolean).join(" · ");
+    marks.push(el("span", { class: "verified-tag", title: tip }, [
+      el("span", { class: "verified-check", "aria-hidden": "true", text: "✓" }),
+      " Verified price",
+    ]));
+  } else if (vendor.priceEstimateOnly) {
+    marks.push(el("span", { class: "estimate-tag", title: "A budgetary figure, not a price from the vendor", text: "Estimate only" }));
+  }
+  return marks.length ? el("p", { class: "vcard-marks" }, marks) : null;
 }
 
 function photoFallback(vendor) {
@@ -1954,6 +2092,7 @@ function renderVendorCard(vendor) {
           el("h3", { class: "vcard-name", text: vendor.name }),
           el("span", { class: `status-badge status-${vendor.status}`, text: vendorStatusMeta(vendor.status).label }),
         ]),
+        vendorMarks(vendor),
         vendor.summary ? el("p", { class: "vcard-summary", text: vendor.summary }) : null,
         price ? el("p", { class: price.note ? "vcard-price is-note" : "vcard-price", title: price.label || undefined }, [
           price.note ? null : el("span", { class: "sr-only", text: "Key price " }),
@@ -2011,6 +2150,7 @@ function renderVendorGrid() {
     const count = vendors.filter((vendor) => vendor.status === status.id).length;
     return count > 0 || state.vendorStatus === status.id;
   });
+  const replyCount = vendors.filter((vendor) => replyWait(vendor, startOfToday())).length;
   const statusChips = [
     { id: "all", label: "Any status" },
     ...statuses.map((status) => ({
@@ -2018,6 +2158,9 @@ function renderVendorGrid() {
       label: status.label,
       count: vendors.filter((vendor) => vendor.status === status.id).length,
     })),
+    ...(replyCount || state.vendorStatus === "waiting-reply"
+      ? [{ id: "waiting-reply", label: "Waiting on reply", count: replyCount }]
+      : []),
   ];
 
   const search = el("input", {
@@ -2176,6 +2319,8 @@ function renderVendorDetail(id) {
     el("div", { class: "detail-badges" }, [
       el("span", { class: `status-badge status-${vendor.status}`, text: vendorStatusMeta(vendor.status).label }),
       vendor.preferred ? el("span", { class: "status-badge status-preferred", text: "★ Preferred" }) : null,
+      vendor.priceVerified ? el("span", { class: "verified-tag", text: `Verified ${formatShortDate(vendor.priceVerified.date)} · ${vendor.priceVerified.source}${vendor.priceVerified.note ? ` · ${vendor.priceVerified.note}` : ""}` }) : null,
+      !vendor.priceVerified && vendor.priceEstimateOnly ? el("span", { class: "estimate-tag", text: "Estimate only" }) : null,
       el("span", { class: `pill pill-${vendor.priceType === "listed" ? "listed" : vendor.priceType === "estimate" ? "estimate" : "quote"}`, text: { listed: "Listed", estimate: "Estimate", quote: "Quote" }[vendor.priceType] || "Quote" }),
     ]),
     photoFrame(vendor),
@@ -2563,6 +2708,7 @@ function render(options = {}) {
   renderGuideMounts();
   renderSendMount();
   renderIssue();
+  renderTourChecklist();
   applyView({ scroll: Boolean(options.scroll) });
   if (options.focusId) {
     const node = document.getElementById(options.focusId);
@@ -2572,7 +2718,7 @@ function render(options = {}) {
     }
   }
   if (!options.scroll && !options.reveal) window.scrollTo(0, y);
-  const modalOpen = Boolean(state.issue) || Boolean(vendorIdFromHash(location.hash));
+  const modalOpen = Boolean(state.issue) || Boolean(state.tourPrint) || Boolean(vendorIdFromHash(location.hash));
   document.body.classList.toggle("dialog-open", modalOpen);
   for (const node of [document.querySelector(".site-header"), document.querySelector("main"), document.querySelector(".site-footer")]) {
     if (node) node.inert = modalOpen;
@@ -2667,6 +2813,11 @@ function bindChrome() {
     if (event.key !== "Escape") return;
     if (state.issue) {
       closeIssue();
+      return;
+    }
+    if (state.tourPrint) {
+      state.tourPrint = false;
+      render({ focusId: "print-tour-checklist" });
       return;
     }
     if (vendorIdFromHash(location.hash)) {

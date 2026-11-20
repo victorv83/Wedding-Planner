@@ -32,6 +32,9 @@ import {
   perGuestCeiling,
   planTotals,
   quotesByTask,
+  replyWait,
+  sortTourVenues,
+  tourWindowLabel,
   normalizeQuotes,
   parseISODate,
   parseSchedule,
@@ -42,6 +45,8 @@ import {
   statusAfterMarkDone,
   vendorIdFromHash,
   viewFromHash,
+  waitLabel,
+  waitTone,
 } from "../logic.js";
 
 const raw = readFileSync(new URL("../data/wedding.json", import.meta.url), "utf8");
@@ -576,6 +581,46 @@ test("the schedule sorts by date and marks the next item", () => {
       assert.match(formatScheduleWhen(item), /–/);
     }
   }
+});
+
+test("tours, reply waits, and verified prices follow the correspondence", () => {
+  const nov20 = new Date(2026, 10, 20);
+  const wildflower = replyWait(model.vendors.find((vendor) => vendor.id === "c-wildflower"), nov20);
+  assert.equal(wildflower.days, 2);
+  assert.equal(wildflower.since, "2026-11-18");
+  assert.equal(waitTone(wildflower.days), "fresh");
+  assert.equal(waitTone(4), "soon");
+  assert.equal(waitTone(8), "late");
+  assert.equal(waitLabel(1), "Waiting 1 day");
+  assert.equal(waitLabel(2), "Waiting 2 days");
+  assert.equal(replyWait(model.vendors.find((vendor) => vendor.id === "ph-min"), nov20), null);
+  assert.equal(replyWait(model.vendors.find((vendor) => vendor.id === "v-434-fannin"), nov20), null);
+  assert.equal(replyWait(model.vendors.find((vendor) => vendor.id === "v-botanical"), nov20), null);
+  assert.equal(replyWait(model.vendors.find((vendor) => vendor.id === "c-kim-son"), nov20), null);
+
+  const venues = model.vendors.filter((vendor) => vendor.category === "venue" && vendor.status !== "dropped");
+  assert.ok(venues.length >= 1);
+  assert.ok(venues.every((vendor) => vendor.tour?.status === "not-requested"));
+  assert.equal(
+    model.vendors.find((vendor) => vendor.id === "v-434-fannin").tour.notes,
+    "Fill out the 434fannin.com form to get the brochure and book a tour",
+  );
+  assert.equal(tourWindowLabel(model.schedule), "Tour window: Nov 25 – Dec 2, 2026 (Thanksgiving Nov 26–27)");
+  assert.deepEqual(sortTourVenues([
+    { name: "Later", tour: { status: "scheduled", date: "2026-11-28", time: "15:00" } },
+    { name: "First", tour: { status: "scheduled", date: "2026-11-25", time: "10:00" } },
+    { name: "Asked", tour: { status: "requested" } },
+    { name: "None", tour: { status: "not-requested" } },
+  ]).map((vendor) => vendor.name), ["First", "Later", "Asked", "None"]);
+
+  for (const id of ["c-kim-son", "ph-min", "v-434-fannin", "v-event-centre", "v-botanical"]) {
+    const vendor = model.vendors.find((item) => item.id === id);
+    assert.ok(vendor.priceVerified?.date, id);
+    assert.ok(vendor.priceVerified.source, id);
+  }
+  const alley = model.vendors.find((vendor) => vendor.id === "c-viet-alley");
+  assert.equal(alley.priceEstimateOnly, true);
+  assert.equal(alley.priceVerified, null);
 });
 
 test("bad budget and vendor entries warn instead of breaking the page", () => {
