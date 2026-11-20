@@ -301,7 +301,7 @@ export function renderMonths(guides, tasks) {
 export function renderDayOf(guides) {
   return el("section", { class: "section", id: "dayof", "aria-labelledby": "dayof-heading" }, [
     el("h2", { id: "dayof-heading", text: "Day of" }),
-    el("p", { class: "hint", text: "A draft run of show for Saturday, March 18, 2028. February 5 and February 19 are still alternatives. Clock times are a guess until the families and the hall confirm them." }),
+    el("p", { class: "hint", text: "A draft run of show for Saturday, March 18, 2028. Clock times are a guess until the families and the hall confirm them." }),
     fold("Reception inspiration", [
       el("p", { text: "Red and gold, lanterns, and a double-happiness mark are ideas for the florist and rentals conversation. The lantern photo is from Taiwan, and the lion photo is from New York. Neither is this wedding." }),
       el("p", { class: "happiness", lang: "zh", text: "囍" }),

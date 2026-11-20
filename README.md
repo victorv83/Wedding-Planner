@@ -23,6 +23,7 @@ The HTML, CSS, scripts, and `data/wedding.json` load once. After that, the secti
 | Nav | Hash | What you see |
 | --- | --- | --- |
 | Countdown | `#overview` | Date countdown and the guest, budget, and Tết facts |
+| Schedule | `#schedule` | Important dates, earliest first, with the next one marked |
 | Progress | `#progress` | Overall, phase, and category bars |
 | Timeline | `#timeline` | Phases, filters, and editable items |
 | Months | `#months` | The same tasks, grouped from November 2026 through March 2028 |
@@ -90,16 +91,16 @@ UTF-8 is required so Vietnamese diacritics stay intact (`lễ gia tiên`, `áo d
 | `currency` | ISO code, default `USD`. |
 | `tetDate` / `tetLabel` | Shown as a fact next to guests and budget. |
 
-When `selectedDate` is `null` and `idealDate` is set, the countdown uses that ideal Saturday and labels it **Tentative · ideal date**. The other dates in `candidateDates` are listed as alternatives. If `idealDate` is also null, the countdown falls back to the earliest candidate that is still today or in the future and labels it **Tentative · earliest remaining candidate date**. Set `selectedDate` to one of those Saturdays (or any other `YYYY-MM-DD`) once you decide. The label then changes to **Selected date**.
+When `selectedDate` is set, the countdown uses that Saturday and labels it **Selected date**. The page does not list other Saturdays as alternatives. When `selectedDate` is `null` and `idealDate` is set, the countdown uses that ideal Saturday and labels it **Tentative · ideal date**. The other dates in `candidateDates` are listed as alternatives. If `idealDate` is also null, the countdown falls back to the earliest candidate that is still today or in the future and labels it **Tentative · earliest remaining candidate date**.
 
 ```json
 "idealDate": "2028-03-18",
-"selectedDate": null,
+"selectedDate": "2028-03-18",
 "guestCount": 160,
 "budget": 40000
 ```
 
-The ideal date is Saturday, March 18, 2028. The alternatives are Saturday, February 5, 2028 and Saturday, February 19, 2028. Saturday, March 4, 2028 is not in the running. Tết Nguyên Đán 2028 is January 26, so each listed date falls after the holiday.
+The wedding date is Saturday, March 18, 2028. February 5 and February 19, 2028 are not options. Saturday, March 4, 2028 is not in the running. Tết Nguyên Đán 2028 is January 26, before the wedding.
 
 Invitation mailing and the final-detail deadlines keep the same lead time they had before a February 5 wedding. Mailing is January 16, 2028 (it was December 5, 2027). The last ceremony tasks run through March 2, 2028.
 

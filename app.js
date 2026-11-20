@@ -4,6 +4,7 @@ import {
   CATERING_POLICIES,
   STATUS_LABELS,
   STATUS_ORDER,
+  SCHEDULE_KIND_LABELS,
   SECTION_IDS,
   applyEdits,
   buildModel,
@@ -23,6 +24,7 @@ import {
   editCounts,
   formatDue,
   formatISO,
+  formatScheduleWhen,
   formatLongDate,
   formatMoney,
   formatNumber,
@@ -422,10 +424,18 @@ function renderOverview() {
     ]);
   }
 
-  const dateItems = candidates.map((candidate) => {
+  const listedDates = selectedIso
+    ? candidates.filter((candidate) => candidate.iso === selectedIso)
+    : candidates;
+  const dateHeading = selectedIso
+    ? "Wedding date"
+    : idealIso
+      ? "Ideal date and alternatives"
+      : "Candidate dates";
+  const dateItems = listedDates.map((candidate) => {
     const marker = dateListMarker({
       iso: candidate.iso,
-      idealIso,
+      idealIso: selectedIso ? "" : idealIso,
       selectedIso,
       fallbackIso,
       allPast: Boolean(target?.allPast),
@@ -433,7 +443,7 @@ function renderOverview() {
     const current = candidate.iso === selectedIso || candidate.iso === idealIso || candidate.iso === fallbackIso;
     return el("li", current ? { "aria-current": "date" } : {}, [
       el("time", { datetime: candidate.iso, text: formatLongDate(candidate.date) }),
-      el("span", { class: "badge", text: marker }),
+      selectedIso ? null : el("span", { class: "badge", text: marker }),
     ]);
   });
 
@@ -463,7 +473,7 @@ function renderOverview() {
     el("div", { class: "panel" }, [
       countdownBlock,
       nextLine,
-      el("h3", { class: "subhead", text: idealIso ? "Ideal date and alternatives" : "Candidate dates" }),
+      el("h3", { class: "subhead", text: dateHeading }),
       dateItems.length
         ? el("ul", { class: "date-list" }, dateItems)
         : el("p", { text: "No candidate dates are listed yet." }),
@@ -475,6 +485,42 @@ function renderOverview() {
   ]);
 
   $("mount-overview").replaceChildren(section);
+}
+
+function renderSchedule() {
+  const items = state.model.schedule || [];
+  const link = document.querySelector('.toc a[href="#schedule"]');
+  if (link) link.hidden = items.length === 0;
+  if (!items.length) {
+    $("mount-schedule")?.replaceChildren();
+    return;
+  }
+  const list = el("ol", { class: "schedule" }, items.map((item) => {
+      const classes = ["schedule-item", `kind-${item.kind}`];
+      if (item.past) classes.push("is-past");
+      if (item.next) classes.push("is-next");
+      return el("li", { class: classes.join(" ") }, [
+        el("p", { class: "schedule-when" }, [
+          el("time", { datetime: item.date, text: formatScheduleWhen(item) }),
+          item.approximate ? el("span", { class: "schedule-approx", text: "approx." }) : null,
+        ]),
+        el("div", { class: "schedule-body" }, [
+          el("p", { class: "schedule-title-row" }, [
+            el("span", { class: `status-badge kind-badge kind-${item.kind}`, text: SCHEDULE_KIND_LABELS[item.kind] || item.kind }),
+            item.next ? el("span", { class: "status-badge status-preferred", text: "Next" }) : null,
+          ]),
+          el("h3", { class: "schedule-title", text: item.title }),
+          item.detail ? el("p", { class: "schedule-detail", text: item.detail }) : null,
+        ]),
+      ]);
+    }));
+
+  const section = el("section", { class: "section", id: "schedule", "aria-labelledby": "schedule-heading" }, [
+    el("h2", { id: "schedule-heading", text: "Schedule" }),
+    el("p", { class: "hint", text: "Important dates, earliest first. A range is one stretch of days. Past dates are quiet, and the next one is marked." }),
+    list,
+  ]);
+  $("mount-schedule")?.replaceChildren(section);
 }
 
 function sendButton(id) {
@@ -2507,6 +2553,7 @@ function render(options = {}) {
   renderShellText();
   renderWarnings();
   renderOverview();
+  renderSchedule();
   renderProgress();
   renderTasks();
   renderVendors();
