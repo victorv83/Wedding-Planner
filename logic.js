@@ -306,6 +306,89 @@ export function parseSchedule(raw, warnings = [], today = startOfToday()) {
   return annotateSchedule(items, today);
 }
 
+/** Header for the venue-tour panel. The date range comes from the Venue tours schedule item. */
+export function tourWindowLabel(schedule) {
+  const item = (schedule || []).find((entry) => entry?.title === "Venue tours");
+  if (!item) return "";
+  const range = formatScheduleWhen(item);
+  const closed = String(item.detail || "").match(/Nov 26[–-]27/);
+  const thanks = /Thanksgiving/i.test(item.detail || "")
+    ? ` (Thanksgiving ${closed ? closed[0].replace("-", "–") : "Nov 26–27"})`
+    : "";
+  return `Tour window: ${range}${thanks}`;
+}
+
+export const TOUR_STATUS_LABELS = {
+  scheduled: "Scheduled",
+  requested: "Requested",
+  "not-requested": "Not requested",
+  done: "Done",
+  skipped: "Skipped",
+};
+
+const TOUR_STATUS_RANK = ["scheduled", "requested", "not-requested", "done", "skipped"];
+
+/** Scheduled tours first, by date and time, then requested, then not requested. */
+export function sortTourVenues(venues) {
+  const rank = new Map(TOUR_STATUS_RANK.map((id, index) => [id, index]));
+  return [...(venues || [])].sort((a, b) => {
+    const aStatus = a.tour?.status || "not-requested";
+    const bStatus = b.tour?.status || "not-requested";
+    const byStatus = (rank.get(aStatus) ?? 9) - (rank.get(bStatus) ?? 9);
+    if (byStatus) return byStatus;
+    if (aStatus === "scheduled") {
+      const byDate = String(a.tour?.date || "9999-99-99").localeCompare(String(b.tour?.date || "9999-99-99"));
+      if (byDate) return byDate;
+      const byTime = String(a.tour?.time || "99:99").localeCompare(String(b.tour?.time || "99:99"));
+      if (byTime) return byTime;
+    }
+    return String(a.name).localeCompare(String(b.name));
+  });
+}
+
+/**
+ * Days since the latest sent log entry that still has no later received entry.
+ * Dropped and on-hold vendors are not waiting on a reply.
+ */
+export function replyWait(vendor, today = startOfToday()) {
+  if (!vendor || vendor.status === "dropped" || vendor.status === "on-hold") return null;
+  const log = Array.isArray(vendor.log) ? vendor.log : [];
+  let lastSent = null;
+  let lastIndex = -1;
+  log.forEach((entry, index) => {
+    if (entry?.direction !== "sent" || !entry.date) return;
+    const stamp = `${entry.date}T${entry.time || "00:00"}`;
+    const prev = lastSent ? `${lastSent.date}T${lastSent.time || "00:00"}` : "";
+    if (!lastSent || stamp > prev || (stamp === prev && index > lastIndex)) {
+      lastSent = entry;
+      lastIndex = index;
+    }
+  });
+  if (!lastSent) return null;
+  const sentStamp = `${lastSent.date}T${lastSent.time || "00:00"}`;
+  const answered = log.some((entry, index) => {
+    if (entry?.direction !== "received" || !entry.date) return false;
+    const stamp = `${entry.date}T${entry.time || "00:00"}`;
+    if (stamp > sentStamp) return true;
+    return stamp === sentStamp && index > lastIndex;
+  });
+  if (answered) return null;
+  const sent = parseISODate(lastSent.date);
+  if (!sent) return null;
+  return { days: Math.max(0, -daysUntil(sent, today)), since: lastSent.date };
+}
+
+export function waitLabel(days) {
+  return days === 1 ? "Waiting 1 day" : `Waiting ${days} days`;
+}
+
+/** fresh under 4 days, soon from 4, late from 8. */
+export function waitTone(days) {
+  if (days >= 8) return "late";
+  if (days >= 4) return "soon";
+  return "fresh";
+}
+
 /** Past when the end (or the day itself) is before today. The first item that is not past is next. */
 export function annotateSchedule(items, today = startOfToday()) {
   const todayIso = formatISO(today);
@@ -1196,6 +1279,44 @@ function parseLog(raw, name, warnings) {
   return entries;
 }
 
+const TOUR_STATUSES = new Set(Object.keys(TOUR_STATUS_LABELS));
+
+function parseTour(raw, name, warnings) {
+  if (raw == null) return null;
+  if (typeof raw !== "object" || Array.isArray(raw)) {
+    warnings.push(`Vendor “${name}” tour notes are not an object.`);
+    return null;
+  }
+  let status = cleanString(raw.status) || "not-requested";
+  if (!TOUR_STATUSES.has(status)) {
+    warnings.push(`Vendor “${name}” has an unknown tour status “${status}”. Using not-requested.`);
+    status = "not-requested";
+  }
+  const date = parseISODate(raw.date) ? cleanString(raw.date) : "";
+  if (raw.date && !date) warnings.push(`Vendor “${name}” tour date is not YYYY-MM-DD.`);
+  const timeMatch = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(cleanString(raw.time));
+  if (raw.time && !timeMatch) warnings.push(`Vendor “${name}” tour time is not HH:MM.`);
+  return {
+    status,
+    date,
+    time: timeMatch ? timeMatch[0] : "",
+    contactMethod: cleanString(raw.contactMethod),
+    notes: cleanString(raw.notes),
+  };
+}
+
+function parsePriceVerified(raw, name, warnings) {
+  if (raw == null) return null;
+  if (typeof raw !== "object" || Array.isArray(raw)) return null;
+  const date = parseISODate(raw.date) ? cleanString(raw.date) : "";
+  const source = cleanString(raw.source);
+  if (!date || !source) {
+    warnings.push(`Vendor “${name}” verified price needs a date and a source.`);
+    return null;
+  }
+  return { date, source, note: cleanString(raw.note) };
+}
+
 function parseVenuePolicy(raw) {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
   return {
@@ -1281,6 +1402,9 @@ export function parseVendors(raw, taskIds, statuses, warnings) {
       log: parseLog(item?.log, name, warnings),
       lastActivity,
       updatedOn,
+      tour: parseTour(item?.tour, name, warnings),
+      priceVerified: parsePriceVerified(item?.priceVerified, name, warnings),
+      priceEstimateOnly: Boolean(item?.priceEstimateOnly),
     });
   }
   return vendors;
@@ -1326,6 +1450,9 @@ export function vendorsFromOptions(options) {
       log: [],
       lastActivity: "",
       updatedOn: "",
+      tour: null,
+      priceVerified: null,
+      priceEstimateOnly: false,
     };
   });
 }
