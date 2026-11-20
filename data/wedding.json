@@ -3760,6 +3760,13 @@
           "direction": "sent",
           "channel": "email",
           "summary": "Victor to minphotographystudio@gmail.com: will consider the offer, but is not set on a photographer yet and is still exploring options."
+        },
+        {
+          "date": "2026-11-19",
+          "time": "12:04",
+          "direction": "received",
+          "channel": "email",
+          "summary": "Min & Annie: take your time. Still holding Sat Mar 18, 2028 open for now. Free engagement session ($750 value) applies to any 8+ hr package. Offered a full Vietnamese wedding-day gallery and a 15–20 min consult call. Quote unchanged."
         }
       ],
       "updatedOn": "2026-11-18",
@@ -6374,5 +6381,5 @@
       "meaning": "Contract or deposit done"
     }
   ],
-  "vendorsUpdatedOn": "2026-11-19"
+  "vendorsUpdatedOn": "2026-11-20"
 }
