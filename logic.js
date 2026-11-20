@@ -35,10 +35,11 @@ const VENDOR_CATEGORIES = new Set([
 ]);
 
 /** Sections the nav can open. "all" stacks every section, including the save note. */
-export const SECTION_IDS = ["overview", "progress", "timeline", "months", "dayof", "ceremony", "guests", "outreach", "vendors"];
+export const SECTION_IDS = ["overview", "schedule", "progress", "timeline", "months", "dayof", "ceremony", "guests", "outreach", "vendors"];
 
 const HASH_TO_SECTION = {
   overview: "overview",
+  schedule: "schedule",
   progress: "progress",
   timeline: "timeline",
   tasks: "timeline",
@@ -233,6 +234,95 @@ export function countdownLabel(target) {
 }
 
 /** Badge for one row in the date list. An ideal date stays tentative until selectedDate is set. */
+export const SCHEDULE_KIND_LABELS = {
+  planning: "Planning",
+  holiday: "Holiday",
+  deadline: "Deadline",
+  milestone: "Milestone",
+  trip: "Trip",
+  wedding: "Wedding",
+};
+
+function formatScheduleDay(date, { year = true, month = "short" } = {}) {
+  return new Intl.DateTimeFormat("en-US", {
+    month,
+    day: "numeric",
+    year: year ? "numeric" : undefined,
+  }).format(date);
+}
+
+/** One date, or a range. Approximate dates start with a tilde. */
+export function formatScheduleWhen(item) {
+  const start = parseISODate(item?.date);
+  if (!start) return "";
+  const end = item?.endDate ? parseISODate(item.endDate) : null;
+  const mark = item?.approximate ? "~ " : "";
+  if (!end || formatISO(end) === formatISO(start)) return mark + formatScheduleDay(start);
+  const sameYear = start.getFullYear() === end.getFullYear();
+  const sameMonth = sameYear && start.getMonth() === end.getMonth();
+  if (sameMonth) {
+    return `${mark}${formatScheduleDay(start, { year: false })}–${end.getDate()}, ${start.getFullYear()}`;
+  }
+  if (sameYear) {
+    return `${mark}${formatScheduleDay(start, { year: false })} – ${formatScheduleDay(end)}`;
+  }
+  return `${mark}${formatScheduleDay(start)} – ${formatScheduleDay(end)}`;
+}
+
+/**
+ * Normalize schedule cards. Sorted by start date. A bad date or a missing title is skipped.
+ * Unknown kinds fall back to planning.
+ */
+export function parseSchedule(raw, warnings = [], today = startOfToday()) {
+  const items = [];
+  for (const [index, item] of (Array.isArray(raw) ? raw : []).entries()) {
+    const date = parseISODate(item?.date);
+    const title = textOr(item?.title, "");
+    if (!date || !title) {
+      const name = title ? ` “${title}”` : ` ${index + 1}`;
+      warnings.push(`Schedule item${name} needs a title and a YYYY-MM-DD date.`);
+      continue;
+    }
+    const end = parseISODate(item?.endDate);
+    if (item?.endDate && !end) warnings.push(`Schedule item “${title}” has an end date that is not YYYY-MM-DD.`);
+    const endIso = end && end.getTime() >= date.getTime() ? formatISO(end) : "";
+    if (end && end.getTime() < date.getTime()) {
+      warnings.push(`Schedule item “${title}” ends before it starts. The end date was left off.`);
+    }
+    let kind = textOr(item?.kind, "planning");
+    if (!SCHEDULE_KIND_LABELS[kind]) {
+      warnings.push(`Schedule item “${title}” has an unknown kind “${kind}”. Using planning.`);
+      kind = "planning";
+    }
+    items.push({
+      date: formatISO(date),
+      endDate: endIso,
+      title,
+      detail: textOr(item?.detail, ""),
+      kind,
+      approximate: Boolean(item?.approximate),
+    });
+  }
+  return annotateSchedule(items, today);
+}
+
+/** Past when the end (or the day itself) is before today. The first item that is not past is next. */
+export function annotateSchedule(items, today = startOfToday()) {
+  const todayIso = formatISO(today);
+  const sorted = [...(items || [])].sort((a, b) => {
+    const byDate = String(a.date).localeCompare(String(b.date));
+    if (byDate) return byDate;
+    return String(a.endDate || a.date).localeCompare(String(b.endDate || b.date))
+      || String(a.title).localeCompare(String(b.title));
+  });
+  const marked = sorted.map((item) => {
+    const end = item.endDate || item.date;
+    return { ...item, past: end < todayIso };
+  });
+  const nextIndex = marked.findIndex((item) => !item.past);
+  return marked.map((item, index) => ({ ...item, next: index === nextIndex }));
+}
+
 export function dateListMarker({ iso, idealIso = "", selectedIso = "", fallbackIso = "", allPast = false }) {
   if (selectedIso && iso === selectedIso) return "Selected";
   if (idealIso && iso === idealIso) return allPast ? "Ideal · passed" : "Ideal";
@@ -1424,6 +1514,7 @@ export function buildModel(data) {
     : vendorsFromOptions(vendorOptions);
   const weddingParty = parseWeddingParty(data.weddingParty);
   const nextActions = parseNextActions(data.nextActions, warnings);
+  const schedule = parseSchedule(data.schedule, warnings);
 
   return {
     settings,
@@ -1437,6 +1528,7 @@ export function buildModel(data) {
     vendorsUpdatedOn: textOr(data.vendorsUpdatedOn, ""),
     weddingParty,
     nextActions,
+    schedule,
   };
 }
 

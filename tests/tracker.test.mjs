@@ -22,6 +22,7 @@ import {
   estimateLine,
   extraTrayCarriers,
   formatDue,
+  formatScheduleWhen,
   githubIssueUrl,
   groupByPhase,
   groupVendorOptions,
@@ -33,6 +34,7 @@ import {
   quotesByTask,
   normalizeQuotes,
   parseISODate,
+  parseSchedule,
   progressStats,
   pruneEdits,
   safeHttpUrl,
@@ -52,7 +54,7 @@ test("seed file is public-safe JSON for Victor & Mít", () => {
   assert.equal(raw.includes("Mít"), true);
   assert.equal(raw.includes("\\u00ed"), false);
   assert.equal(data.settings.idealDate, "2028-03-18");
-  assert.equal(data.settings.selectedDate, null);
+  assert.equal(data.settings.selectedDate, "2028-03-18");
   assert.equal(raw.includes("2028-03-04"), false);
   assert.equal(data.settings.guestCount, 200);
   assert.equal(data.settings.budget, 50000);
@@ -67,6 +69,7 @@ test("the hash opens one section, all sections, or overview by default", () => {
   assert.equal(viewFromHash("#progress"), "progress");
   assert.equal(viewFromHash("#timeline"), "timeline");
   assert.equal(viewFromHash("#tasks"), "timeline");
+  assert.equal(viewFromHash("#schedule"), "schedule");
   assert.equal(viewFromHash("#vendors"), "vendors");
   assert.equal(viewFromHash("#ceremony"), "ceremony");
   assert.equal(viewFromHash("#guests"), "guests");
@@ -88,18 +91,20 @@ test("candidate Saturdays and Tết are real dates", () => {
   for (const iso of ["2028-02-05", "2028-02-19", "2028-03-18"]) {
     assert.equal(parseISODate(iso).getDay(), 6, iso);
   }
-  assert.deepEqual(candidateDates(data.settings).map((item) => item.iso), [
-    "2028-02-05",
-    "2028-02-19",
-    "2028-03-18",
-  ]);
+  assert.deepEqual(candidateDates(data.settings).map((item) => item.iso), ["2028-03-18"]);
+  assert.equal(data.settings.selectedDate, "2028-03-18");
   assert.equal(parseISODate("2028-01-26")?.toDateString(), new Date(2028, 0, 26).toDateString());
   assert.equal(parseISODate("2027-02-29"), null);
   assert.ok(parseISODate("2028-02-29"));
 });
 
 test("countdown uses the ideal date until a Saturday is selected", () => {
-  const tentative = countdownTarget(data.settings, today);
+  const undecided = {
+    ...data.settings,
+    selectedDate: null,
+    candidateDates: ["2028-02-05", "2028-02-19", "2028-03-18"],
+  };
+  const tentative = countdownTarget(undecided, today);
   assert.equal(tentative.iso, "2028-03-18");
   assert.equal(tentative.tentative, true);
   assert.equal(tentative.ideal, true);
@@ -110,17 +115,24 @@ test("countdown uses the ideal date until a Saturday is selected", () => {
   assert.equal(dateListMarker({ iso: "2028-02-05", idealIso: "2028-03-18" }), "Alternative");
   assert.equal(dateListMarker({ iso: "2028-02-19", idealIso: "2028-03-18" }), "Alternative");
 
-  const passed = countdownTarget(data.settings, new Date(2028, 2, 19));
+  const passed = countdownTarget(undecided, new Date(2028, 2, 19));
   assert.equal(passed.iso, "2028-03-18");
   assert.equal(passed.allPast, true);
   assert.equal(countdownLabel(passed), "Tentative · ideal date has passed");
 
-  const noIdeal = countdownTarget({ ...data.settings, idealDate: null }, new Date(2028, 1, 10));
+  const noIdeal = countdownTarget({ ...undecided, idealDate: null }, new Date(2028, 1, 10));
   assert.equal(noIdeal.iso, "2028-02-19");
   assert.equal(noIdeal.ideal, false);
   assert.equal(countdownLabel(noIdeal), "Tentative · earliest remaining candidate date");
 
-  const selected = countdownTarget({ ...data.settings, selectedDate: "2028-02-05" }, today);
+  const chosen = countdownTarget(data.settings, today);
+  assert.equal(chosen.tentative, false);
+  assert.equal(chosen.ideal, false);
+  assert.equal(chosen.iso, "2028-03-18");
+  assert.equal(countdownLabel(chosen), "Selected date");
+  assert.equal(daysUntil(chosen.date, today), 502);
+
+  const selected = countdownTarget({ ...undecided, selectedDate: "2028-02-05" }, today);
   assert.equal(selected.tentative, false);
   assert.equal(selected.ideal, false);
   assert.equal(selected.iso, "2028-02-05");
@@ -522,6 +534,48 @@ test("vendor cards have a valid status, http(s) links, and logs in order", () =>
   assert.equal(legacy.vendors.length, model.vendorOptions.length);
   assert.ok(legacy.vendors.every((vendor) => vendor.status === "shortlist"));
   assert.equal(legacy.warnings.length, 0);
+});
+
+test("the schedule sorts by date and marks the next item", () => {
+  const warnings = [];
+  const parsed = parseSchedule([
+    { date: "2028-03-18", title: "Wedding", kind: "wedding", detail: "Tea ceremony and reception." },
+    { date: "2026-11-25", endDate: "2026-12-02", title: "Venue tour week", kind: "trip", detail: "A week of tours." },
+    { date: "2026-11-01", title: "Already done", kind: "planning", approximate: true },
+    { date: "nope", title: "Skip me" },
+    { date: "2028-04-02", endDate: "2028-03-20", title: "Backwards", kind: "trip" },
+    { date: "2027-09-01", endDate: "2027-09-14", title: "Japan honeymoon", kind: "mystery", approximate: true, detail: "After the wedding." },
+  ], warnings, today);
+  assert.deepEqual(parsed.map((item) => item.title), [
+    "Already done",
+    "Venue tour week",
+    "Japan honeymoon",
+    "Wedding",
+    "Backwards",
+  ]);
+  assert.equal(parsed[0].approximate, true);
+  assert.equal(parsed[0].past, true);
+  assert.equal(parsed[1].past, false);
+  assert.equal(parsed[1].next, true);
+  assert.equal(parsed[1].endDate, "2026-12-02");
+  assert.equal(formatScheduleWhen(parsed[1]), "Nov 25 – Dec 2, 2026");
+  assert.equal(formatScheduleWhen(parsed[2]), "~ Sep 1–14, 2027");
+  assert.equal(formatScheduleWhen({ date: "2026-11-25", endDate: "2026-11-27" }), "Nov 25–27, 2026");
+  assert.equal(parsed[2].kind, "planning");
+  assert.equal(parsed[4].endDate, "");
+  assert.equal(parsed.filter((item) => item.next).length, 1);
+  assert.ok(warnings.some((warning) => warning.includes("Skip me")));
+  assert.equal(model.warnings.length, 0);
+  const dates = model.schedule.map((item) => item.date);
+  assert.deepEqual(dates, [...dates].sort());
+  assert.ok(model.schedule.filter((item) => item.next).length <= 1);
+  for (const item of model.schedule) {
+    assert.ok(["planning", "holiday", "deadline", "milestone", "trip", "wedding"].includes(item.kind), item.title);
+    if (item.endDate) {
+      assert.ok(item.endDate > item.date, item.title);
+      assert.match(formatScheduleWhen(item), /–/);
+    }
+  }
 });
 
 test("bad budget and vendor entries warn instead of breaking the page", () => {

@@ -6,11 +6,9 @@
     "place": "Near Orange and Beaumont, Texas",
     "idealDate": "2028-03-18",
     "candidateDates": [
-      "2028-02-05",
-      "2028-02-19",
       "2028-03-18"
     ],
-    "selectedDate": null,
+    "selectedDate": "2028-03-18",
     "guestCount": 200,
     "budget": 50000,
     "currency": "USD",
@@ -71,7 +69,7 @@
       "phase": "now",
       "dueMonth": "2027-01",
       "status": "todo",
-      "notes": "Ideal Saturday: March 18, 2028. Alternatives: February 5 or February 19, 2028. Saturday, March 4 is not in the running. Tết Nguyên Đán is January 26, 2028, so each of these dates falls after the holiday. The countdown uses the ideal date until you decide. When you decide, set settings.selectedDate to that Saturday."
+      "notes": "The wedding date is Saturday, March 18, 2028. February 5 and February 19 are not options. Saturday, March 4 is not in the running. Tết Nguyên Đán is January 26, 2028, before the wedding."
     },
     {
       "id": "venue-reception",

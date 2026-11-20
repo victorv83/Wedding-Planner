@@ -2110,6 +2110,111 @@ tfoot th {
 .status-shortlist { background: var(--todo-bg); color: var(--ink-soft); }
 .status-on-hold { background: #f4eadc; color: var(--gold-text); }
 .status-dropped { background: #f3eee6; color: #8a817a; }
+
+.schedule {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0.2rem 0 0;
+  border-left: 2px solid var(--gold-line);
+}
+
+.schedule-item {
+  position: relative;
+  margin: 0 0 0.35rem;
+  padding: 0.15rem 0 0.85rem 1rem;
+}
+
+.schedule-item::before {
+  content: "";
+  position: absolute;
+  left: -0.42rem;
+  top: 0.45rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.schedule-item.is-past {
+  color: var(--ink-soft);
+}
+
+.schedule-item.is-past .schedule-title,
+.schedule-item.is-past .schedule-when {
+  color: var(--ink-soft);
+}
+
+.schedule-item.is-next {
+  margin-left: 0.15rem;
+  padding: 0.7rem 0.85rem 0.8rem 0.95rem;
+  border: 1px solid var(--lacquer);
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.schedule-item.is-next::before {
+  left: -1.22rem;
+  border-color: var(--lacquer);
+  background: #f8e7ea;
+}
+
+.schedule-when {
+  margin: 0;
+  color: var(--gold-text);
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.schedule-approx {
+  margin-left: 0.4rem;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.schedule-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  margin: 0.2rem 0 0.15rem;
+}
+
+.schedule-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.schedule-detail {
+  margin: 0.2rem 0 0;
+  font-size: 0.95rem;
+}
+
+.kind-badge.kind-planning { background: var(--todo-bg); color: var(--ink-soft); }
+.kind-badge.kind-holiday { background: #f8e7ea; color: var(--lacquer-deep); }
+.kind-badge.kind-deadline { background: var(--overdue-bg); color: var(--lacquer-deep); }
+.kind-badge.kind-milestone { background: var(--done-bg); color: var(--done); }
+.kind-badge.kind-trip { background: #f4eadc; color: var(--gold-text); }
+.kind-badge.kind-wedding { background: var(--lacquer); color: var(--paper); }
+
+@media (max-width: 720px) {
+  .schedule-item.is-next {
+    margin-left: 0;
+    padding-left: 0.75rem;
+  }
+
+  .schedule-item.is-next::before {
+    left: -1.15rem;
+  }
+}
 .status-preferred { background: var(--lacquer); color: var(--paper); }
 
 .vcard-summary {
