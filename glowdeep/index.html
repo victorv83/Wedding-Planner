@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#03111f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Glowdeep — a trench-tank keeper</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="hud" hidden>
+    <div id="stats">
+      <div id="sparks" aria-label="Sparks"><i class="spark-ico"></i><b id="sparkNum">0</b></div>
+      <div id="jar" aria-label="Plankton jar"><span>Plankton</span><div id="jarPips"></div></div>
+    </div>
+    <div id="shop" role="toolbar" aria-label="Shop"></div>
+    <div id="sysBtns">
+      <button id="muteBtn" class="sys" aria-label="Toggle sound">♪</button>
+      <button id="pauseBtn" class="sys" aria-label="Pause">❚❚</button>
+    </div>
+  </header>
+  <main id="stage">
+    <canvas id="c"></canvas>
+    <div id="goals" hidden></div>
+    <div id="banner" aria-live="polite"></div>
+    <div id="overlay"><div id="panel"></div></div>
+  </main>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
