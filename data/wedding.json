@@ -787,11 +787,11 @@
         "taskId": "photo-vietnam",
         "group": "wedding",
         "flat": {
-          "low": 300,
-          "high": 900
+          "low": 1000,
+          "high": 1500
         },
-        "basis": "Flat. Saigon studios list studio packages from about VND 6.5–8.9 million and outdoor albums from about VND 8.5–18.9 million. Trip costs are not included.",
-        "priceType": "listed",
+        "basis": "Flat. V's figure for the Vietnam pre-wedding shoot is $1,000–$1,500. Saigon studio list prices in the source are older and lower. Trip costs are not included.",
+        "priceType": "estimate",
         "sources": [
           {
             "label": "TheSmartLocal: Saigon wedding photo studios",
@@ -1081,7 +1081,7 @@
         },
         {
           "lineId": "prewedding",
-          "amount": 300,
+          "amount": 1000,
           "choice": "Vietnam studio package. Trip costs are not in this line."
         },
         {

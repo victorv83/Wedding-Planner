@@ -407,14 +407,14 @@ test("budget prices 175 and 250 guests and keeps parties out of the wedding tota
   assert.equal(plan.options.length, 2);
   const byo = plan.options.find((option) => option.id === "byo");
   const venueBar = plan.options.find((option) => option.id === "venue-package");
-  assert.deepEqual(byo.total, { low: 44371, high: 45631 });
-  assert.deepEqual(venueBar.total, { low: 45911, high: 47241 });
+  assert.deepEqual(byo.total, { low: 45141, high: 46436 });
+  assert.deepEqual(venueBar.total, { low: 46681, high: 48046 });
   assert.equal(byo.allowanceBase.low, byo.subtotal.low - 16644);
   assert.ok(plan.cautious.total.high > byo.total.high);
   assert.ok(plan.cautious.total.high < 50000, "the cautious $50k plan still fits");
   const perPerson = budget.plan.unitScenarios.find((item) => item.id === "per-person");
   const personPlan = planTotals(budget, { scenario: perPerson });
-  assert.deepEqual(personPlan.options.find((option) => option.id === "byo").total, { low: 194161, high: 195421 });
+  assert.deepEqual(personPlan.options.find((option) => option.id === "byo").total, { low: 194931, high: 196226 });
   assert.ok(personPlan.options.every((option) => option.total.low > 50000));
   const quoted = quotesByTask(model.vendorOptions, normalizeQuotes({ "c-kim-son": { amount: 12000, quotedOn: "2026-11-12", notes: "Per table" } }));
   assert.deepEqual(quoted.catering, { low: 12000, high: 12000, count: 1 });
