@@ -2440,7 +2440,11 @@
       },
       "preferred": false,
       "priority": 2,
-      "photo": null,
+      "photo": {
+        "src": "assets/vendors/v-event-centre.webp",
+        "origin": "https://beaumonteventstx.com/wp-content/uploads/2026/09/modern-building-fountain-pond-scaled.jpg",
+        "from": "https://beaumonteventstx.com/downtown-event-centre-info/"
+      },
       "website": "https://beaumonteventstx.com/downtown-event-centre-info/",
       "social": {},
       "links": {
@@ -2882,7 +2886,11 @@
       },
       "preferred": false,
       "priority": 5,
-      "photo": null,
+      "photo": {
+        "src": "assets/vendors/v-holiday-inn.webp",
+        "origin": "https://digital.ihg.com/is/image/ihg/holiday-inn-hotel-and-suites-beaumont-5912302073-4x3",
+        "from": "https://www.ihg.com/holidayinn/hotels/us/en/beaumont/bptwd/hoteldetail/events-facilities"
+      },
       "website": "https://www.ihg.com/holidayinn/hotels/us/en/beaumont/bptwd/hoteldetail/events-facilities",
       "social": {},
       "links": {},
@@ -5225,7 +5233,11 @@
       },
       "preferred": false,
       "priority": 5,
-      "photo": null,
+      "photo": {
+        "src": "assets/vendors/v-broussard-farm.webp",
+        "origin": "https://new.broussardfarm.com/wp-content/uploads/2015/08/10339391_10203849641547241_5255031519538352050_o-e1439851386368.jpg",
+        "from": "https://new.broussardfarm.com/gallery/"
+      },
       "website": "https://new.broussardfarm.com/",
       "social": {},
       "links": {},
@@ -5383,7 +5395,11 @@
       },
       "preferred": false,
       "priority": 3,
-      "photo": null,
+      "photo": {
+        "src": "assets/vendors/v-civic-center.webp",
+        "origin": "https://beaumonteventstx.com/wp-content/uploads/2026/08/formal-event-ballroom-blue-lighting.jpg",
+        "from": "https://beaumonteventstx.com/beaumont-civic-center-info/"
+      },
       "website": "https://beaumonteventstx.com/beaumont-civic-center-info/",
       "social": {},
       "links": {
