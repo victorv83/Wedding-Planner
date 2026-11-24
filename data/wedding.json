@@ -2027,26 +2027,6 @@
       "outsideCatering": "yes"
     },
     {
-      "id": "v-max-bowl",
-      "name": "The Venue at Max Bowl",
-      "category": "Venue",
-      "taskId": "venue-reception",
-      "url": "https://visitportarthurtx.com/meeting-professionals-sports/the-venue-at-max-bowl/",
-      "base": "Port Arthur, TX",
-      "pricing": "Visit Port Arthur listing (city tourism site, not a venue-owned domain): 4-hour rental morning/afternoon $400; evening $500; all-day $900. One hour set-up and one hour teardown included; extra $50/hour. Included: rectangular tables and chairs, black tablecloths, stage, parking, coordinator and one staff member, ice, Wi-Fi. Full-service bar package can be added with licensed bartenders. Confirm rates are current and whether wedding weekends have premiums not shown.",
-      "priceType": "listed",
-      "fit": "Visit Port Arthur listing: 8,266 sq ft; classroom 456; theatre 484; banquet seating 410.",
-      "caveat": "Contact uses a 651 area code and a tripleshift.com email, which may be a management company — confirm the right wedding contact. Very low published rental; budget for extras. Strong value candidate if rates hold and the bowling-center setting is acceptable. unknown. Listing says a full-service bar package can be added with licensed bartenders; it does not say whether BYO is allowed. Yes, per Visit Port Arthur: any licensed, full-service caterer, plus a staging area.",
-      "source": {
-        "label": "Pricing source",
-        "url": "https://visitportarthurtx.com/meeting-professionals-sports/the-venue-at-max-bowl/"
-      },
-      "byoAlcohol": "unknown",
-      "outsideCatering": "approved",
-      "email": "carla.fay@tripleshift.com",
-      "phone": "(651) 571-0124"
-    },
-    {
       "id": "v-civic-center",
       "name": "Beaumont Civic Center (City of Beaumont Events)",
       "category": "Venue",
@@ -5330,60 +5310,6 @@
       "lastActivity": null
     },
     {
-      "id": "v-max-bowl",
-      "name": "The Venue at Max Bowl",
-      "category": "venue",
-      "legacyCategory": "Venue",
-      "taskId": "venue-reception",
-      "status": "shortlist",
-      "tour": {
-        "status": "not-requested"
-      },
-      "preferred": false,
-      "priority": 5,
-      "photo": {
-        "src": "assets/vendors/v-max-bowl.webp",
-        "origin": "https://visitportarthurtx.com/wp-content/uploads/2024/09/The-Venue-at-Max-Bowl-2.jpg",
-        "from": "https://visitportarthurtx.com/meeting-professionals-sports/the-venue-at-max-bowl/"
-      },
-      "website": "https://visitportarthurtx.com/meeting-professionals-sports/the-venue-at-max-bowl/",
-      "social": {},
-      "links": {},
-      "contact": {
-        "name": null,
-        "phone": "(651) 571-0124",
-        "email": "carla.fay@tripleshift.com",
-        "address": "Port Arthur, TX"
-      },
-      "summary": "Visit Port Arthur listing: 8,266 sq ft; classroom 456; theatre 484; banquet seating 410.",
-      "pricing": [
-        {
-          "item": "Published pricing",
-          "amount": null,
-          "note": "Visit Port Arthur listing (city tourism site, not a venue-owned domain): 4-hour rental morning/afternoon $400; evening $500; all-day $900. One hour set-up and one hour teardown included; extra $50/hour. Included: rectangular tables and chairs, black tablecloths, stage, parking, coordinator and one staff member, ice, Wi-Fi. Full-service bar package can be added with licensed bartenders. Confirm rates are current and whether wedding weekends have premiums not shown.",
-          "source": {
-            "label": "Pricing source",
-            "url": "https://visitportarthurtx.com/meeting-professionals-sports/the-venue-at-max-bowl/"
-          }
-        }
-      ],
-      "priceType": "listed",
-      "keyTerms": [
-        "Contact uses a 651 area code and a tripleshift.com email, which may be a management company — confirm the right wedding contact. Very low published rental; budget for extras. Strong value candidate if rates hold and the bowling-center setting is acceptable. unknown. Listing says a full-service bar package can be added with licensed bartenders; it does not say whether BYO is allowed. Yes, per Visit Port Arthur: any licensed, full-service caterer, plus a staging area."
-      ],
-      "venuePolicy": {
-        "byoAlcohol": "unknown",
-        "outsideCatering": "approved"
-      },
-      "questions": [],
-      "nextStep": "Not contacted. On the shortlist from earlier research.",
-      "docs": [],
-      "log": [],
-      "updatedOn": "2026-11-17",
-      "alsoCategories": [],
-      "lastActivity": null
-    },
-    {
       "id": "v-civic-center",
       "name": "Beaumont Civic Center (City of Beaumont Events)",
       "category": "venue",
@@ -6463,5 +6389,5 @@
       "meaning": "Contract or deposit done"
     }
   ],
-  "vendorsUpdatedOn": "2026-11-20"
+  "vendorsUpdatedOn": "2026-11-23"
 }

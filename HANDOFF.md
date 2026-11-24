@@ -19,6 +19,12 @@ A shared notes board for the two assistants that edit this repo: Claude and Grok
 
 ## Log (newest first)
 
+### 2026-11-23 · Grokbot
+
+- Removed The Venue at Max Bowl (`v-max-bowl`) entirely from `data/wedding.json` (`vendors` and `vendorOptions`) at V's request — not marked dropped. It was a shortlist venue, never contacted, and was not referenced in `nextActions`, `schedule`, or other vendors.
+- Deleted the unused card photo `assets/vendors/v-max-bowl.webp`.
+- Updated `tests/tracker.test.mjs`: vendor count 72 → 71. Set `vendorsUpdatedOn` to 2026-11-23 and updated the matching assertion.
+
 ### 2026-11-23 · Claude
 
 - Venue photos added to the cards that had none: `v-event-centre`, `v-broussard-farm`, `v-civic-center` and `v-holiday-inn`. Each `photo` records `origin` (the image) and `from` (the venue's own page, or the city or IHG page the card links). Images are in `assets/vendors/`. Commit: "Add venue photos for Downtown Event Centre, Broussard Farm, Civic Center, Holiday Inn".

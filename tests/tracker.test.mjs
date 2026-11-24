@@ -491,7 +491,7 @@ test("vendor shortlist covers the bookings and states venue alcohol rules", () =
 });
 
 test("vendor cards have a valid status, http(s) links, and logs in order", () => {
-  assert.equal(model.vendors.length, 72);
+  assert.equal(model.vendors.length, 71);
   const allowed = new Set(model.vendorStatuses.map((status) => status.id));
   const directions = new Set(["sent", "received", "call", "note"]);
   for (const vendor of model.vendors) {
@@ -514,7 +514,7 @@ test("vendor cards have a valid status, http(s) links, and logs in order", () =>
   assert.equal(model.vendors.find((vendor) => vendor.id === "v-civic-center").status, "contacted");
   assert.equal(model.vendors.find((vendor) => vendor.id === "c-kim-son").status, "dropped");
   assert.equal(model.nextActions.some((action) => action.id === "ba-mien-contact"), false);
-  assert.equal(model.vendorsUpdatedOn, "2026-11-20");
+  assert.equal(model.vendorsUpdatedOn, "2026-11-23");
   assert.equal(model.vendors.find((vendor) => vendor.id === "p-charlize").preferred, true);
   const baMien = model.vendors.find((vendor) => vendor.id === "c-ba-mien");
   assert.equal(baMien.name, "Ba Mien Restaurant");
