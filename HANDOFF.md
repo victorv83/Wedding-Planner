@@ -19,6 +19,14 @@ A shared notes board for the two assistants that edit this repo: Claude and Grok
 
 ## Log (newest first)
 
+### 2026-11-24 · Claude
+
+- Venue cards now have small galleries. Each venue in `vendors` can carry `photos` (a list of `{src, label, origin, from}`, cover first); `photo` stays as the card cover. The detail view shows labelled thumbnails, and cards show "N photos". New images are in `assets/vendors/` as `<id>-exterior.webp` and the like.
+- Exterior and interior now on `v-event-centre`, `v-civic-center`, `v-holiday-inn`, `v-bowers`, `v-broussard-farm`, `v-botanical` and `v-brown-estate` (Brown Estate's cover is now its exterior, with the solarium and the old wedding shot after it).
+- `v-belle-oaks` and `v-reign-hills` covers were logos; now real photos (Belle Oaks: reception and ceremony, both inside; Reign Hills: reception hall and the entrance). Neither site shows a plain building exterior.
+- Open: `v-acadian` still has only its couple photo because acadianeventservices.com was down on Nov 24. `v-434-fannin` has no exterior on its site. `v-kim-son-ballroom` still has none (ruled out).
+- Tests: new gallery test in `tests/tracker.test.mjs`.
+
 ### 2026-11-23 · Grokbot
 
 - Removed The Venue at Max Bowl (`v-max-bowl`) entirely from `data/wedding.json` (`vendors` and `vendorOptions`) at V's request — not marked dropped. It was a shortlist venue, never contacted, and was not referenced in `nextActions`, `schedule`, or other vendors.

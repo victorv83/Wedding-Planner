@@ -541,6 +541,41 @@ test("vendor cards have a valid status, http(s) links, and logs in order", () =>
   assert.equal(legacy.warnings.length, 0);
 });
 
+test("venue galleries keep the cover first and show an exterior and interior where the venue's own pages have them", () => {
+  const venues = model.vendors.filter((vendor) => vendor.category === "venue" && vendor.status !== "dropped");
+  for (const vendor of model.vendors) {
+    assert.ok(Array.isArray(vendor.photos), vendor.id);
+    if (vendor.photo) assert.equal(vendor.photos[0].src, vendor.photo.src, vendor.id);
+    else assert.equal(vendor.photos.length, 0, vendor.id);
+    const srcs = vendor.photos.map((photo) => photo.src);
+    assert.equal(new Set(srcs).size, srcs.length, `${vendor.id} repeats a photo`);
+    for (const photo of vendor.photos) {
+      assert.match(photo.src, /^assets\/vendors\/[a-z0-9-]+\.webp$/, `${vendor.id} ${photo.src}`);
+      assert.ok(readFileSync(new URL(`../${photo.src}`, import.meta.url)).length > 0, photo.src);
+      assert.match(photo.from, /^https?:\/\//, `${vendor.id} ${photo.src}`);
+      if (vendor.photos.length > 1) assert.ok(photo.label, `${vendor.id} ${photo.src} needs a label`);
+    }
+  }
+  const labels = (id) => model.vendors.find((vendor) => vendor.id === id).photos.map((photo) => photo.label);
+  for (const id of ["v-event-centre", "v-civic-center", "v-holiday-inn", "v-bowers", "v-broussard-farm", "v-botanical", "v-brown-estate"]) {
+    assert.ok(labels(id).includes("exterior"), `${id} exterior`);
+    assert.ok(labels(id).some((label) => ["interior", "solarium"].includes(label)), `${id} interior`);
+  }
+  assert.deepEqual(labels("v-reign-hills"), ["interior", "entrance"]);
+  assert.deepEqual(labels("v-belle-oaks"), ["interior", "ceremony"]);
+  assert.ok(venues.filter((vendor) => vendor.photos.length >= 2).length >= 9);
+  assert.equal(model.vendors.find((vendor) => vendor.id === "v-brown-estate").photo.src, "assets/vendors/v-brown-estate-exterior.webp");
+
+  const single = buildModel({ ...data, vendors: [{ id: "x-one", name: "One", category: "venue", photo: { src: "assets/vendors/x.webp", from: "https://example.com/" } }] }).vendors.find((vendor) => vendor.id === "x-one");
+  assert.equal(single.photos.length, 1);
+  assert.equal(single.photos[0].src, "assets/vendors/x.webp");
+  const bad = buildModel({ ...data, vendors: [{ id: "x-two", name: "Two", category: "venue", photos: [{ src: "../secret.webp" }, { src: "assets/vendors/ok.webp", label: "exterior" }] }] });
+  const two = bad.vendors.find((vendor) => vendor.id === "x-two");
+  assert.deepEqual(two.photos.map((photo) => photo.src), ["assets/vendors/ok.webp"]);
+  assert.equal(two.photo.src, "assets/vendors/ok.webp");
+  assert.ok(bad.warnings.some((warning) => /gallery photo/.test(warning)));
+});
+
 test("the schedule sorts by date and marks the next item", () => {
   const warnings = [];
   const parsed = parseSchedule([

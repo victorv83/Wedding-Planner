@@ -1234,7 +1234,27 @@ function parsePhoto(raw) {
     src,
     origin: safeHttpUrl(raw.origin),
     from: safeHttpUrl(raw.from),
+    label: cleanString(raw.label).slice(0, 40),
   };
+}
+
+// A vendor's gallery: `photos` when the data has it, else the single `photo`.
+// The cover (`photo`) always comes first so cards and the detail view agree.
+function parsePhotos(rawPhotos, cover) {
+  const photos = [];
+  const seen = new Set();
+  const gallery = (Array.isArray(rawPhotos) ? rawPhotos : []).map(parsePhoto).filter(Boolean);
+  const add = (photo) => {
+    if (!photo || seen.has(photo.src)) return;
+    seen.add(photo.src);
+    photos.push(photo);
+  };
+  if (cover) {
+    const match = gallery.find((photo) => photo.src === cover.src);
+    add({ ...cover, label: cover.label || match?.label || "" });
+  }
+  for (const photo of gallery) add(photo);
+  return photos;
 }
 
 function parsePricing(raw, name, warnings) {
@@ -1367,8 +1387,12 @@ export function parseVendors(raw, taskIds, statuses, warnings) {
     }
     const category = categoryId(item?.category);
     const alsoCategories = stringList(item?.alsoCategories).map(categoryId).filter((value) => value && value !== category);
-    const photo = parsePhoto(item?.photo);
-    if (item?.photo && !photo) warnings.push(`Vendor “${name}” has a photo path that was skipped.`);
+    const rawPhotos = Array.isArray(item?.photos) ? item.photos : [];
+    const photos = parsePhotos(rawPhotos, parsePhoto(item?.photo));
+    const photo = photos[0] || null;
+    if (item?.photo && !parsePhoto(item.photo)) warnings.push(`Vendor “${name}” has a photo path that was skipped.`);
+    const skippedPhotos = rawPhotos.filter((raw) => !parsePhoto(raw)).length;
+    if (skippedPhotos) warnings.push(`Vendor “${name}” has ${skippedPhotos} gallery photo${skippedPhotos === 1 ? "" : "s"} that were skipped.`);
     const lastActivity = parseISODate(item?.lastActivity) ? cleanString(item.lastActivity) : "";
     const updatedOn = parseISODate(item?.updatedOn) ? cleanString(item.updatedOn) : "";
     vendors.push({
@@ -1382,6 +1406,7 @@ export function parseVendors(raw, taskIds, statuses, warnings) {
       preferred: Boolean(item?.preferred),
       priority: finite(item?.priority) ? item.priority : 99,
       photo,
+      photos,
       website: safeHttpUrl(item?.website),
       social: parseUrlFields(item?.social),
       links: parseUrlFields(item?.links),
@@ -1428,6 +1453,7 @@ export function vendorsFromOptions(options) {
       preferred: /preferred/i.test(option.fit || ""),
       priority: 99,
       photo: null,
+      photos: [],
       website: option.url || "",
       social: {},
       links: {},

@@ -1985,6 +1985,18 @@ tfoot th {
   display: block;
 }
 
+.vcard-photo-count {
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.6rem;
+  background: rgba(30, 20, 18, 0.68);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+}
+
 .vcard-photo-empty {
   display: flex;
   flex-direction: column;
@@ -2464,6 +2476,53 @@ tfoot th {
   margin: 0.35rem 0 0;
   color: var(--ink-soft);
   font-size: 0.82rem;
+}
+
+.photo-thumbs {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.55rem;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
+}
+
+.photo-thumb {
+  flex: 0 0 auto;
+  width: 6.5rem;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink-soft);
+  font: inherit;
+}
+
+.photo-thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #efe4d6;
+}
+
+.photo-thumb-label {
+  display: block;
+  padding: 0.15rem 0.2rem 0.1rem;
+  font-size: 0.74rem;
+  text-transform: capitalize;
+}
+
+.photo-thumb[aria-pressed="true"] {
+  border-color: var(--lacquer);
+  color: var(--ink);
+}
+
+.photo-thumb:focus-visible {
+  outline: 2px solid var(--lacquer);
+  outline-offset: 2px;
 }
 
 .detail-summary {

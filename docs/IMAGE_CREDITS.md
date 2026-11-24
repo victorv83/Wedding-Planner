@@ -2,7 +2,7 @@
 
 Every photo in `assets/img/` was downloaded from Wikimedia Commons and compressed for this site. Captions on the page name the same author and license. These are reference pictures, not photos of this couple or of the shortlisted venues.
 
-Vendor photos in `assets/vendors/` come from each business’s own site, from the city pages for the Bob Bowers Civic Center, the Downtown Event Centre, and the Beaumont Civic Center, or from IHG’s events page for the Holiday Inn. The card records `photo.from` (the page) and `photo.origin` (the image file). The detail view credits `photo.from`. Cards without a photo use a monogram, not a stock picture.
+Vendor photos in `assets/vendors/` come from each business’s own site (including the Brown Estate’s pages on lsco.edu), from the city pages for the Bob Bowers Civic Center, the Downtown Event Centre, and the Beaumont Civic Center, or from IHG’s events page for the Holiday Inn. Each vendor’s `photo` is the card’s cover, and `photos` is the gallery in the detail view, cover first, each labelled (exterior, interior and so on). Every photo records `from` (the page) and `origin` (the image file, or the gallery page when the site only shows the image inside a viewer, as on Reign Hills). The detail view credits `from` under each photo. Cards without a photo use a monogram, not a stock picture.
 
 | File | Source | Author | License |
 | --- | --- | --- | --- |

@@ -2013,11 +2013,53 @@ function photoFallback(vendor) {
   ];
 }
 
-function photoFrame(vendor) {
-  const frame = el("div", { class: vendor.photo?.src ? "vcard-photo" : "vcard-photo vcard-photo-empty" });
-  if (!vendor.photo?.src) frame.dataset.category = vendor.category;
-  if (vendor.photo?.src) {
-    const img = el("img", { src: vendor.photo.src, alt: "", loading: "lazy", decoding: "async" });
+function photoCredit(photo) {
+  if (!photo?.from) return null;
+  return el("p", { class: "photo-credit" }, [
+    photo.label ? `${photo.label[0].toUpperCase()}${photo.label.slice(1)} · photo from ` : "Photo from ",
+    externalLink(photo.from, hostLabel(photo.from)),
+  ]);
+}
+
+// Detail view: the cover photo, then a row of labelled thumbnails that swap it.
+function photoGallery(vendor) {
+  const photos = vendor.photos?.length ? vendor.photos : vendor.photo ? [vendor.photo] : [];
+  const holder = el("div", { class: "photo-gallery" });
+  const show = (index) => {
+    const photo = photos[index] || null;
+    const frame = photoFrame(vendor, photo);
+    const credit = photoCredit(photo);
+    holder.querySelector(".vcard-photo")?.replaceWith(frame);
+    const oldCredit = holder.querySelector(".photo-credit");
+    if (oldCredit && credit) oldCredit.replaceWith(credit);
+    else if (oldCredit) oldCredit.remove();
+    else if (credit) frame.after(credit);
+    for (const [i, button] of holder.querySelectorAll(".photo-thumb").entries()) {
+      button.setAttribute("aria-pressed", String(i === index));
+    }
+  };
+  holder.append(photoFrame(vendor, photos[0] || null));
+  const firstCredit = photoCredit(photos[0]);
+  if (firstCredit) holder.append(firstCredit);
+  if (photos.length > 1) {
+    holder.append(el("div", { class: "photo-thumbs", role: "group", "aria-label": `${vendor.name} photos` }, photos.map((photo, index) => {
+      const label = photo.label || `Photo ${index + 1}`;
+      const button = el("button", { type: "button", class: "photo-thumb", "aria-pressed": String(index === 0), "aria-label": `Show ${label}` }, [
+        el("img", { src: photo.src, alt: "", loading: "lazy", decoding: "async" }),
+        el("span", { class: "photo-thumb-label", text: label }),
+      ]);
+      button.addEventListener("click", () => show(index));
+      return button;
+    })));
+  }
+  return [holder];
+}
+
+function photoFrame(vendor, photo = vendor.photo, { countBadge = false } = {}) {
+  const frame = el("div", { class: photo?.src ? "vcard-photo" : "vcard-photo vcard-photo-empty" });
+  if (!photo?.src) frame.dataset.category = vendor.category;
+  if (photo?.src) {
+    const img = el("img", { src: photo.src, alt: photo.label ? `${vendor.name}, ${photo.label}` : "", loading: "lazy", decoding: "async" });
     img.addEventListener("error", () => {
       frame.classList.add("vcard-photo-empty");
       frame.dataset.category = vendor.category;
@@ -2026,6 +2068,8 @@ function photoFrame(vendor) {
       if (ribbon) frame.append(ribbon);
     });
     frame.append(img);
+    const count = vendor.photos?.length || 0;
+    if (countBadge && count > 1) frame.append(el("span", { class: "vcard-photo-count", text: `${count} photos` }));
   } else {
     frame.append(...photoFallback(vendor));
   }
@@ -2082,7 +2126,7 @@ function renderVendorCard(vendor) {
   });
   return el("article", { class: chosen ? "vcard is-chosen" : "vcard", id: `vendor-card-${vendor.id}` }, [
     el("a", { class: "vcard-link", href: `#vendor/${encodeURIComponent(vendor.id)}` }, [
-      photoFrame(vendor),
+      photoFrame(vendor, vendor.photo, { countBadge: true }),
       el("div", { class: "vcard-body" }, [
         el("p", { class: "vcard-kicker" }, [
           el("span", { text: vendorCategoryLabel(vendor.category) }),
@@ -2323,8 +2367,7 @@ function renderVendorDetail(id) {
       !vendor.priceVerified && vendor.priceEstimateOnly ? el("span", { class: "estimate-tag", text: "Estimate only" }) : null,
       el("span", { class: `pill pill-${vendor.priceType === "listed" ? "listed" : vendor.priceType === "estimate" ? "estimate" : "quote"}`, text: { listed: "Listed", estimate: "Estimate", quote: "Quote" }[vendor.priceType] || "Quote" }),
     ]),
-    photoFrame(vendor),
-    vendor.photo?.from ? el("p", { class: "photo-credit" }, ["Photo from ", externalLink(vendor.photo.from, hostLabel(vendor.photo.from))]) : null,
+    ...photoGallery(vendor),
     vendor.summary ? el("p", { class: "detail-summary", text: vendor.summary }) : null,
     linkButtons.length ? el("div", { class: "link-row" }, linkButtons) : null,
     contactRows.length ? el("dl", { class: "details detail-contact" }, contactRows.flatMap(([label, value]) => [

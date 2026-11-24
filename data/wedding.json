@@ -2425,6 +2425,20 @@
         "origin": "https://beaumonteventstx.com/wp-content/uploads/2026/09/modern-building-fountain-pond-scaled.jpg",
         "from": "https://beaumonteventstx.com/downtown-event-centre-info/"
       },
+      "photos": [
+        {
+          "src": "assets/vendors/v-event-centre.webp",
+          "label": "exterior",
+          "origin": "https://beaumonteventstx.com/wp-content/uploads/2026/09/modern-building-fountain-pond-scaled.jpg",
+          "from": "https://beaumonteventstx.com/downtown-event-centre-info/"
+        },
+        {
+          "src": "assets/vendors/v-event-centre-interior.webp",
+          "label": "interior",
+          "origin": "https://beaumonteventstx.com/wp-content/uploads/2026/07/event-hall-round-tables-stage-gathering-768x583.jpg",
+          "from": "https://beaumonteventstx.com/downtown-event-centre-info/"
+        }
+      ],
       "website": "https://beaumonteventstx.com/downtown-event-centre-info/",
       "social": {},
       "links": {
@@ -2585,9 +2599,23 @@
       "priority": 5,
       "photo": {
         "src": "assets/vendors/v-belle-oaks.webp",
-        "origin": "https://static.wixstatic.com/media/4c3775_32ea281700f34ee89feb6436a0fa8aba%7Emv2.png/v1/fit/w_2500,h_1330,al_c/4c3775_32ea281700f34ee89feb6436a0fa8aba%7Emv2.png",
-        "from": "https://www.thevenueatbelleoaks.com/"
+        "origin": "https://www.thevenueatbelleoaks.com/gallery?pgid=mayft3nz-d6e5be7d-4752-4a13-b018-c0ff336c9a1e",
+        "from": "https://www.thevenueatbelleoaks.com/gallery"
       },
+      "photos": [
+        {
+          "src": "assets/vendors/v-belle-oaks.webp",
+          "label": "interior",
+          "origin": "https://www.thevenueatbelleoaks.com/gallery?pgid=mayft3nz-d6e5be7d-4752-4a13-b018-c0ff336c9a1e",
+          "from": "https://www.thevenueatbelleoaks.com/gallery"
+        },
+        {
+          "src": "assets/vendors/v-belle-oaks-ceremony.webp",
+          "label": "ceremony",
+          "origin": "https://www.thevenueatbelleoaks.com/gallery?pgid=mayft3nz-4c1850ca-9a71-4468-a1be-cdb4e5057e2c",
+          "from": "https://www.thevenueatbelleoaks.com/gallery"
+        }
+      ],
       "website": "https://www.thevenueatbelleoaks.com/",
       "social": {},
       "links": {},
@@ -2642,6 +2670,20 @@
         "origin": "https://images.squarespace-cdn.com/content/v1/63a0befda10732040d5b2608/8c3186ab-e03f-46f3-98a9-fdd8cea09ce3/FullSizeRender.jpeg",
         "from": "https://www.bbgtx.org/rental"
       },
+      "photos": [
+        {
+          "src": "assets/vendors/v-botanical.webp",
+          "label": "interior",
+          "origin": "https://images.squarespace-cdn.com/content/v1/63a0befda10732040d5b2608/8c3186ab-e03f-46f3-98a9-fdd8cea09ce3/FullSizeRender.jpeg",
+          "from": "https://www.bbgtx.org/rental"
+        },
+        {
+          "src": "assets/vendors/v-botanical-exterior.webp",
+          "label": "exterior",
+          "origin": "https://images.squarespace-cdn.com/content/v1/63a0befda10732040d5b2608/b8feff9e-17d5-4799-8728-35428c37e1e3/IMG_5209.jpeg",
+          "from": "https://www.bbgtx.org/rental"
+        }
+      ],
       "website": "https://www.bbgtx.org/rental",
       "social": {},
       "links": {},
@@ -2759,10 +2801,30 @@
       "preferred": false,
       "priority": 5,
       "photo": {
-        "src": "assets/vendors/v-brown-estate.webp",
-        "origin": "https://www.lsco.edu/brown-estate/images/slideshow/wedding.jpg",
-        "from": "https://www.lsco.edu/brown-estate/weddings.html"
+        "src": "assets/vendors/v-brown-estate-exterior.webp",
+        "origin": "https://www.lsco.edu/brown-estate/images/gallery/gallery015.jpg",
+        "from": "https://www.lsco.edu/brown-estate/gallery.html"
       },
+      "photos": [
+        {
+          "src": "assets/vendors/v-brown-estate-exterior.webp",
+          "label": "exterior",
+          "origin": "https://www.lsco.edu/brown-estate/images/gallery/gallery015.jpg",
+          "from": "https://www.lsco.edu/brown-estate/gallery.html"
+        },
+        {
+          "src": "assets/vendors/v-brown-estate-interior.webp",
+          "label": "solarium",
+          "origin": "https://www.lsco.edu/brown-estate/solarium.html",
+          "from": "https://www.lsco.edu/brown-estate/solarium.html"
+        },
+        {
+          "src": "assets/vendors/v-brown-estate.webp",
+          "label": "wedding",
+          "origin": "https://www.lsco.edu/brown-estate/images/slideshow/wedding.jpg",
+          "from": "https://www.lsco.edu/brown-estate/weddings.html"
+        }
+      ],
       "website": "https://www.lsco.edu/brown-estate/weddings.html",
       "social": {},
       "links": {},
@@ -2814,9 +2876,23 @@
       "priority": 5,
       "photo": {
         "src": "assets/vendors/v-reign-hills.webp",
-        "origin": "https://static.wixstatic.com/media/332676_06dad1d0689841ccbc3c0c8911254ece%7Emv2.png/v1/fit/w_2500,h_1330,al_c/332676_06dad1d0689841ccbc3c0c8911254ece%7Emv2.png",
-        "from": "https://www.reignhills.com/"
+        "origin": "https://www.reignhills.com/gallery",
+        "from": "https://www.reignhills.com/gallery"
       },
+      "photos": [
+        {
+          "src": "assets/vendors/v-reign-hills.webp",
+          "label": "interior",
+          "origin": "https://www.reignhills.com/gallery",
+          "from": "https://www.reignhills.com/gallery"
+        },
+        {
+          "src": "assets/vendors/v-reign-hills-exterior.webp",
+          "label": "entrance",
+          "origin": "https://www.reignhills.com/gallery",
+          "from": "https://www.reignhills.com/gallery"
+        }
+      ],
       "website": "https://www.reignhills.com/",
       "social": {},
       "links": {},
@@ -2871,6 +2947,20 @@
         "origin": "https://digital.ihg.com/is/image/ihg/holiday-inn-hotel-and-suites-beaumont-5912302073-4x3",
         "from": "https://www.ihg.com/holidayinn/hotels/us/en/beaumont/bptwd/hoteldetail/events-facilities"
       },
+      "photos": [
+        {
+          "src": "assets/vendors/v-holiday-inn.webp",
+          "label": "interior",
+          "origin": "https://digital.ihg.com/is/image/ihg/holiday-inn-hotel-and-suites-beaumont-5912302073-4x3",
+          "from": "https://www.ihg.com/holidayinn/hotels/us/en/beaumont/bptwd/hoteldetail/events-facilities"
+        },
+        {
+          "src": "assets/vendors/v-holiday-inn-exterior.webp",
+          "label": "exterior",
+          "origin": "https://digital.ihg.com/is/image/ihg/holiday-inn-hotel-and-suites-beaumont-4911541180-2x1",
+          "from": "https://www.ihg.com/holidayinn/hotels/us/en/beaumont/bptwd/hoteldetail/events-facilities"
+        }
+      ],
       "website": "https://www.ihg.com/holidayinn/hotels/us/en/beaumont/bptwd/hoteldetail/events-facilities",
       "social": {},
       "links": {},
@@ -5112,6 +5202,14 @@
         "origin": "https://static.showit.co/1200/G9pcXfvDQCOg_IsnBu8iMg/78927/img_1973.jpg",
         "from": "https://434fannin.com/"
       },
+      "photos": [
+        {
+          "src": "assets/vendors/v-434-fannin.webp",
+          "label": "interior",
+          "origin": "https://static.showit.co/1200/G9pcXfvDQCOg_IsnBu8iMg/78927/img_1973.jpg",
+          "from": "https://434fannin.com/"
+        }
+      ],
       "website": "https://434fannin.com/",
       "social": {},
       "links": {
@@ -5218,6 +5316,20 @@
         "origin": "https://new.broussardfarm.com/wp-content/uploads/2015/08/10339391_10203849641547241_5255031519538352050_o-e1439851386368.jpg",
         "from": "https://new.broussardfarm.com/gallery/"
       },
+      "photos": [
+        {
+          "src": "assets/vendors/v-broussard-farm.webp",
+          "label": "interior",
+          "origin": "https://new.broussardfarm.com/wp-content/uploads/2015/08/10339391_10203849641547241_5255031519538352050_o-e1439851386368.jpg",
+          "from": "https://new.broussardfarm.com/gallery/"
+        },
+        {
+          "src": "assets/vendors/v-broussard-farm-exterior.webp",
+          "label": "exterior",
+          "origin": "https://new.broussardfarm.com/wp-content/uploads/2015/08/C-Baron-Broussard-Farm-Brittney-Taylor-163-e1439850602137.jpg",
+          "from": "https://new.broussardfarm.com/gallery/"
+        }
+      ],
       "website": "https://new.broussardfarm.com/",
       "social": {},
       "links": {},
@@ -5272,6 +5384,14 @@
         "origin": "https://img1.wsimg.com/isteam/ip/42a37a36-b01d-4689-a958-32e25fb647cd/Zack%20%26%20Sierra.jpg",
         "from": "https://acadianeventservices.com/"
       },
+      "photos": [
+        {
+          "src": "assets/vendors/v-acadian.webp",
+          "label": "wedding",
+          "origin": "https://img1.wsimg.com/isteam/ip/42a37a36-b01d-4689-a958-32e25fb647cd/Zack%20%26%20Sierra.jpg",
+          "from": "https://acadianeventservices.com/"
+        }
+      ],
       "website": "https://acadianeventservices.com/",
       "social": {},
       "links": {},
@@ -5326,6 +5446,20 @@
         "origin": "https://beaumonteventstx.com/wp-content/uploads/2026/08/formal-event-ballroom-blue-lighting.jpg",
         "from": "https://beaumonteventstx.com/beaumont-civic-center-info/"
       },
+      "photos": [
+        {
+          "src": "assets/vendors/v-civic-center.webp",
+          "label": "interior",
+          "origin": "https://beaumonteventstx.com/wp-content/uploads/2026/08/formal-event-ballroom-blue-lighting.jpg",
+          "from": "https://beaumonteventstx.com/beaumont-civic-center-info/"
+        },
+        {
+          "src": "assets/vendors/v-civic-center-exterior.webp",
+          "label": "exterior",
+          "origin": "https://beaumonteventstx.com/wp-content/uploads/2026/07/beaumont-civic-center-exterior.jpg",
+          "from": "https://beaumonteventstx.com/beaumont-civic-center-info/"
+        }
+      ],
       "website": "https://beaumonteventstx.com/beaumont-civic-center-info/",
       "social": {},
       "links": {
@@ -5764,6 +5898,20 @@
         "origin": "https://visitportarthurtx.com/wp-content/uploads/2023/06/DiamondConference-Bob-Bowers-Civic-Center.jpg",
         "from": "https://visitportarthurtx.com/meeting-professionals-sports/robert-a-bob-bowers-civic-center/"
       },
+      "photos": [
+        {
+          "src": "assets/vendors/v-bowers.webp",
+          "label": "interior",
+          "origin": "https://visitportarthurtx.com/wp-content/uploads/2023/06/DiamondConference-Bob-Bowers-Civic-Center.jpg",
+          "from": "https://visitportarthurtx.com/meeting-professionals-sports/robert-a-bob-bowers-civic-center/"
+        },
+        {
+          "src": "assets/vendors/v-bowers-exterior.webp",
+          "label": "exterior",
+          "origin": "https://visitportarthurtx.com/wp-content/uploads/2023/06/Robert-A-Bob-Bowers-Civic-Center-7-1024x768.jpg",
+          "from": "https://visitportarthurtx.com/meeting-professionals-sports/robert-a-bob-bowers-civic-center/"
+        }
+      ],
       "website": "https://visitportarthurtx.com/meeting-professionals-sports/robert-a-bob-bowers-civic-center/",
       "social": {},
       "links": {
